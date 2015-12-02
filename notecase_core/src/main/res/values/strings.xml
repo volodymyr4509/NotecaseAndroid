@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">Notecase</string>
+    <string name="action_settings">Settings</string>
+
+
+    <string name="hello_world">Hello world!</string>
+    <string name="view_costs">view costs</string>
+    <string name="add_costs">add costs</string>
+    <string name="manage_categories">Manage categories</string>
+    <string name="CommodityName">Enter name...</string>
+    <string name="CommodityPrice">Enter price...</string>
+
+    <string name="move">move</string>
+    <string name="save">save</string>
+
+    <string name="category_food">FOOD</string>
+    <string name="category_transport">TRANSPORT</string>
+    <string name="category_accommodation">ACCOMMODATION</string>
+    <string name="category_travel">TRAVEL</string>
+    <string name="category_dinner">DINNER</string>
+    <string name="category_other">OTHER</string>
+</resources>

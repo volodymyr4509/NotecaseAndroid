@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/Notecase.iml" filepath="$PROJECT_DIR$/Notecase.iml" />
+      <module fileurl="file://$PROJECT_DIR$/notecase_core/notecase_core.iml" filepath="$PROJECT_DIR$/notecase_core/notecase_core.iml" />
+    </modules>
+  </component>
+</project>
