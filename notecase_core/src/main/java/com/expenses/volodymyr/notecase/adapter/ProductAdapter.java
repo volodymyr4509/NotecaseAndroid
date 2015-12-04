@@ -32,7 +32,7 @@ public class ProductAdapter extends ArrayAdapter<Product> {
 
         TextView productName = (TextView) convertView.findViewById(R.id.product_name);
         TextView productPrice = (TextView) convertView.findViewById(R.id.product_price);
-        View categoryColor = (View) convertView.findViewById(R.id.product_category);
+//        View categoryColor = (View) convertView.findViewById(R.id.product_category);
         TextView productCreated = (TextView) convertView.findViewById(R.id.product_created);
 
         // Populate the data into the template view using the data object
@@ -46,7 +46,6 @@ public class ProductAdapter extends ArrayAdapter<Product> {
         }else {
             formattedTimestamp = new SimpleDateFormat("MM/dd/yyyy").format(created);
         }
-
 
         productCreated.setText(formattedTimestamp);
 

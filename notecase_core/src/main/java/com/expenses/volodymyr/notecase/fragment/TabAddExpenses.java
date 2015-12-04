@@ -106,32 +106,6 @@ public class TabAddExpenses extends Fragment {
     }
 
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.main_menu, menu);
-//        return true;
-//    }
-
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        // Handle action bar item clicks here. The action bar will
-//        // automatically handle clicks on the Home/Up button, so long
-//        // as you specify a parent activity in AndroidManifest.xml.
-////        int id = item.getItemId();
-////        switch (id) {
-////            case R.id.view_costs:
-////                Intent viewCostIntent = new Intent(this, ViewCostsActivity.class);
-////                startActivity(viewCostIntent);
-////                break;
-////            case R.id.manage_category:
-////                Intent manageCategoryIntent = new Intent(this, ViewCategoryActivity.class);
-////                startActivity(manageCategoryIntent);
-////                break;
-////        }
-//        return super.onOptionsItemSelected(item);
-//    }
-
     public void closeKeyboard(Activity activity) {
         View view = activity.getCurrentFocus();
         if (view != null) {
