@@ -6,7 +6,7 @@ import android.support.v4.app.FragmentManager;
 
 import com.expenses.volodymyr.notecase.fragment.TabAddExpenses;
 import com.expenses.volodymyr.notecase.fragment.TabStatisticExpenses;
-import com.expenses.volodymyr.notecase.fragment.TabViewCategory;
+import com.expenses.volodymyr.notecase.fragment.TabSettings;
 import com.expenses.volodymyr.notecase.fragment.TabViewExpenses;
 
 /**
@@ -34,7 +34,7 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
                 TabStatisticExpenses tab3 = new TabStatisticExpenses();
                 return tab3;
             case 3:
-                TabViewCategory tab4 = new TabViewCategory();
+                TabSettings tab4 = new TabSettings();
                 return tab4;
             default:
                 return null;
