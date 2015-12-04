@@ -14,6 +14,7 @@ import android.widget.ListView;
 
 import com.expenses.volodymyr.notecase.R;
 import com.expenses.volodymyr.notecase.activity.EditExpenseActivity;
+import com.expenses.volodymyr.notecase.adapter.ProductAdapter;
 import com.expenses.volodymyr.notecase.entity.Product;
 import com.expenses.volodymyr.notecase.util.DBHandler;
 
@@ -38,10 +39,10 @@ public class TabViewExpenses extends Fragment {
         dbHandler = DBHandler.getDbHandler(getActivity());
         productList = dbHandler.getAllProducts();
 
-        adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, productList);
+//        adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, productList);
 
-        listView.setAdapter(adapter);
-
+//        listView.setAdapter(adapter);
+        updateListView();
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -57,10 +58,12 @@ public class TabViewExpenses extends Fragment {
 
     @Override
     public void onStart() {
+        updateListView();
         super.onStart();
-        productList = dbHandler.getAllProducts();
-        adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, productList);
-        listView.setAdapter(adapter);
+//        productList = dbHandler.getAllProducts();
+//        adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, productList);
+//        listView.setAdapter(adapter);
+        updateListView();
     }
 
     @Override
@@ -70,9 +73,16 @@ public class TabViewExpenses extends Fragment {
 
     @Override
     public void onResume() {
+        updateListView();
         super.onResume();
+//        productList = dbHandler.getAllProducts();
+//        adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, productList);
+//        listView.setAdapter(adapter);
+    }
+
+    private void updateListView(){
         productList = dbHandler.getAllProducts();
-        adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, productList);
+        adapter = new ProductAdapter(getActivity(), productList);
         listView.setAdapter(adapter);
     }
 
