@@ -2,6 +2,7 @@ package com.expenses.volodymyr.notecase.util;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -12,7 +13,9 @@ import com.expenses.volodymyr.notecase.entity.Product;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by volodymyr on 25.10.15.
@@ -237,6 +240,22 @@ public class DBHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_PRODUCT + " WHERE Name like '" + partialProductName + "%';", null);
         return cursor;
+    }
+
+    //select SUM(p.Price), c.* from product p join category c on p.categoryId= c._id group by p.categoryId;
+    public Map<Category, Double> getExpensesGroupedByCategories() {
+        SQLiteDatabase db = getReadableDatabase();
+        Map<Category, Double> result = new HashMap<>();
+        Cursor cursor = db.rawQuery("SELECT SUM(p." + PRODUCT_PRICE + ") AS Sum, c.* FROM " + TABLE_PRODUCT + " p JOIN " +
+                TABLE_CATEGORY + " c ON p." + PRODUCT_CATEGORY + "=" + "c." + COLUMN_ID + " GROUP BY p." + PRODUCT_CATEGORY, null);
+        while (cursor.moveToNext()) {
+            Category category = new Category();
+            category.setId(cursor.getInt(1));
+            category.setName(cursor.getString(2));
+            category.setColor(cursor.getInt(3));
+            result.put(category, cursor.getDouble(0));
+        }
+        return result;
     }
 
 }
