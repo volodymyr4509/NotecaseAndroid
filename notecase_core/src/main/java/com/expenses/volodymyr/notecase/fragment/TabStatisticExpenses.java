@@ -41,6 +41,7 @@ import java.util.Set;
  * Created by vkret on 02.12.15.
  */
 public class TabStatisticExpenses extends Fragment implements SeekBar.OnSeekBarChangeListener, OnChartValueSelectedListener {
+    private boolean showCategoryName = false;
     private PieChart mChart;
     private SeekBar mSeekBarX, mSeekBarY;
     private TextView tvX, tvY;
@@ -73,7 +74,7 @@ public class TabStatisticExpenses extends Fragment implements SeekBar.OnSeekBarC
 //
 //        mChart.setCenterTextTypeface(Typeface.createFromAsset(getAssets(), "OpenSans-Light.ttf"));
 //        mChart.setCenterText(generateCenterSpannableText());
-        mChart.setDrawSliceText(false);
+        mChart.setDrawSliceText(showCategoryName);
 
         mChart.setDrawHoleEnabled(false);
 //        mChart.setHoleColorTransparent(true);
@@ -177,9 +178,10 @@ public class TabStatisticExpenses extends Fragment implements SeekBar.OnSeekBarC
 
     @Override
     public void onValueSelected(Entry e, int dataSetIndex, Highlight h) {
-System.out.println("onValueselected");
-        if (e == null)
-            return;
+        showCategoryName = !showCategoryName;
+        mChart.setDrawSliceText(showCategoryName);
+
+
 //        Log.i("VAL SELECTED",
 //                "Value: " + e.getVal() + ", xIndex: " + e.getXIndex()
 //                        + ", DataSet index: " + dataSetIndex);
