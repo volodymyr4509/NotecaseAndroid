@@ -1,6 +1,5 @@
 package com.expenses.volodymyr.notecase.activity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -21,13 +20,16 @@ import java.util.List;
 /**
  * Created by vkret on 02.12.15.
  */
-public class ViewCategoryActivity extends AppCompatActivity{
+public class ViewCategoryActivity extends AppCompatActivity {
     public static final String CATEGORY_ID_KEY = "categoryId";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_categories);
+
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.category_view_toolbar);
+        setSupportActionBar(myToolbar);
 
         ListView listView = (ListView) findViewById(R.id.categoriesList);
         Button addCategoryButton = (Button) findViewById(R.id.addNewCategory);
