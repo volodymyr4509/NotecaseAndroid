@@ -32,10 +32,8 @@ public class ProductAdapter extends ArrayAdapter<Product> {
 
         TextView productName = (TextView) convertView.findViewById(R.id.product_name);
         TextView productPrice = (TextView) convertView.findViewById(R.id.product_price);
-//        View categoryColor = (View) convertView.findViewById(R.id.product_category);
         TextView productCreated = (TextView) convertView.findViewById(R.id.product_created);
 
-        // Populate the data into the template view using the data object
         productName.setText(product.getName());
         productPrice.setText(String.valueOf(product.getPrice()));
         Timestamp created = product.getCreated();

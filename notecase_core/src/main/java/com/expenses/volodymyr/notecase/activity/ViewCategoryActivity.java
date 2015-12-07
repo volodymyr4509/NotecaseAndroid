@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.ListView;
 
 import com.expenses.volodymyr.notecase.R;
+import com.expenses.volodymyr.notecase.adapter.CategoryAdapter;
 import com.expenses.volodymyr.notecase.entity.Category;
 import com.expenses.volodymyr.notecase.util.DBHandler;
 
@@ -32,10 +33,9 @@ public class ViewCategoryActivity extends Activity{
         DBHandler dbHandler = DBHandler.getDbHandler(this);
         List<Category> categoryList = dbHandler.getAllCategories();
 
-        ArrayAdapter<Category> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, categoryList);
+        ArrayAdapter<Category> adapter = new CategoryAdapter(this, categoryList);
 
         listView.setAdapter(adapter);
-
 
         addCategoryButton.setOnClickListener(new View.OnClickListener() {
             @Override

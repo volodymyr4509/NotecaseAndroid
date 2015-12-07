@@ -1,4 +1,4 @@
-package com.expenses.volodymyr.notecase;
+package com.expenses.volodymyr.notecase.util;
 
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.Fragment;
@@ -12,10 +12,10 @@ import com.expenses.volodymyr.notecase.fragment.TabViewExpenses;
 /**
  * Created by vkret on 02.12.15.
  */
-public class PagerAdapter extends FragmentStatePagerAdapter {
+public class FragmentPagerAdapter extends FragmentStatePagerAdapter {
     int mNumOfTabs;
 
-    public PagerAdapter(FragmentManager fm, int NumOfTabs) {
+    public FragmentPagerAdapter(FragmentManager fm, int NumOfTabs) {
         super(fm);
         this.mNumOfTabs = NumOfTabs;
     }
