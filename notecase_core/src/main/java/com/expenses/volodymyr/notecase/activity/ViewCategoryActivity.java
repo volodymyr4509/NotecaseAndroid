@@ -28,8 +28,8 @@ public class ViewCategoryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_categories);
 
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.category_view_toolbar);
-        setSupportActionBar(myToolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.category_view_toolbar);
+        setSupportActionBar(toolbar);
 
         ListView listView = (ListView) findViewById(R.id.categoriesList);
         Button addCategoryButton = (Button) findViewById(R.id.addNewCategory);
