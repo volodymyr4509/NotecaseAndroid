@@ -12,7 +12,6 @@ import android.view.MenuItem;
 import com.expenses.volodymyr.notecase.util.FragmentPagerAdapter;
 import com.expenses.volodymyr.notecase.R;
 
-
 public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSelectedListener {
     private ViewPager viewPager;
 
@@ -20,8 +19,8 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         tabLayout.addTab(tabLayout.newTab().setText("View"));
@@ -53,26 +52,23 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
                 startActivity(manageCategoryIntent);
                 break;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
-    //OnTabSelectedListener:
     @Override
     public void onTabSelected(TabLayout.Tab tab) {
+//        System.out.println("onTabSelected: " + tab.getText());
         viewPager.setCurrentItem(tab.getPosition());
     }
 
     @Override
     public void onTabUnselected(TabLayout.Tab tab) {
-        System.out.println("onTabUnselected: " + tab.getText());
-
+//        System.out.println("onTabUnselected: " + tab.getText());
     }
 
     @Override
     public void onTabReselected(TabLayout.Tab tab) {
-        System.out.println("onTabReselected: " + tab.getText());
-
+//        System.out.println("onTabReselected: " + tab.getText());
     }
 
 }

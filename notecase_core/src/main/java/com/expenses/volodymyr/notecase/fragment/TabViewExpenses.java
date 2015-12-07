@@ -1,10 +1,8 @@
 package com.expenses.volodymyr.notecase.fragment;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,10 +37,8 @@ public class TabViewExpenses extends Fragment {
         dbHandler = DBHandler.getDbHandler(getActivity());
         productList = dbHandler.getAllProducts();
 
-//        adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, productList);
-
-//        listView.setAdapter(adapter);
         updateListView();
+
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -58,12 +54,7 @@ public class TabViewExpenses extends Fragment {
 
     @Override
     public void onStart() {
-        updateListView();
         super.onStart();
-//        productList = dbHandler.getAllProducts();
-//        adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, productList);
-//        listView.setAdapter(adapter);
-        updateListView();
     }
 
     @Override
@@ -75,16 +66,12 @@ public class TabViewExpenses extends Fragment {
     public void onResume() {
         updateListView();
         super.onResume();
-//        productList = dbHandler.getAllProducts();
-//        adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, productList);
-//        listView.setAdapter(adapter);
     }
 
-    private void updateListView(){
+    private void updateListView() {
         productList = dbHandler.getAllProducts();
         adapter = new ProductAdapter(getActivity(), productList);
         listView.setAdapter(adapter);
     }
-
 
 }

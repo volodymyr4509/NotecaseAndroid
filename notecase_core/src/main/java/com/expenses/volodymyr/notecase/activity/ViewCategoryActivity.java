@@ -3,6 +3,8 @@ package com.expenses.volodymyr.notecase.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -19,7 +21,7 @@ import java.util.List;
 /**
  * Created by vkret on 02.12.15.
  */
-public class ViewCategoryActivity extends Activity{
+public class ViewCategoryActivity extends AppCompatActivity{
     public static final String CATEGORY_ID_KEY = "categoryId";
 
     @Override
