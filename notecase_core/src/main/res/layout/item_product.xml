@@ -13,8 +13,7 @@
         android:text=""
         android:id="@+id/product_name"
         android:singleLine="true"
-        android:ellipsize="end"
-        />
+        android:ellipsize="end" />
 
     <TextView
         android:layout_width="wrap_content"
