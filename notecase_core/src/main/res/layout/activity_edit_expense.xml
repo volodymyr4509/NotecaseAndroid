@@ -11,30 +11,30 @@
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/editCommodityName"
+        android:id="@+id/edit_expense_name"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
 
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/editCommodityPrice"
-        android:layout_below="@+id/editCommodityName"
+        android:id="@+id/edit_expense_price"
+        android:layout_below="@+id/edit_expense_name"
         android:layout_centerHorizontal="true"
         android:inputType="numberDecimal" />
 
     <Spinner
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/editCategory"
-        android:layout_below="@+id/editCommodityPrice"
+        android:id="@+id/edit_category"
+        android:layout_below="@+id/edit_expense_price"
         android:layout_centerHorizontal="true" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/dateTime"
-        android:layout_below="@+id/editCategory"
+        android:id="@+id/date_time"
+        android:layout_below="@+id/edit_category"
         android:layout_centerHorizontal="true" />
 
     <Button

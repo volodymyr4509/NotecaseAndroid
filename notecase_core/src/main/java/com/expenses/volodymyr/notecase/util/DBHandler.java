@@ -237,6 +237,7 @@ public class DBHandler extends SQLiteOpenHelper {
     public Cursor suggestProductName(String partialProductName) {
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_PRODUCT + " WHERE Name like '" + partialProductName + "%' GROUP BY " + PRODUCT_NAME + ";", null);
+        db.close();
         return cursor;
     }
 

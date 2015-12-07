@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.expenses.volodymyr.notecase.R;
+import com.expenses.volodymyr.notecase.adapter.CategoryAdapter;
 import com.expenses.volodymyr.notecase.entity.Category;
 import com.expenses.volodymyr.notecase.entity.Product;
 import com.expenses.volodymyr.notecase.fragment.TabViewExpenses;
@@ -42,14 +43,14 @@ public class EditExpenseActivity extends Activity implements View.OnClickListene
         List<Category> categories = dbHandler.getAllCategories();
 
 
-        name = (EditText) findViewById(R.id.editCommodityName);
-        price = (EditText) findViewById(R.id.editCommodityPrice);
-        dateTime = (TextView) findViewById(R.id.dateTime);
-        categorySelector = (Spinner) findViewById(R.id.editCategory);
+        name = (EditText) findViewById(R.id.edit_expense_name);
+        price = (EditText) findViewById(R.id.edit_expense_price);
+        dateTime = (TextView) findViewById(R.id.date_time);
+        categorySelector = (Spinner) findViewById(R.id.edit_category);
         saveButton = (Button) findViewById(R.id.save_button);
 
         name.setText(product.getName());
-        price.setText(String.valueOf(product.getPrice()));
+        price.setText(String.format("%.2f", product.getPrice()));
         dateTime.setText(product.getCreated().toString());
 
         ArrayAdapter<Category> dataAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, categories);

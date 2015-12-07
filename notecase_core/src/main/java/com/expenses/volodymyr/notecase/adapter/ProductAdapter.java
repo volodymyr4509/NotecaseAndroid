@@ -12,21 +12,21 @@ import com.expenses.volodymyr.notecase.entity.Product;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 /**
  * Created by vkret on 03.12.15.
  */
 public class ProductAdapter extends ArrayAdapter<Product> {
-    public ProductAdapter(Context context, List<Product> productList){
+    public ProductAdapter(Context context, List<Product> productList) {
         super(context, 0, productList);
     }
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         Product product = getItem(position);
 
-        if (convertView == null){
+        if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_product, parent, false);
         }
 
@@ -35,15 +35,13 @@ public class ProductAdapter extends ArrayAdapter<Product> {
         TextView productCreated = (TextView) convertView.findViewById(R.id.product_created);
 
         productName.setText(product.getName());
-        productPrice.setText(String.valueOf(product.getPrice()));
+
+        //format double
+        productPrice.setText(String.format("%.2f", product.getPrice()));
         Timestamp created = product.getCreated();
-        Date now = new Date();
         String formattedTimestamp;
-        if ((now.getTime() - created.getTime()) < 1000*60*60*24){
-            formattedTimestamp = new SimpleDateFormat("hh:mm:ss").format(created);
-        }else {
-            formattedTimestamp = new SimpleDateFormat("MM/dd/yyyy").format(created);
-        }
+
+        formattedTimestamp = new SimpleDateFormat("MM/dd/yyyy").format(created);
 
         productCreated.setText(formattedTimestamp);
 
