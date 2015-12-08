@@ -32,22 +32,10 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         tabLayout.setOnTabSelectedListener(this);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
 //    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        int id = item.getItemId();
-//        switch (id) {
-//            case R.id.manage_category:
-//                Intent manageCategoryIntent = new Intent(this, ViewCategoryActivity.class);
-//                startActivity(manageCategoryIntent);
-//                break;
-//        }
-//        return super.onOptionsItemSelected(item);
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.menu_main, menu);
+//        return true;
 //    }
 
     @Override

@@ -3,6 +3,7 @@ package com.expenses.volodymyr.notecase.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -42,6 +43,8 @@ public class EditExpenseActivity extends Activity implements View.OnClickListene
         product = dbHandler.getProductById(productId);
         List<Category> categories = dbHandler.getAllCategories();
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.expense_edit_toolbar);
+        toolbar.setNavigationIcon(R.mipmap.ic_launcher);
 
         name = (EditText) findViewById(R.id.edit_expense_name);
         price = (EditText) findViewById(R.id.edit_expense_price);
