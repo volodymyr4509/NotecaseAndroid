@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/manage_category"
-        android:title="@string/manage_categories"
-        android:orderInCategory="10"/>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/new_game"
+        android:icon="@drawable/plus"
+        android:title="@string/add_new_category"
+        app:showAsAction="ifRoom"/>
 </menu>
