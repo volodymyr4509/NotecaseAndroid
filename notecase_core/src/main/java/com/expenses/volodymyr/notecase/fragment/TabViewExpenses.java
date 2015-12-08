@@ -35,7 +35,6 @@ public class TabViewExpenses extends Fragment {
         listView = (ListView) view.findViewById(R.id.costsList);
 
         dbHandler = DBHandler.getDbHandler(getActivity());
-        productList = dbHandler.getAllProducts();
 
         updateListView();
 

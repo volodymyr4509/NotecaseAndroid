@@ -101,7 +101,7 @@ public class DBHandler extends SQLiteOpenHelper {
 
         SQLiteDatabase db = getWritableDatabase();
         db.insert(TABLE_PRODUCT, null, values);
-        db.close();
+//        db.close();
     }
 
     public void updateProduct(Product product) {
@@ -112,7 +112,7 @@ public class DBHandler extends SQLiteOpenHelper {
         values.put(PRODUCT_TIMESTAMP, product.getCreated().toString());
         values.put(PRODUCT_CATEGORY, product.getCategoryId());
         db.update(TABLE_PRODUCT, values, COLUMN_ID + " = " + product.getId(), null);
-        db.close();
+//        db.close();
     }
 
     public Product getProductById(int productId) {
@@ -132,7 +132,7 @@ public class DBHandler extends SQLiteOpenHelper {
             }
             product.setCreated(timestamp);
         }
-        db.close();
+//        db.close();
         return product;
     }
 
@@ -154,7 +154,7 @@ public class DBHandler extends SQLiteOpenHelper {
             product.setCreated(timestamp);
             products.add(product);
         }
-        db.close();
+//        db.close();
         return products;
     }
 
@@ -166,7 +166,7 @@ public class DBHandler extends SQLiteOpenHelper {
         values.put(CATEGORY_COLOR, category.getColor());
 
         db.insert(TABLE_CATEGORY, null, values);
-        db.close();
+//        db.close();
     }
 
     public void updateCategory(Category category) {
@@ -175,7 +175,7 @@ public class DBHandler extends SQLiteOpenHelper {
         values.put(CATEGORY_NAME, category.getName());
         values.put(CATEGORY_COLOR, category.getColor());
         db.update(TABLE_CATEGORY, values, COLUMN_ID + " = " + category.getId(), null);
-        db.close();
+//        db.close();
     }
 
     public Category getCategoryById(int categoryId) {
@@ -189,7 +189,7 @@ public class DBHandler extends SQLiteOpenHelper {
             category.setColor(cursor.getInt(2));
 
         }
-        db.close();
+//        db.close();
         return category;
     }
 
@@ -206,7 +206,7 @@ public class DBHandler extends SQLiteOpenHelper {
 
             categories.add(category);
         }
-        db.close();
+//        db.close();
         return categories;
     }
 
@@ -230,14 +230,14 @@ public class DBHandler extends SQLiteOpenHelper {
     public Cursor getProductNameCursor() {
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_PRODUCT + ";", null);
-        db.close();
+//        db.close();
         return cursor;
     }
 
     public Cursor suggestProductName(String partialProductName) {
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_PRODUCT + " WHERE Name like '" + partialProductName + "%' GROUP BY " + PRODUCT_NAME + ";", null);
-        db.close();
+//        db.close();
         return cursor;
     }
 
