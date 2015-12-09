@@ -24,7 +24,7 @@ import java.util.List;
 /**
  * Created by vkret on 02.12.15.
  */
-public class TabViewExpenses extends Fragment implements AdapterView.OnItemClickListener, RadioGroup.OnCheckedChangeListener {
+public class TabViewExpenses extends Fragment implements AdapterView.OnItemClickListener, View.OnClickListener {
     public static final String PRODUCT_ID_KEY = "productId";
     private ArrayAdapter<Product> adapter;
     private List<Product> productList;
@@ -36,11 +36,15 @@ public class TabViewExpenses extends Fragment implements AdapterView.OnItemClick
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.tab_view_expenses, container, false);
         listView = (ListView) view.findViewById(R.id.costsList);
-        RadioGroup radioGroup = (RadioGroup) view.findViewById(R.id.date_filter_radio_group);
-        radioGroup.setOnCheckedChangeListener(this);
-        System.out.println("********** onCreateView");
 
-        updateListView(radioGroup.getCheckedRadioButtonId());
+        RadioButton last24 = (RadioButton) view.findViewById(R.id.last_24_hours);
+        RadioButton lastweek = (RadioButton) view.findViewById(R.id.last_week);
+        RadioButton lastmonth = (RadioButton) view.findViewById(R.id.last_month);
+        //set onClickListener instead of onCheckedChangedListener because the last one call onCheckedChanged twice
+        last24.setOnClickListener(this);
+        lastweek.setOnClickListener(this);
+        lastmonth.setOnClickListener(this);
+        updateListView(last24.getId());
 
         listView.setOnItemClickListener(this);
 
@@ -71,13 +75,6 @@ public class TabViewExpenses extends Fragment implements AdapterView.OnItemClick
         startActivity(intent);
     }
 
-    @Override
-    public void onCheckedChanged(RadioGroup group, int checkedId) {
-        System.out.println("********** onCheckedChanged");
-
-        updateListView(checkedId);
-    }
-
     public void updateListView(int checkedId){
         System.out.println("********** updateListView");
         //last 24 hours by default
@@ -100,5 +97,12 @@ public class TabViewExpenses extends Fragment implements AdapterView.OnItemClick
         productList = dbHandler.getAllProducts(since, till);
         adapter = new ProductAdapter(getActivity(), productList);
         listView.setAdapter(adapter);
+    }
+
+    @Override
+    public void onClick(View v) {
+        System.out.println("---------- onClick");
+
+        updateListView(v.getId());
     }
 }
