@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 
 import com.expenses.volodymyr.notecase.R;
 import com.expenses.volodymyr.notecase.activity.EditExpenseActivity;
@@ -16,37 +18,31 @@ import com.expenses.volodymyr.notecase.adapter.ProductAdapter;
 import com.expenses.volodymyr.notecase.entity.Product;
 import com.expenses.volodymyr.notecase.util.DBHandler;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
  * Created by vkret on 02.12.15.
  */
-public class TabViewExpenses extends Fragment {
+public class TabViewExpenses extends Fragment implements AdapterView.OnItemClickListener, RadioGroup.OnCheckedChangeListener {
     public static final String PRODUCT_ID_KEY = "productId";
     private ArrayAdapter<Product> adapter;
     private List<Product> productList;
     private DBHandler dbHandler;
     private ListView listView;
-
+    private View view;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.tab_view_expenses, container, false);
+        view = inflater.inflate(R.layout.tab_view_expenses, container, false);
         listView = (ListView) view.findViewById(R.id.costsList);
+        RadioGroup radioGroup = (RadioGroup) view.findViewById(R.id.date_filter_radio_group);
+        radioGroup.setOnCheckedChangeListener(this);
+        System.out.println("********** onCreateView");
 
-        dbHandler = DBHandler.getDbHandler(getActivity());
+        updateListView(radioGroup.getCheckedRadioButtonId());
 
-        updateListView();
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(getActivity(), EditExpenseActivity.class);
-                Product product = (Product) parent.getAdapter().getItem(position);
-                intent.putExtra(PRODUCT_ID_KEY, product.getId());
-                startActivity(intent);
-            }
-        });
+        listView.setOnItemClickListener(this);
 
         return view;
     }
@@ -63,14 +59,46 @@ public class TabViewExpenses extends Fragment {
 
     @Override
     public void onResume() {
-        updateListView();
         super.onResume();
     }
 
-    private void updateListView() {
-        productList = dbHandler.getAllProducts();
+    //AdapterView.OnItemClickListener
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Intent intent = new Intent(getActivity(), EditExpenseActivity.class);
+        Product product = (Product) parent.getAdapter().getItem(position);
+        intent.putExtra(PRODUCT_ID_KEY, product.getId());
+        startActivity(intent);
+    }
+
+    @Override
+    public void onCheckedChanged(RadioGroup group, int checkedId) {
+        System.out.println("********** onCheckedChanged");
+
+        updateListView(checkedId);
+    }
+
+    public void updateListView(int checkedId){
+        System.out.println("********** updateListView");
+        //last 24 hours by default
+        long tillTimeMillis = System.currentTimeMillis();
+        long sinceTimeMillis = tillTimeMillis - 24 * 60 * 60 * 1000;
+
+        switch (checkedId) {
+            case R.id.last_week:
+                sinceTimeMillis = tillTimeMillis - 7 * 24 * 60 * 60 * 1000;
+                break;
+            case R.id.last_month:
+                sinceTimeMillis = tillTimeMillis - 31 * 7 * 24 * 60 * 60 * 1000;
+                break;
+        }
+
+        Timestamp till = new Timestamp(tillTimeMillis);
+        Timestamp since = new Timestamp(sinceTimeMillis);
+
+        dbHandler = DBHandler.getDbHandler(getActivity());
+        productList = dbHandler.getAllProducts(since, till);
         adapter = new ProductAdapter(getActivity(), productList);
         listView.setAdapter(adapter);
     }
-
 }

@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.expenses.volodymyr.notecase.entity.Category;
 import com.expenses.volodymyr.notecase.entity.Product;
 
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -136,9 +137,14 @@ public class DBHandler extends SQLiteOpenHelper {
         return product;
     }
 
-    public List<Product> getAllProducts() {
+    public List<Product> getAllProducts(Timestamp since, Timestamp till) {
         SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_PRODUCT + ";", null);
+        String query = "SELECT * FROM " + TABLE_PRODUCT +
+                " WHERE " + PRODUCT_TIMESTAMP + " BETWEEN '" + since + "' AND '" + till + "' ORDER BY " + COLUMN_ID + " DESC LIMIT 500;";
+        System.out.println();
+        System.out.println(query);
+        System.out.println();
+        Cursor cursor = db.rawQuery(query, null);
         List<Product> products = new ArrayList();
         while (cursor.moveToNext()) {
             Product product = new Product();
