@@ -37,12 +37,12 @@ public class TabViewExpenses extends Fragment implements AdapterView.OnItemClick
         listView = (ListView) view.findViewById(R.id.costsList);
 
         RadioButton last24 = (RadioButton) view.findViewById(R.id.last_24_hours);
-        RadioButton lastweek = (RadioButton) view.findViewById(R.id.last_week);
-        RadioButton lastmonth = (RadioButton) view.findViewById(R.id.last_month);
+        RadioButton lastWeek = (RadioButton) view.findViewById(R.id.last_week);
+        RadioButton lastMonth = (RadioButton) view.findViewById(R.id.last_month);
         //set onClickListener instead of onCheckedChangedListener because the last one call onCheckedChanged twice
         last24.setOnClickListener(this);
-        lastweek.setOnClickListener(this);
-        lastmonth.setOnClickListener(this);
+        lastWeek.setOnClickListener(this);
+        lastMonth.setOnClickListener(this);
         updateListView(last24.getId());
 
         listView.setOnItemClickListener(this);
@@ -84,7 +84,7 @@ public class TabViewExpenses extends Fragment implements AdapterView.OnItemClick
                 sinceTimeMillis = tillTimeMillis - 7 * 24 * 60 * 60 * 1000;
                 break;
             case R.id.last_month:
-                sinceTimeMillis = tillTimeMillis - 31 * 7 * 24 * 60 * 60 * 1000;
+                sinceTimeMillis = tillTimeMillis - 31 * 24 * 60 * 60 * 1000;
                 break;
         }
 

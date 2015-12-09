@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RadioButton;
 
 import com.expenses.volodymyr.notecase.R;
 import com.expenses.volodymyr.notecase.entity.Category;
@@ -20,6 +21,7 @@ import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -29,7 +31,7 @@ import java.util.Set;
 /**
  * Created by vkret on 02.12.15.
  */
-public class TabStatisticExpenses extends Fragment implements OnChartValueSelectedListener {
+public class TabStatisticExpenses extends Fragment implements OnChartValueSelectedListener, View.OnClickListener{
     private boolean showCategoryName = false;
     private PieChart mChart;
 
@@ -39,12 +41,37 @@ public class TabStatisticExpenses extends Fragment implements OnChartValueSelect
 
         setMPChart(view);
 
+        RadioButton last24 = (RadioButton) view.findViewById(R.id.stats_last_24_hours);
+        RadioButton lastWeek = (RadioButton) view.findViewById(R.id.stats_last_week);
+        RadioButton lastMonth = (RadioButton) view.findViewById(R.id.stats_last_month);
+
+        last24.setOnClickListener(this);
+        lastWeek.setOnClickListener(this);
+        lastMonth.setOnClickListener(this);
+
+        setData(last24.getId());
+
         return view;
     }
 
-    private void setData() {
+    private void setData(int checkedId) {
+        long tillTimeMillis = System.currentTimeMillis();
+        long sinceTimeMillis = tillTimeMillis - 24 * 60 * 60 * 1000;
+
+        switch (checkedId) {
+            case R.id.stats_last_week:
+                sinceTimeMillis = tillTimeMillis - 7 * 24 * 60 * 60 * 1000;
+                break;
+            case R.id.stats_last_month:
+                sinceTimeMillis = tillTimeMillis - 31 * 24 * 60 * 60 * 1000;
+                break;
+        }
+
+        Timestamp till = new Timestamp(tillTimeMillis);
+        Timestamp since = new Timestamp(sinceTimeMillis);
+
         DBHandler dbHandler = DBHandler.getDbHandler(getActivity());
-        Map<Category, Double> groupedByCategories = dbHandler.getExpensesGroupedByCategories();
+        Map<Category, Double> groupedByCategories = dbHandler.getExpensesGroupedByCategories(since, till);
 
         ArrayList<String> xVals = new ArrayList<>();
         List<Entry> yVals = new ArrayList<>();
@@ -102,7 +129,6 @@ public class TabStatisticExpenses extends Fragment implements OnChartValueSelect
         // add a selection listener
         mChart.setOnChartValueSelectedListener(this);
 
-        setData();
         mChart.animateY(1400, Easing.EasingOption.EaseInOutQuad);
         // mChart.spin(2000, 0, 360);
         Legend l = mChart.getLegend();
@@ -121,5 +147,10 @@ public class TabStatisticExpenses extends Fragment implements OnChartValueSelect
     @Override
     public void onNothingSelected() {
 
+    }
+
+    @Override
+    public void onClick(View v) {
+        setData(v.getId());
     }
 }

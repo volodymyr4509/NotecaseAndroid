@@ -245,11 +245,13 @@ public class DBHandler extends SQLiteOpenHelper {
     }
 
     //select SUM(p.Price), c.* from product p join category c on p.categoryId= c._id group by p.categoryId;
-    public Map<Category, Double> getExpensesGroupedByCategories() {
+    public Map<Category, Double> getExpensesGroupedByCategories(Timestamp since, Timestamp till) {
         SQLiteDatabase db = getReadableDatabase();
         Map<Category, Double> result = new HashMap<>();
-        Cursor cursor = db.rawQuery("SELECT SUM(p." + PRODUCT_PRICE + ") AS Sum, c.* FROM " + TABLE_PRODUCT + " p JOIN " +
-                TABLE_CATEGORY + " c ON p." + PRODUCT_CATEGORY + "=" + "c." + COLUMN_ID + " GROUP BY p." + PRODUCT_CATEGORY, null);
+        String query = "SELECT SUM(p." + PRODUCT_PRICE + ") AS Sum, c.* FROM " + TABLE_PRODUCT + " p JOIN " +
+                TABLE_CATEGORY + " c ON p." + PRODUCT_CATEGORY + "=" + "c." + COLUMN_ID +
+                " WHERE p." + PRODUCT_TIMESTAMP + " BETWEEN '" + since + "' AND '" + till + "' GROUP BY p." + PRODUCT_CATEGORY + ";";
+        Cursor cursor = db.rawQuery(query, null);
         while (cursor.moveToNext()) {
             Category category = new Category();
             category.setId(cursor.getInt(1));
