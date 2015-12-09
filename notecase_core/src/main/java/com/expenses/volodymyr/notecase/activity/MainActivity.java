@@ -11,7 +11,7 @@ import com.expenses.volodymyr.notecase.util.FragmentPagerAdapter;
 
 public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSelectedListener {
     private ViewPager viewPager;
-
+    FragmentPagerAdapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,22 +25,18 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
         viewPager = (ViewPager) findViewById(R.id.pager);
-        final FragmentPagerAdapter adapter = new FragmentPagerAdapter
+        adapter = new FragmentPagerAdapter
                 (getSupportFragmentManager(), tabLayout.getTabCount());
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.setOnTabSelectedListener(this);
     }
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.menu_main, menu);
-//        return true;
-//    }
 
     @Override
     public void onTabSelected(TabLayout.Tab tab) {
-//        System.out.println("onTabSelected: " + tab.getText());
+        //workaround to update tabs. getItemPosition called in adapter
+        adapter.notifyDataSetChanged();
         viewPager.setCurrentItem(tab.getPosition());
     }
 
