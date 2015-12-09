@@ -10,7 +10,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
 
 import com.expenses.volodymyr.notecase.R;
 import com.expenses.volodymyr.notecase.activity.EditExpenseActivity;
@@ -75,8 +74,7 @@ public class TabViewExpenses extends Fragment implements AdapterView.OnItemClick
         startActivity(intent);
     }
 
-    public void updateListView(int checkedId){
-        System.out.println("********** updateListView");
+    public void updateListView(int checkedId) {
         //last 24 hours by default
         long tillTimeMillis = System.currentTimeMillis();
         long sinceTimeMillis = tillTimeMillis - 24 * 60 * 60 * 1000;
@@ -101,8 +99,6 @@ public class TabViewExpenses extends Fragment implements AdapterView.OnItemClick
 
     @Override
     public void onClick(View v) {
-        System.out.println("---------- onClick");
-
         updateListView(v.getId());
     }
 }

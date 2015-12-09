@@ -42,12 +42,12 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
     @Override
     public void onTabUnselected(TabLayout.Tab tab) {
-//        System.out.println("onTabUnselected: " + tab.getText());
+
     }
 
     @Override
     public void onTabReselected(TabLayout.Tab tab) {
-//        System.out.println("onTabReselected: " + tab.getText());
+
     }
 
 }
