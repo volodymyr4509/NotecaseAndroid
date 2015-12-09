@@ -1,20 +1,11 @@
 package com.expenses.volodymyr.notecase.fragment;
 
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.text.SpannableString;
-import android.text.style.ForegroundColorSpan;
-import android.text.style.RelativeSizeSpan;
-import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.SeekBar;
-import android.widget.TextView;
 
 import com.expenses.volodymyr.notecase.R;
 import com.expenses.volodymyr.notecase.entity.Category;
@@ -22,14 +13,12 @@ import com.expenses.volodymyr.notecase.util.DBHandler;
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
-import com.github.mikephil.charting.data.DataSet;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
-import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -48,27 +37,8 @@ public class TabStatisticExpenses extends Fragment implements OnChartValueSelect
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.tab_statistic_expenses, container, false);
 
-        mChart = (PieChart) view.findViewById(R.id.chart1);
-        mChart.setUsePercentValues(true);
-        mChart.setDescription("Expense statistic pie chart");
-        mChart.setDragDecelerationFrictionCoef(0.95f);
-        mChart.setDrawSliceText(showCategoryName);
-        mChart.setDrawHoleEnabled(false);
-        mChart.setRotationAngle(0);
-        // enable rotation of the chart by touch
-        mChart.setRotationEnabled(true);
-        mChart.setHighlightPerTapEnabled(true);
-        // add a selection listener
-        mChart.setOnChartValueSelectedListener(this);
+        setMPChart(view);
 
-        setData();
-        mChart.animateY(1400, Easing.EasingOption.EaseInOutQuad);
-        // mChart.spin(2000, 0, 360);
-        Legend l = mChart.getLegend();
-        l.setPosition(Legend.LegendPosition.RIGHT_OF_CHART);
-        l.setXEntrySpace(7f);
-        l.setYEntrySpace(0f);
-        l.setYOffset(0f);
         return view;
     }
 
@@ -116,6 +86,30 @@ public class TabStatisticExpenses extends Fragment implements OnChartValueSelect
         mChart.highlightValues(null);
 
         mChart.invalidate();
+    }
+
+    private void setMPChart(View view){
+        mChart = (PieChart) view.findViewById(R.id.chart1);
+        mChart.setUsePercentValues(true);
+        mChart.setDescription("Expense statistic pie chart");
+        mChart.setDragDecelerationFrictionCoef(0.95f);
+        mChart.setDrawSliceText(showCategoryName);
+        mChart.setDrawHoleEnabled(false);
+        mChart.setRotationAngle(0);
+        // enable rotation of the chart by touch
+        mChart.setRotationEnabled(true);
+        mChart.setHighlightPerTapEnabled(true);
+        // add a selection listener
+        mChart.setOnChartValueSelectedListener(this);
+
+        setData();
+        mChart.animateY(1400, Easing.EasingOption.EaseInOutQuad);
+        // mChart.spin(2000, 0, 360);
+        Legend l = mChart.getLegend();
+        l.setPosition(Legend.LegendPosition.RIGHT_OF_CHART);
+        l.setXEntrySpace(7f);
+        l.setYEntrySpace(0f);
+        l.setYOffset(0f);
     }
 
     @Override
