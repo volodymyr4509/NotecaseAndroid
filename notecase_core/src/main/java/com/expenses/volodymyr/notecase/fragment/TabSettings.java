@@ -29,8 +29,13 @@ public class TabSettings extends Fragment {
         settings.add("Manage category");
     }
 
+    public void onDestroy(){
+        System.out.println("**************** TabSettings.onDestroy");
+        super.onDestroy();
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        System.out.println("**************** TabSettings.onCreateView");
 
 
         View view = inflater.inflate(R.layout.tab_settings, container, false);

@@ -42,7 +42,13 @@ public class TabAddExpenses extends Fragment {
     LinearLayout.LayoutParams params;
 
     @Override
+    public void onDestroy(){
+        System.out.println("**************** TabAddExpenses.onDestroy");
+        super.onDestroy();
+    }
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        System.out.println("**************** TabAddExpenses.onCreateView");
         View view = inflater.inflate(R.layout.tab_add_expenses, container, false);
         nameInput = (AutoCompleteTextView) view.findViewById(R.id.commodityName);
         priceInput = (EditText) view.findViewById(R.id.commodityPrice);
@@ -134,6 +140,7 @@ public class TabAddExpenses extends Fragment {
             categoryButton.setOnDragListener(new MyOnDragListener(nameInput, priceInput, category.getId(), getActivity()));
         }
     }
+
 
     private class PriceInputIntentFilter implements InputFilter {
         Activity activity;

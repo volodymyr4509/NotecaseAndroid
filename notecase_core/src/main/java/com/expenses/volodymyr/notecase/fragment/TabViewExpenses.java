@@ -32,7 +32,15 @@ public class TabViewExpenses extends Fragment implements AdapterView.OnItemClick
     private View view;
 
     @Override
+    public void onDestroy(){
+        System.out.println("**************** TabViewExpenses.onDestroy");
+
+        super.onDestroy();
+    }
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        System.out.println("**************** TabViewExpenses.onCreateView");
+
         view = inflater.inflate(R.layout.tab_view_expenses, container, false);
         listView = (ListView) view.findViewById(R.id.costsList);
 

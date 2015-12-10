@@ -71,29 +71,6 @@ public class MyOnDragListener implements View.OnDragListener {
         this.name = name;
     }
 
-//    public EditText getPrice() {
-//        return price;
-//    }
-//
-//    public void setPrice(EditText price) {
-//        this.price = price;
-//    }
-//
-//    public int getCategory() {
-//        return category;
-//    }
-//
-//    public void setCategory(int category) {
-//        this.category = category;
-//    }
-//
-//    public Context getApplicationContext() {
-//        return applicationContext;
-//    }
-//
-//    public void setApplicationContext(Context applicationContext) {
-//        this.applicationContext = applicationContext;
-//    }
 
     @Override
     public String toString() {

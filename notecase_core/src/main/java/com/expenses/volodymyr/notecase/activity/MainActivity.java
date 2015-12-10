@@ -2,17 +2,24 @@ package com.expenses.volodymyr.notecase.activity;
 
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 
 import com.expenses.volodymyr.notecase.R;
-import com.expenses.volodymyr.notecase.util.FragmentPagerAdapter;
+import com.expenses.volodymyr.notecase.fragment.TabStatisticExpenses;
+import com.expenses.volodymyr.notecase.fragment.TabViewExpenses;
+import com.expenses.volodymyr.notecase.util.MyFragmentPagerAdapter;
 
 public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSelectedListener {
     private ViewPager viewPager;
-    FragmentPagerAdapter adapter;
+    MyFragmentPagerAdapter adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        System.out.println("**************** MainActivity.onCreate");
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -24,18 +31,44 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
         viewPager = (ViewPager) findViewById(R.id.pager);
-        adapter = new FragmentPagerAdapter
-                (getSupportFragmentManager(), tabLayout.getTabCount());
+        adapter = new MyFragmentPagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+
+        //save all pages in memory
+        viewPager.setOffscreenPageLimit(5);
         tabLayout.setOnTabSelectedListener(this);
     }
 
+    @Override
+    public void onDestroy() {
+        System.out.println("**************** MainActivity.onDestroy");
+
+        super.onDestroy();
+    }
 
     @Override
     public void onTabSelected(TabLayout.Tab tab) {
         //workaround to update tabs. getItemPosition called in adapter
-        adapter.notifyDataSetChanged();
+        PagerAdapter adapter = viewPager.getAdapter();
+        if (adapter instanceof MyFragmentPagerAdapter) {
+            MyFragmentPagerAdapter myAdapter = (MyFragmentPagerAdapter) adapter;
+            Object myview = myAdapter.fragments.get("view");
+            if (myview instanceof TabViewExpenses){
+                TabViewExpenses fragment = (TabViewExpenses) myview;
+                if (fragment.isVisible()){
+                    fragment.updateListView(1);
+                }
+            }
+            if (myview instanceof TabStatisticExpenses){
+                TabStatisticExpenses fragment = (TabStatisticExpenses)myview;
+                if (fragment.isVisible()){
+                    fragment.setData(1);
+                }
+            }
+        }
+
+        viewPager.getAdapter().notifyDataSetChanged();
         viewPager.setCurrentItem(tab.getPosition());
     }
 

@@ -36,7 +36,14 @@ public class TabStatisticExpenses extends Fragment implements OnChartValueSelect
     private PieChart mChart;
 
     @Override
+    public void onDestroy(){
+        System.out.println("**************** TabStatisticExpenses.onDestroy");
+        super.onDestroy();
+    }
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        System.out.println("**************** TabStatisticExpenses.onCreateView");
+
         View view = inflater.inflate(R.layout.tab_statistic_expenses, container, false);
 
         setMPChart(view);
@@ -54,7 +61,7 @@ public class TabStatisticExpenses extends Fragment implements OnChartValueSelect
         return view;
     }
 
-    private void setData(int checkedId) {
+    public void setData(int checkedId) {
         long tillTimeMillis = System.currentTimeMillis();
         long sinceTimeMillis = tillTimeMillis - 24 * 60 * 60 * 1000;
 
