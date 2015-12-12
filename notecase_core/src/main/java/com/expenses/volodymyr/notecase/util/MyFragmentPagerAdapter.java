@@ -19,6 +19,10 @@ import java.util.Map;
  * Created by vkret on 02.12.15.
  */
 public class MyFragmentPagerAdapter extends FragmentPagerAdapter {
+    public static String VIEW_TAB = "view";
+    public static String ADD_TAB = "add";
+    public static String STATISTIC_TAB = "stat";
+    public static String SETTING_TAB = "setting";
     int mNumOfTabs;
     public Map<String, Object> fragments = new HashMap<>();
 
@@ -58,13 +62,13 @@ public class MyFragmentPagerAdapter extends FragmentPagerAdapter {
         Object item = super.instantiateItem(container, position);
         String key = "";
         switch (position){
-            case 0: key = "view";
+            case 0: key = VIEW_TAB;
                 break;
-            case 1: key = "add";
+            case 1: key = ADD_TAB;
                 break;
-            case 2: key = "stat";
+            case 2: key = STATISTIC_TAB;
                 break;
-            case 3: key = "setting";
+            case 3: key = SETTING_TAB;
                 break;
         }
         fragments.put(key, item);

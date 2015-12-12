@@ -42,6 +42,7 @@ public class EditExpenseActivity extends Activity implements View.OnClickListene
         dbHandler = DBHandler.getDbHandler(this);
         product = dbHandler.getProductById(productId);
         List<Category> categories = dbHandler.getAllCategories();
+        System.out.println(categories);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.expense_edit_toolbar);
         toolbar.setNavigationIcon(R.mipmap.ic_launcher);
@@ -68,8 +69,6 @@ public class EditExpenseActivity extends Activity implements View.OnClickListene
         categorySelector.setSelection(oldCategoryIndex);
 
         saveButton.setOnClickListener(this);
-
-
     }
 
     @Override

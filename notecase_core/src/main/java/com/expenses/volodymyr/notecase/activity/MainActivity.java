@@ -2,7 +2,6 @@ package com.expenses.volodymyr.notecase.activity;
 
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -51,24 +50,31 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     public void onTabSelected(TabLayout.Tab tab) {
         //workaround to update tabs. getItemPosition called in adapter
         PagerAdapter adapter = viewPager.getAdapter();
+        int position = tab.getPosition();
         if (adapter instanceof MyFragmentPagerAdapter) {
             MyFragmentPagerAdapter myAdapter = (MyFragmentPagerAdapter) adapter;
-            Object myview = myAdapter.fragments.get("view");
-            if (myview instanceof TabViewExpenses){
-                TabViewExpenses fragment = (TabViewExpenses) myview;
-                if (fragment.isVisible()){
-                    fragment.updateListView(1);
+            if (position == 0) {
+                Object tabView = myAdapter.fragments.get(MyFragmentPagerAdapter.VIEW_TAB);
+                if (tabView instanceof TabViewExpenses) {
+                    TabViewExpenses fragment = (TabViewExpenses) tabView;
+                    if (fragment.isVisible()) {
+                        fragment.updateListView(1);
+                    }
                 }
             }
-            if (myview instanceof TabStatisticExpenses){
-                TabStatisticExpenses fragment = (TabStatisticExpenses)myview;
-                if (fragment.isVisible()){
-                    fragment.setData(1);
+            if (position == 2) {
+                Object tabStatistic = myAdapter.fragments.get(MyFragmentPagerAdapter.STATISTIC_TAB);
+                if (tabStatistic instanceof TabStatisticExpenses) {
+                    TabStatisticExpenses fragment = (TabStatisticExpenses) tabStatistic;
+                    if (fragment.isVisible()) {
+                        fragment.setData(1);
+                    }
                 }
             }
+
         }
 
-        viewPager.getAdapter().notifyDataSetChanged();
+//        viewPager.getAdapter().notifyDataSetChanged();
         viewPager.setCurrentItem(tab.getPosition());
     }
 
