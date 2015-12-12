@@ -109,8 +109,9 @@ public class AddEditCategoryActivity extends Activity implements SeekBar.OnSeekB
         String newCategoryName = categoryName.getText().toString();
         ColorDrawable colorDrawable = (ColorDrawable) resultColor.getBackground();
         int newCategoryColor = colorDrawable.getColor();
+
         if (newCategoryName != null) {
-            Category newCategory = new Category(newCategoryName, newCategoryColor);
+            Category newCategory = new Category(newCategoryName, newCategoryColor, R.drawable.d);
             DBHandler dbHandler = DBHandler.getDbHandler(getApplicationContext());
             if (categoryId < 0) {
                 dbHandler.addCategory(newCategory);

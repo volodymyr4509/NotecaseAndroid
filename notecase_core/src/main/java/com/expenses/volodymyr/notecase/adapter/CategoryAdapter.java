@@ -1,6 +1,9 @@
 package com.expenses.volodymyr.notecase.adapter;
 
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.ColorFilter;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,11 +32,13 @@ public class CategoryAdapter extends ArrayAdapter<Category> {
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_category, parent, false);
         }
-
-        View categoryColor = convertView.findViewById(R.id.category_color);
         TextView categoryName = (TextView) convertView.findViewById(R.id.category_name);
+        View categoryImage = convertView.findViewById(R.id.category_image);
 
-        categoryColor.setBackgroundColor(category.getColor());
+        categoryImage.setAlpha((float) 0.5);
+        categoryImage.setBackgroundColor(category.getColor());
+        categoryImage.setBackgroundResource(category.getImage());
+
         categoryName.setText(category.getName());
 
         return convertView;

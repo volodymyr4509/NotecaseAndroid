@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.GridView;
 import android.widget.ListView;
 
 import com.expenses.volodymyr.notecase.R;
@@ -31,7 +32,7 @@ public class ViewCategoryActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.category_view_toolbar);
         setSupportActionBar(toolbar);
 
-        ListView listView = (ListView) findViewById(R.id.categoriesList);
+        GridView gridView = (GridView) findViewById(R.id.categoriesGrid);
         Button addCategoryButton = (Button) findViewById(R.id.addNewCategory);
 
         DBHandler dbHandler = DBHandler.getDbHandler(this);
@@ -39,7 +40,7 @@ public class ViewCategoryActivity extends AppCompatActivity {
 
         ArrayAdapter<Category> adapter = new CategoryAdapter(this, categoryList);
 
-        listView.setAdapter(adapter);
+        gridView.setAdapter(adapter);
 
         addCategoryButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,7 +50,7 @@ public class ViewCategoryActivity extends AppCompatActivity {
             }
         });
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(ViewCategoryActivity.this, AddEditCategoryActivity.class);

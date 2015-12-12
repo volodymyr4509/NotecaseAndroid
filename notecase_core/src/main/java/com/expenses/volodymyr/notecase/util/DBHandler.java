@@ -6,10 +6,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.expenses.volodymyr.notecase.R;
 import com.expenses.volodymyr.notecase.entity.Category;
 import com.expenses.volodymyr.notecase.entity.Product;
 
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,7 +22,7 @@ import java.util.Map;
 public class DBHandler extends SQLiteOpenHelper {
     private static DBHandler dbHandler;
 
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
     private static final String DATABASE_NAME = "notecase.db";
 
     private static final String COLUMN_ID = "_id";
@@ -39,6 +39,7 @@ public class DBHandler extends SQLiteOpenHelper {
     public static final String TABLE_CATEGORY = "category";
     private static final String CATEGORY_NAME = "Name";
     private static final String CATEGORY_COLOR = "Color";
+    private static final String CATEGORY_IMAGE = "Image";
 
     //User table
     public static final String TABLE_USER = "user";
@@ -58,7 +59,8 @@ public class DBHandler extends SQLiteOpenHelper {
     private static final String CREATE_CATEGORY = "CREATE TABLE " + TABLE_CATEGORY + " (" +
             COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             CATEGORY_NAME + " TEXT, " +
-            CATEGORY_COLOR + " INTEGER);";
+            CATEGORY_COLOR + " INTEGER, " +
+            CATEGORY_IMAGE + " INTEGER);";
 
     private static final String CREATE_USER = "CREATE TABLE " + TABLE_USER + " (" +
             COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -168,6 +170,7 @@ public class DBHandler extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(CATEGORY_NAME, category.getName());
         values.put(CATEGORY_COLOR, category.getColor());
+        values.put(CATEGORY_IMAGE, category.getImage());
 
         db.insert(TABLE_CATEGORY, null, values);
 //        db.close();
@@ -178,6 +181,7 @@ public class DBHandler extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(CATEGORY_NAME, category.getName());
         values.put(CATEGORY_COLOR, category.getColor());
+        values.put(CATEGORY_IMAGE, category.getImage());
         db.update(TABLE_CATEGORY, values, COLUMN_ID + " = " + category.getId(), null);
 //        db.close();
     }
@@ -191,6 +195,7 @@ public class DBHandler extends SQLiteOpenHelper {
             category.setId(cursor.getInt(0));
             category.setName(cursor.getString(1));
             category.setColor(cursor.getInt(2));
+            category.setImage(cursor.getInt(3));
 
         }
 //        db.close();
@@ -207,6 +212,7 @@ public class DBHandler extends SQLiteOpenHelper {
             category.setId(cursor.getInt(0));
             category.setName(cursor.getString(1));
             category.setColor(cursor.getInt(2));
+            category.setImage(cursor.getInt(3));
 
             categories.add(category);
         }
@@ -216,17 +222,18 @@ public class DBHandler extends SQLiteOpenHelper {
 
     private void initDefaultCategories(SQLiteDatabase db) {
         List<Category> categoryList = new ArrayList<>();
-        categoryList.add(new Category("Food", -17595));
-        categoryList.add(new Category("Accommodation", -20151));
-        categoryList.add(new Category("Transport", -26151));
-        categoryList.add(new Category("Travel", -14343));
-        categoryList.add(new Category("Dinner", -18141));
-        categoryList.add(new Category("Other", -17232));
+        categoryList.add(new Category("Food", -17595, R.drawable.a));
+        categoryList.add(new Category("Accommodation", -20151, R.drawable.b));
+        categoryList.add(new Category("Transport", -26151, R.drawable.c));
+        categoryList.add(new Category("Travel", -14343, R.drawable.d));
+        categoryList.add(new Category("Dinner", -18141, R.drawable.imageedit_1_9342553440));
+        categoryList.add(new Category("Other1", -17232, R.drawable.imageedit_5_4308263104));
 
         for (Category category : categoryList) {
             ContentValues values = new ContentValues();
             values.put(CATEGORY_NAME, category.getName());
             values.put(CATEGORY_COLOR, category.getColor());
+            values.put(CATEGORY_IMAGE, category.getImage());
             db.insert(TABLE_CATEGORY, null, values);
         }
     }

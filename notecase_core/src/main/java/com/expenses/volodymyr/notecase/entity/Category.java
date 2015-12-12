@@ -10,13 +10,15 @@ public class Category {
     private int id;
     private String name;
     private int color;
+    private int image;
 
     public Category() {
     }
 
-    public Category(String name, int color) {
+    public Category(String name, int color, int image) {
         this.name = name;
         this.color = color;
+        this.image = image;
     }
 
     public int getId() {
@@ -43,12 +45,21 @@ public class Category {
         this.color = color;
     }
 
+    public int getImage() {
+        return image;
+    }
+
+    public void setImage(int image) {
+        this.image = image;
+    }
+
     @Override
     public String toString() {
         return "Category{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", color='" + color + '\'' +
+                ", color=" + color +
+                ", image=" + image +
                 '}';
     }
 
@@ -59,15 +70,19 @@ public class Category {
 
         Category category = (Category) o;
 
+        if (id != category.id) return false;
         if (color != category.color) return false;
+        if (image != category.image) return false;
         return !(name != null ? !name.equals(category.name) : category.name != null);
 
     }
 
     @Override
     public int hashCode() {
-        int result = name != null ? name.hashCode() : 0;
+        int result = id;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + color;
+        result = 31 * result + image;
         return result;
     }
 }
