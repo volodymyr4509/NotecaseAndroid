@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
                 if (tabView instanceof TabViewExpenses) {
                     TabViewExpenses fragment = (TabViewExpenses) tabView;
                     if (fragment.isVisible()) {
-                        fragment.updateListView(1);
+                        fragment.updateListView();
                     }
                 }
             }
@@ -66,8 +66,9 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
                 Object tabStatistic = myAdapter.fragments.get(MyFragmentPagerAdapter.STATISTIC_TAB);
                 if (tabStatistic instanceof TabStatisticExpenses) {
                     TabStatisticExpenses fragment = (TabStatisticExpenses) tabStatistic;
+
                     if (fragment.isVisible()) {
-                        fragment.setData(1);
+                        fragment.setData();
                     }
                 }
             }

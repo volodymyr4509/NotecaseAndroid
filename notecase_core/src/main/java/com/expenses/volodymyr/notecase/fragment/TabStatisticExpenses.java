@@ -34,6 +34,7 @@ import java.util.Set;
 public class TabStatisticExpenses extends Fragment implements OnChartValueSelectedListener, View.OnClickListener{
     private boolean showCategoryName = false;
     private PieChart mChart;
+    private int checkedId;
 
     @Override
     public void onDestroy(){
@@ -55,13 +56,13 @@ public class TabStatisticExpenses extends Fragment implements OnChartValueSelect
         last24.setOnClickListener(this);
         lastWeek.setOnClickListener(this);
         lastMonth.setOnClickListener(this);
-
-        setData(last24.getId());
+        checkedId = last24.getId();
+        setData();
 
         return view;
     }
 
-    public void setData(int checkedId) {
+    public void setData() {
         long tillTimeMillis = System.currentTimeMillis();
         long sinceTimeMillis = tillTimeMillis - 24 * 60 * 60 * 1000;
 
@@ -70,7 +71,7 @@ public class TabStatisticExpenses extends Fragment implements OnChartValueSelect
                 sinceTimeMillis = tillTimeMillis - 7 * 24 * 60 * 60 * 1000;
                 break;
             case R.id.stats_last_month:
-                sinceTimeMillis = tillTimeMillis - 31 * 24 * 60 * 60 * 1000;
+                sinceTimeMillis = tillTimeMillis - (long) 31 * 24 * 60 * 60 * 1000;
                 break;
         }
 
@@ -158,6 +159,7 @@ public class TabStatisticExpenses extends Fragment implements OnChartValueSelect
 
     @Override
     public void onClick(View v) {
-        setData(v.getId());
+        checkedId = v.getId();
+        setData();
     }
 }

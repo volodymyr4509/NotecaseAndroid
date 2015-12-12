@@ -141,6 +141,7 @@ public class DBHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = getReadableDatabase();
         String query = "SELECT * FROM " + TABLE_PRODUCT +
                 " WHERE " + PRODUCT_TIMESTAMP + " BETWEEN '" + since + "' AND '" + till + "' ORDER BY " + COLUMN_ID + " DESC LIMIT 500;";
+        System.out.println(query);
         Cursor cursor = db.rawQuery(query, null);
         List<Product> products = new ArrayList();
         while (cursor.moveToNext()) {

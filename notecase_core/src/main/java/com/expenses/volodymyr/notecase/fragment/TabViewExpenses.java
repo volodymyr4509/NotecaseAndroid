@@ -30,6 +30,7 @@ public class TabViewExpenses extends Fragment implements AdapterView.OnItemClick
     private DBHandler dbHandler;
     private ListView listView;
     private View view;
+    private int checkedId;
 
     @Override
     public void onDestroy(){
@@ -47,11 +48,12 @@ public class TabViewExpenses extends Fragment implements AdapterView.OnItemClick
         RadioButton last24 = (RadioButton) view.findViewById(R.id.last_24_hours);
         RadioButton lastWeek = (RadioButton) view.findViewById(R.id.last_week);
         RadioButton lastMonth = (RadioButton) view.findViewById(R.id.last_month);
-        //set onClickListener instead of onCheckedChangedListener because the last one call onCheckedChanged twice
+        //set onClickListener instead of onCheckedChangedListener because the last one calls onCheckedChanged twice
         last24.setOnClickListener(this);
         lastWeek.setOnClickListener(this);
         lastMonth.setOnClickListener(this);
-        updateListView(last24.getId());
+        checkedId = last24.getId();
+        updateListView();
 
         listView.setOnItemClickListener(this);
 
@@ -82,7 +84,7 @@ public class TabViewExpenses extends Fragment implements AdapterView.OnItemClick
         startActivity(intent);
     }
 
-    public void updateListView(int checkedId) {
+    public void updateListView() {
         //last 24 hours by default
         long tillTimeMillis = System.currentTimeMillis();
         long sinceTimeMillis = tillTimeMillis - 24 * 60 * 60 * 1000;
@@ -92,7 +94,7 @@ public class TabViewExpenses extends Fragment implements AdapterView.OnItemClick
                 sinceTimeMillis = tillTimeMillis - 7 * 24 * 60 * 60 * 1000;
                 break;
             case R.id.last_month:
-                sinceTimeMillis = tillTimeMillis - 31 * 24 * 60 * 60 * 1000;
+                sinceTimeMillis = tillTimeMillis - (long)31 * 24 * 60 * 60 * 1000;
                 break;
         }
 
@@ -107,6 +109,7 @@ public class TabViewExpenses extends Fragment implements AdapterView.OnItemClick
 
     @Override
     public void onClick(View v) {
-        updateListView(v.getId());
+        checkedId = v.getId();
+        updateListView();
     }
 }
