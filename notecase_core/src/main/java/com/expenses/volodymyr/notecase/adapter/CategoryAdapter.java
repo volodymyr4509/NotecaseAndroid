@@ -23,8 +23,11 @@ import java.util.List;
 
 public class CategoryAdapter extends ArrayAdapter<Category> {
 
-    public CategoryAdapter(Context context, List<Category> productList) {
+    private boolean namesEnabled;
+
+    public CategoryAdapter(Context context, List<Category> productList, boolean namesEnabled) {
         super(context, 0, productList);
+        this.namesEnabled = namesEnabled;
     }
 
     @Override
@@ -39,8 +42,10 @@ public class CategoryAdapter extends ArrayAdapter<Category> {
         categoryImage.setBackgroundColor(category.getColor());
         categoryImage.setImageResource(category.getImage());
 
-        TextView categoryName = (TextView) convertView.findViewById(R.id.category_name);
-        categoryName.setText(category.getName());
+        if (namesEnabled){
+            TextView categoryName = (TextView) convertView.findViewById(R.id.category_name);
+            categoryName.setText(category.getName());
+        }
 
         return convertView;
     }

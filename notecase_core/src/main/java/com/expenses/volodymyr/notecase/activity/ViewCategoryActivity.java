@@ -9,7 +9,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.GridView;
-import android.widget.ListView;
 
 import com.expenses.volodymyr.notecase.R;
 import com.expenses.volodymyr.notecase.adapter.CategoryAdapter;
@@ -38,7 +37,7 @@ public class ViewCategoryActivity extends AppCompatActivity {
         DBHandler dbHandler = DBHandler.getDbHandler(this);
         List<Category> categoryList = dbHandler.getAllCategories();
 
-        ArrayAdapter<Category> adapter = new CategoryAdapter(this, categoryList);
+        ArrayAdapter<Category> adapter = new CategoryAdapter(this, categoryList, true);
 
         gridView.setAdapter(adapter);
 
@@ -60,5 +59,11 @@ public class ViewCategoryActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    protected void onResume() {
+        System.out.println("onResume viewCategory");
+        super.onResume();
     }
 }

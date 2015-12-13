@@ -227,7 +227,7 @@ public class DBHandler extends SQLiteOpenHelper {
         categoryList.add(new Category("Transport", -26151, R.drawable.c1));
         categoryList.add(new Category("Travel", -14343, R.drawable.d1));
         categoryList.add(new Category("Dinner", -18141, R.drawable.e1));
-        categoryList.add(new Category("Other1", -17232, R.drawable.imageedit_5_4308263104));
+        categoryList.add(new Category("Other1", -17232, R.drawable.aa1));
 
         for (Category category : categoryList) {
             ContentValues values = new ContentValues();

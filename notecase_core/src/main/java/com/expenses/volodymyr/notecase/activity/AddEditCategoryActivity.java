@@ -6,24 +6,35 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.GridView;
+import android.widget.ImageView;
+import android.widget.ListAdapter;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
 import com.expenses.volodymyr.notecase.R;
+import com.expenses.volodymyr.notecase.adapter.ImageGridAdapter;
 import com.expenses.volodymyr.notecase.entity.Category;
 import com.expenses.volodymyr.notecase.util.DBHandler;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by vkret on 02.12.15.
  */
-public class AddEditCategoryActivity extends Activity implements SeekBar.OnSeekBarChangeListener, View.OnClickListener {
+public class AddEditCategoryActivity extends Activity implements SeekBar.OnSeekBarChangeListener, View.OnClickListener, AdapterView.OnItemClickListener {
     private EditText categoryName;
     private SeekBar colorSeekBar;
-    private View resultColor;
+    private ImageView resultImage;
     private Button saveButton;
+    private GridView gridView;
     private int categoryId;
+    private List<Integer> imagesIds;
+    private int selectedImageId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,12 +43,19 @@ public class AddEditCategoryActivity extends Activity implements SeekBar.OnSeekB
 
         categoryName = (EditText) findViewById(R.id.category_name);
         colorSeekBar = (SeekBar) findViewById(R.id.color_picker);
-        resultColor = findViewById(R.id.result_color);
+        resultImage = (ImageView) findViewById(R.id.result_image);
         saveButton = (Button) findViewById(R.id.save_category);
+        gridView = (GridView) findViewById(R.id.select_image_grid);
+
+        getImagesId();
+        ListAdapter adapter = new ImageGridAdapter(getApplicationContext(), imagesIds);
+        gridView.setAdapter(adapter);
+        gridView.setOnItemClickListener(this);
+
 
         Intent intent = getIntent();
         categoryId = intent.getIntExtra(ViewCategoryActivity.CATEGORY_ID_KEY, -1);
-        resultColor.setBackgroundColor(Color.BLACK);
+        resultImage.setBackgroundColor(Color.WHITE);
 
         if (categoryId != -1) {
             updateCategory(categoryId);
@@ -54,7 +72,8 @@ public class AddEditCategoryActivity extends Activity implements SeekBar.OnSeekB
     public void updateCategory(int categoryId) {
         DBHandler dbHandler = DBHandler.getDbHandler(this);
         final Category category = dbHandler.getCategoryById(categoryId);
-        resultColor.setBackgroundColor(category.getColor());
+        resultImage.setBackgroundColor(category.getColor());
+        resultImage.setImageResource(category.getImage());
         categoryName.setText(category.getName());
         colorSeekBar.setProgress(category.getColor());
     }
@@ -92,7 +111,7 @@ public class AddEditCategoryActivity extends Activity implements SeekBar.OnSeekB
                 b = progress % 256;
             }
 
-            resultColor.setBackgroundColor(Color.argb(255, r, g, b));
+            resultImage.setBackgroundColor(Color.argb(255, r, g, b));
         }
     }
 
@@ -107,11 +126,11 @@ public class AddEditCategoryActivity extends Activity implements SeekBar.OnSeekB
     @Override
     public void onClick(View v) {
         String newCategoryName = categoryName.getText().toString();
-        ColorDrawable colorDrawable = (ColorDrawable) resultColor.getBackground();
+        ColorDrawable colorDrawable = (ColorDrawable) resultImage.getBackground();
         int newCategoryColor = colorDrawable.getColor();
 
         if (newCategoryName != null) {
-            Category newCategory = new Category(newCategoryName, newCategoryColor, R.drawable.d);
+            Category newCategory = new Category(newCategoryName, newCategoryColor, selectedImageId);
             DBHandler dbHandler = DBHandler.getDbHandler(getApplicationContext());
             if (categoryId < 0) {
                 dbHandler.addCategory(newCategory);
@@ -124,5 +143,22 @@ public class AddEditCategoryActivity extends Activity implements SeekBar.OnSeekB
         } else {
             Toast.makeText(getApplicationContext(), "Category name should not be empty", Toast.LENGTH_LONG).show();
         }
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        selectedImageId = imagesIds.get(position);
+        resultImage.setImageResource(selectedImageId);
+    }
+
+    private void getImagesId() {
+
+        imagesIds = new ArrayList<>();
+        imagesIds.add(R.drawable.a1);
+        imagesIds.add(R.drawable.b1);
+        imagesIds.add(R.drawable.c1);
+        imagesIds.add(R.drawable.d1);
+        imagesIds.add(R.drawable.e1);
+
     }
 }
