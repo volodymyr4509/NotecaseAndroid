@@ -222,11 +222,11 @@ public class DBHandler extends SQLiteOpenHelper {
 
     private void initDefaultCategories(SQLiteDatabase db) {
         List<Category> categoryList = new ArrayList<>();
-        categoryList.add(new Category("Food", -17595, R.drawable.a));
-        categoryList.add(new Category("Accommodation", -20151, R.drawable.b));
-        categoryList.add(new Category("Transport", -26151, R.drawable.c));
-        categoryList.add(new Category("Travel", -14343, R.drawable.d));
-        categoryList.add(new Category("Dinner", -18141, R.drawable.imageedit_1_9342553440));
+        categoryList.add(new Category("Food", -17595, R.drawable.a1));
+        categoryList.add(new Category("Accommodation", -20151, R.drawable.b1));
+        categoryList.add(new Category("Transport", -26151, R.drawable.c1));
+        categoryList.add(new Category("Travel", -14343, R.drawable.d1));
+        categoryList.add(new Category("Dinner", -18141, R.drawable.e1));
         categoryList.add(new Category("Other1", -17232, R.drawable.imageedit_5_4308263104));
 
         for (Category category : categoryList) {
