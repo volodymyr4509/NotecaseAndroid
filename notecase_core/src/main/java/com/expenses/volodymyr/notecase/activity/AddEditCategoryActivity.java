@@ -73,6 +73,7 @@ public class AddEditCategoryActivity extends Activity implements SeekBar.OnSeekB
         DBHandler dbHandler = DBHandler.getDbHandler(this);
         final Category category = dbHandler.getCategoryById(categoryId);
         resultImage.setBackgroundColor(category.getColor());
+        selectedImageId = category.getImage();
         resultImage.setImageResource(category.getImage());
         categoryName.setText(category.getName());
         colorSeekBar.setProgress(category.getColor());

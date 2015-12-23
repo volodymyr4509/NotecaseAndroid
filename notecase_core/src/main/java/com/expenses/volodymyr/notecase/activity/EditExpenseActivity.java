@@ -8,11 +8,13 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.expenses.volodymyr.notecase.R;
+import com.expenses.volodymyr.notecase.adapter.CategoryAdapter;
 import com.expenses.volodymyr.notecase.entity.Category;
 import com.expenses.volodymyr.notecase.entity.Product;
 import com.expenses.volodymyr.notecase.fragment.TabViewExpenses;
@@ -26,8 +28,9 @@ import java.util.List;
 public class EditExpenseActivity extends Activity implements View.OnClickListener{
     private EditText name, price;
     private TextView dateTime;
-    private Spinner categorySelector;
+//    private Spinner categorySelector;
     private Button saveButton;
+    private GridView categoryGrid;
     private Product product;
     private DBHandler dbHandler;
 
@@ -49,15 +52,17 @@ public class EditExpenseActivity extends Activity implements View.OnClickListene
         name = (EditText) findViewById(R.id.edit_expense_name);
         price = (EditText) findViewById(R.id.edit_expense_price);
         dateTime = (TextView) findViewById(R.id.date_time);
-        categorySelector = (Spinner) findViewById(R.id.edit_category);
+//        categorySelector = (Spinner) findViewById(R.id.edit_category);
         saveButton = (Button) findViewById(R.id.save_button);
+        categoryGrid = (GridView) findViewById(R.id.categoriesGrid);
+
+        categoryGrid.setAdapter(new CategoryAdapter(getApplicationContext(), categories, true));
+        categoryGrid.setChoiceMode(GridView.CHOICE_MODE_SINGLE);
 
         name.setText(product.getName());
         price.setText(String.format("%.2f", product.getPrice()));
         dateTime.setText(product.getCreated().toString());
 
-        ArrayAdapter<Category> dataAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, categories);
-        categorySelector.setAdapter(dataAdapter);
         //set default category
         int oldCategoryIndex = -1;
         for (int i = 0; i<categories.size(); i++){
@@ -65,7 +70,8 @@ public class EditExpenseActivity extends Activity implements View.OnClickListene
                 oldCategoryIndex = i;
             }
         }
-        categorySelector.setSelection(oldCategoryIndex);
+        categoryGrid.setSelection(oldCategoryIndex);
+
 
         saveButton.setOnClickListener(this);
     }
@@ -79,10 +85,12 @@ public class EditExpenseActivity extends Activity implements View.OnClickListene
                     double newPrice = Double.parseDouble(price.getText().toString().trim());
                     product.setName(newName);
                     product.setPrice(newPrice);
-                    Category selectedCategory = (Category)categorySelector.getSelectedItem();
-                    if (selectedCategory != null){
+                    Object selectedItem = categoryGrid.getSelectedItem();
+                    if (selectedItem instanceof Category){
+                        Category selectedCategory = (Category) selectedItem;
                         product.setCategoryId(selectedCategory.getId());
                     }
+
                 }catch (RuntimeException e){
                     e.printStackTrace();
                     Toast.makeText(getApplicationContext(), "Incorrect input", Toast.LENGTH_LONG).show();

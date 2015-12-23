@@ -35,18 +35,10 @@
 
     </android.support.v7.widget.Toolbar>
 
-    <GridView
-        android:id="@+id/categoriesGrid"
-        android:numColumns="3"
+    <include layout="@layout/category_grid"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/category_view_toolbar"
-        android:layout_centerHorizontal="true"
-        android:paddingBottom="@dimen/activity_vertical_margin"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin" />
-
+        android:layout_below="@+id/category_view_toolbar" />
 
 
 </RelativeLayout>
