@@ -10,7 +10,6 @@ import android.text.InputFilter;
 import android.text.Spanned;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,10 +18,13 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FilterQueryProvider;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
 import com.expenses.volodymyr.notecase.R;
+import com.expenses.volodymyr.notecase.adapter.CategoryAdapter;
 import com.expenses.volodymyr.notecase.entity.Category;
 import com.expenses.volodymyr.notecase.util.DBHandler;
 import com.expenses.volodymyr.notecase.util.MyDragShadowBuilder;
@@ -39,13 +41,13 @@ public class TabAddExpenses extends Fragment {
     LinearLayout left_block, right_block;
     EditText priceInput;
     AutoCompleteTextView nameInput;
-    LinearLayout.LayoutParams params;
 
     @Override
-    public void onDestroy(){
+    public void onDestroy() {
         System.out.println("**************** TabAddExpenses.onDestroy");
         super.onDestroy();
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         System.out.println("**************** TabAddExpenses.onCreateView");
@@ -55,14 +57,9 @@ public class TabAddExpenses extends Fragment {
 
         left_block = (LinearLayout) view.findViewById(R.id.left_category_block);
         right_block = (LinearLayout) view.findViewById(R.id.right_category_block);
-        left_block.setPadding(0, 20, 50, 20);
-        right_block.setPadding(50, 20, 0, 20);
-        right_block.setGravity(Gravity.RIGHT);
-        left_block.setGravity(Gravity.LEFT);
-
 
         final int[] to = new int[]{android.R.id.text1};
-        final String[] from = new String[] {DBHandler.PRODUCT_NAME};
+        final String[] from = new String[]{DBHandler.PRODUCT_NAME};
         final DBHandler dbHandler = DBHandler.getDbHandler(getActivity());
         Cursor cursor = dbHandler.getProductNameCursor();
         SimpleCursorAdapter productNameAdapter = new SimpleCursorAdapter(getActivity(), android.R.layout.simple_dropdown_item_1line, cursor, from, to, 0);
@@ -80,14 +77,6 @@ public class TabAddExpenses extends Fragment {
         nameInput.setAdapter(productNameAdapter);
 
 
-
-        params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        );
-        params.setMargins(0, 10, 0, 10);
-        params.width = 150;
-        params.height = 150;
 
         addCategoriesOnScreen();
 
@@ -124,20 +113,27 @@ public class TabAddExpenses extends Fragment {
         DBHandler dbHandler = DBHandler.getDbHandler(getActivity());
         List<Category> categoryList = dbHandler.getAllCategories();
 
+        LinearLayout.LayoutParams leftParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 0.15f);
+        leftParams.setMargins(0, 30, 0, 30);
+        leftParams.gravity = Gravity.LEFT;
+        LinearLayout.LayoutParams rightParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 0.15f);
+        rightParams.gravity = Gravity.RIGHT;
+        rightParams.setMargins(0, 30, 0, 30);
+
         for (int i = 0; i < categoryList.size(); i++) {
-            Button categoryButton = new Button(getActivity());
+            ImageView categoryView = new ImageView(getActivity());
             Category category = categoryList.get(i);
-            categoryButton.setText(category.getName());
-            categoryButton.setBackgroundColor(category.getColor());
-            categoryButton.setPadding(20, 20, 20, 20);
-            categoryButton.setLayoutParams(params);
-            categoryButton.setId(category.getId());
+            categoryView.setBackgroundColor(category.getColor());
+            categoryView.setImageResource(category.getImage());
+
             if (i % 2 == 0) {
-                left_block.addView(categoryButton);
+                left_block.addView(categoryView);
+                categoryView.setLayoutParams(leftParams);
             } else {
-                right_block.addView(categoryButton);
+                right_block.addView(categoryView);
+                categoryView.setLayoutParams(rightParams);
             }
-            categoryButton.setOnDragListener(new MyOnDragListener(nameInput, priceInput, category.getId(), getActivity()));
+            categoryView.setOnDragListener(new MyOnDragListener(nameInput, priceInput, category.getId(), getActivity()));
         }
     }
 

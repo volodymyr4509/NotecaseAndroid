@@ -155,11 +155,23 @@ public class AddEditCategoryActivity extends Activity implements SeekBar.OnSeekB
     private void getImagesId() {
 
         imagesIds = new ArrayList<>();
-        imagesIds.add(R.drawable.a1);
-        imagesIds.add(R.drawable.b1);
-        imagesIds.add(R.drawable.c1);
-        imagesIds.add(R.drawable.d1);
-        imagesIds.add(R.drawable.e1);
+        imagesIds.add(R.drawable.ic_attachment_black_24dp);
+        imagesIds.add(R.drawable.ic_build_black_24dp);
+        imagesIds.add(R.drawable.ic_business_black_24dp);
+        imagesIds.add(R.drawable.ic_card_travel_black_24dp);
+        imagesIds.add(R.drawable.ic_color_lens_white_24dp);
+        imagesIds.add(R.drawable.ic_directions_walk_white_24dp);
+        imagesIds.add(R.drawable.ic_explore_black_24dp);
+        imagesIds.add(R.drawable.ic_local_car_wash_white_24dp);
+        imagesIds.add(R.drawable.ic_local_shipping_white_24dp);
+        imagesIds.add(R.drawable.ic_pets_black_24dp);
+        imagesIds.add(R.drawable.ic_schedule_black_24dp);
+        imagesIds.add(R.drawable.ic_security_white_24dp);
+        imagesIds.add(R.drawable.ic_sim_card_white_24dp);
+        imagesIds.add(R.drawable.ic_toys_white_24dp);
+        imagesIds.add(R.drawable.ic_watch_white_24dp);
+        imagesIds.add(R.drawable.ic_wb_sunny_white_24dp);
+        imagesIds.add(R.drawable.ic_wifi_tethering_white_18dp);
 
     }
 }

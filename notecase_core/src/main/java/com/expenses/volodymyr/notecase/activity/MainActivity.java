@@ -42,7 +42,6 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     @Override
     public void onDestroy() {
         System.out.println("**************** MainActivity.onDestroy");
-
         super.onDestroy();
     }
 
@@ -75,7 +74,6 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
         }
 
-//        viewPager.getAdapter().notifyDataSetChanged();
         viewPager.setCurrentItem(tab.getPosition());
     }
 

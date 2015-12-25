@@ -132,7 +132,7 @@ public class TabStatisticExpenses extends Fragment implements OnChartValueSelect
         mChart.setDrawHoleEnabled(false);
         mChart.setRotationAngle(0);
         // enable rotation of the chart by touch
-        mChart.setRotationEnabled(true);
+        mChart.setRotationEnabled(false);
         mChart.setHighlightPerTapEnabled(true);
         // add a selection listener
         mChart.setOnChartValueSelectedListener(this);
