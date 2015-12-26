@@ -7,7 +7,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -29,8 +28,7 @@ import java.util.List;
 public class AddEditCategoryActivity extends Activity implements SeekBar.OnSeekBarChangeListener, View.OnClickListener, AdapterView.OnItemClickListener {
     private EditText categoryName;
     private SeekBar colorSeekBar;
-    private ImageView resultImage;
-    private Button saveButton;
+    private ImageView resultImage, navigationArrow, logo, saveButton;
     private GridView gridView;
     private int categoryId;
     private List<Integer> imagesIds;
@@ -44,7 +42,9 @@ public class AddEditCategoryActivity extends Activity implements SeekBar.OnSeekB
         categoryName = (EditText) findViewById(R.id.category_name);
         colorSeekBar = (SeekBar) findViewById(R.id.color_picker);
         resultImage = (ImageView) findViewById(R.id.result_image);
-        saveButton = (Button) findViewById(R.id.save_category);
+        saveButton = (ImageView) findViewById(R.id.action_item);
+        navigationArrow = (ImageView) findViewById(R.id.navigation_arrow);
+        logo = (ImageView)findViewById(R.id.logo);
         gridView = (GridView) findViewById(R.id.select_image_grid);
 
         getImagesId();
@@ -66,7 +66,8 @@ public class AddEditCategoryActivity extends Activity implements SeekBar.OnSeekB
 
         //if categoryId<0 insert. Update otherwise
         saveButton.setOnClickListener(this);
-
+        navigationArrow.setOnClickListener(this);
+        logo.setOnClickListener(this);
     }
 
     public void updateCategory(int categoryId) {
@@ -126,24 +127,34 @@ public class AddEditCategoryActivity extends Activity implements SeekBar.OnSeekB
 
     @Override
     public void onClick(View v) {
-        String newCategoryName = categoryName.getText().toString();
-        ColorDrawable colorDrawable = (ColorDrawable) resultImage.getBackground();
-        int newCategoryColor = colorDrawable.getColor();
+        switch (v.getId()) {
+            case R.id.action_item:
+                String newCategoryName = categoryName.getText().toString();
+                ColorDrawable colorDrawable = (ColorDrawable) resultImage.getBackground();
+                int newCategoryColor = colorDrawable.getColor();
 
-        if (newCategoryName != null) {
-            Category newCategory = new Category(newCategoryName, newCategoryColor, selectedImageId);
-            DBHandler dbHandler = DBHandler.getDbHandler(getApplicationContext());
-            if (categoryId < 0) {
-                dbHandler.addCategory(newCategory);
-            } else {
-                newCategory.setId(categoryId);
-                dbHandler.updateCategory(newCategory);
-            }
-            Toast.makeText(getApplicationContext(), "Category saved", Toast.LENGTH_LONG).show();
-            finish();
-        } else {
-            Toast.makeText(getApplicationContext(), "Category name should not be empty", Toast.LENGTH_LONG).show();
+                if (newCategoryName != null) {
+                    Category newCategory = new Category(newCategoryName, newCategoryColor, selectedImageId);
+                    DBHandler dbHandler = DBHandler.getDbHandler(getApplicationContext());
+                    if (categoryId < 0) {
+                        dbHandler.addCategory(newCategory);
+                    } else {
+                        newCategory.setId(categoryId);
+                        dbHandler.updateCategory(newCategory);
+                    }
+                    Toast.makeText(getApplicationContext(), "Category saved", Toast.LENGTH_LONG).show();
+                    finish();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Category name should not be empty", Toast.LENGTH_LONG).show();
+                }
+                break;
+            case R.id.navigation_arrow:
+            case R.id.logo:
+                finish();
+                break;
+
         }
+
     }
 
     @Override

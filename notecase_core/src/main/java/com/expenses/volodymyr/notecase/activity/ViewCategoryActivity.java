@@ -3,13 +3,10 @@ package com.expenses.volodymyr.notecase.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.GridView;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import com.expenses.volodymyr.notecase.R;
@@ -22,26 +19,25 @@ import java.util.List;
 /**
  * Created by vkret on 02.12.15.
  */
-public class ViewCategoryActivity extends AppCompatActivity {
+public class ViewCategoryActivity extends AppCompatActivity implements View.OnClickListener{
     public static final String CATEGORY_ID_KEY = "categoryId";
+    GridView gridView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_categories);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.category_view_toolbar);
-//        setSupportActionBar(toolbar);
+        ImageView navigationArrow = (ImageView) findViewById(R.id.navigation_arrow);
+        ImageView logo = (ImageView) findViewById(R.id.logo);
+        navigationArrow.setOnClickListener(this);
+        logo.setOnClickListener(this);
 
-        GridView gridView = (GridView) findViewById(R.id.categoriesGrid);
-        ImageView addCategoryButton = (ImageView) findViewById(R.id.addNewCategory);
+        gridView = (GridView) findViewById(R.id.categoriesGrid);
+        ImageView addCategoryButton = (ImageView) findViewById(R.id.action_item);
+        addCategoryButton.setImageResource(R.drawable.ic_control_point_white_24dp);
 
-        DBHandler dbHandler = DBHandler.getDbHandler(this);
-        List<Category> categoryList = dbHandler.getAllCategories();
-
-        ArrayAdapter<Category> adapter = new CategoryAdapter(this, categoryList, true);
-
-        gridView.setAdapter(adapter);
+        initCategories();
 
         addCategoryButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,6 +62,19 @@ public class ViewCategoryActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         System.out.println("onResume viewCategory");
+        initCategories();
         super.onResume();
+    }
+
+    @Override
+    public void onClick(View v) {
+        finish();
+    }
+
+    public void initCategories(){
+        DBHandler dbHandler = DBHandler.getDbHandler(this);
+        List<Category> categoryList = dbHandler.getAllCategories();
+        ArrayAdapter<Category> adapter = new CategoryAdapter(this, categoryList, true);
+        gridView.setAdapter(adapter);
     }
 }

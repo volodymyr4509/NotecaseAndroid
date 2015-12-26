@@ -3,13 +3,10 @@ package com.expenses.volodymyr.notecase.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
-import android.widget.Spinner;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,7 +25,7 @@ import java.util.List;
 public class EditExpenseActivity extends Activity implements View.OnClickListener{
     private EditText name, price;
     private TextView dateTime;
-    private Button saveButton;
+    private ImageView save, navigationArrow, logo;
     private GridView categoryGrid;
     private Product product;
     private DBHandler dbHandler;
@@ -45,14 +42,12 @@ public class EditExpenseActivity extends Activity implements View.OnClickListene
         List<Category> categories = dbHandler.getAllCategories();
         System.out.println(categories);
 
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.expense_edit_toolbar);
-//        toolbar.setNavigationIcon(R.mipmap.ic_launcher);
-
         name = (EditText) findViewById(R.id.edit_expense_name);
         price = (EditText) findViewById(R.id.edit_expense_price);
         dateTime = (TextView) findViewById(R.id.date_time);
-//        categorySelector = (Spinner) findViewById(R.id.edit_category);
-        saveButton = (Button) findViewById(R.id.save_button);
+        save = (ImageView) findViewById(R.id.action_item);
+        navigationArrow = (ImageView)findViewById(R.id.navigation_arrow);
+        logo = (ImageView)findViewById(R.id.logo);
         categoryGrid = (GridView) findViewById(R.id.categoriesGrid);
 
         categoryGrid.setAdapter(new CategoryAdapter(getApplicationContext(), categories, true));
@@ -71,14 +66,15 @@ public class EditExpenseActivity extends Activity implements View.OnClickListene
         }
         categoryGrid.setSelection(oldCategoryIndex);
 
-
-        saveButton.setOnClickListener(this);
+        save.setOnClickListener(this);
+        navigationArrow.setOnClickListener(this);
+        logo.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.save_button:
+            case R.id.action_item:
                 try {
                     String newName = name.getText().toString().trim();
                     double newPrice = Double.parseDouble(price.getText().toString().trim());
@@ -96,6 +92,11 @@ public class EditExpenseActivity extends Activity implements View.OnClickListene
                 }
                 dbHandler.updateProduct(product);
                 finish();
+                break;
+            case R.id.navigation_arrow:
+            case R.id.logo:
+                finish();
+                break;
         }
     }
 }
