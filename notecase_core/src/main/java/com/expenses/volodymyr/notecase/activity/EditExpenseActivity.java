@@ -28,7 +28,6 @@ import java.util.List;
 public class EditExpenseActivity extends Activity implements View.OnClickListener{
     private EditText name, price;
     private TextView dateTime;
-//    private Spinner categorySelector;
     private Button saveButton;
     private GridView categoryGrid;
     private Product product;
@@ -46,8 +45,8 @@ public class EditExpenseActivity extends Activity implements View.OnClickListene
         List<Category> categories = dbHandler.getAllCategories();
         System.out.println(categories);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.expense_edit_toolbar);
-        toolbar.setNavigationIcon(R.mipmap.ic_launcher);
+//        Toolbar toolbar = (Toolbar) findViewById(R.id.expense_edit_toolbar);
+//        toolbar.setNavigationIcon(R.mipmap.ic_launcher);
 
         name = (EditText) findViewById(R.id.edit_expense_name);
         price = (EditText) findViewById(R.id.edit_expense_price);

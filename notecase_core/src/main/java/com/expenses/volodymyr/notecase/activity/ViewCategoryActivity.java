@@ -9,6 +9,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 
 import com.expenses.volodymyr.notecase.R;
 import com.expenses.volodymyr.notecase.adapter.CategoryAdapter;
@@ -29,10 +31,10 @@ public class ViewCategoryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_view_categories);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.category_view_toolbar);
-        setSupportActionBar(toolbar);
+//        setSupportActionBar(toolbar);
 
         GridView gridView = (GridView) findViewById(R.id.categoriesGrid);
-        Button addCategoryButton = (Button) findViewById(R.id.addNewCategory);
+        ImageView addCategoryButton = (ImageView) findViewById(R.id.addNewCategory);
 
         DBHandler dbHandler = DBHandler.getDbHandler(this);
         List<Category> categoryList = dbHandler.getAllCategories();
