@@ -104,7 +104,6 @@ public class DBHandler extends SQLiteOpenHelper {
 
         SQLiteDatabase db = getWritableDatabase();
         db.insert(TABLE_PRODUCT, null, values);
-//        db.close();
     }
 
     public void updateProduct(Product product) {
@@ -115,7 +114,6 @@ public class DBHandler extends SQLiteOpenHelper {
         values.put(PRODUCT_TIMESTAMP, product.getCreated().toString());
         values.put(PRODUCT_CATEGORY, product.getCategoryId());
         db.update(TABLE_PRODUCT, values, COLUMN_ID + " = " + product.getId(), null);
-//        db.close();
     }
 
     public Product getProductById(int productId) {
@@ -125,8 +123,8 @@ public class DBHandler extends SQLiteOpenHelper {
         if (cursor.moveToNext()) {
             product = new Product();
             product.setId(cursor.getInt(0));
-            product.setCategoryId(cursor.getInt(1));
-            product.setUserId(cursor.getInt(2));
+            product.setUserId(cursor.getInt(1));
+            product.setCategoryId(cursor.getInt(2));
             product.setName(cursor.getString(3));
             product.setPrice(cursor.getDouble(4));
             Timestamp timestamp = null;
@@ -135,7 +133,6 @@ public class DBHandler extends SQLiteOpenHelper {
             }
             product.setCreated(timestamp);
         }
-//        db.close();
         return product;
     }
 
@@ -160,7 +157,6 @@ public class DBHandler extends SQLiteOpenHelper {
             product.setCreated(timestamp);
             products.add(product);
         }
-//        db.close();
         return products;
     }
 
@@ -173,7 +169,6 @@ public class DBHandler extends SQLiteOpenHelper {
         values.put(CATEGORY_IMAGE, category.getImage());
 
         db.insert(TABLE_CATEGORY, null, values);
-//        db.close();
     }
 
     public void updateCategory(Category category) {
@@ -183,7 +178,6 @@ public class DBHandler extends SQLiteOpenHelper {
         values.put(CATEGORY_COLOR, category.getColor());
         values.put(CATEGORY_IMAGE, category.getImage());
         db.update(TABLE_CATEGORY, values, COLUMN_ID + " = " + category.getId(), null);
-//        db.close();
     }
 
     public Category getCategoryById(int categoryId) {
@@ -198,7 +192,6 @@ public class DBHandler extends SQLiteOpenHelper {
             category.setImage(cursor.getInt(3));
 
         }
-//        db.close();
         return category;
     }
 
@@ -216,7 +209,6 @@ public class DBHandler extends SQLiteOpenHelper {
 
             categories.add(category);
         }
-//        db.close();
         return categories;
     }
 
@@ -241,14 +233,12 @@ public class DBHandler extends SQLiteOpenHelper {
     public Cursor getProductNameCursor() {
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_PRODUCT + ";", null);
-//        db.close();
         return cursor;
     }
 
     public Cursor suggestProductName(String partialProductName) {
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_PRODUCT + " WHERE Name like '" + partialProductName + "%' GROUP BY " + PRODUCT_NAME + ";", null);
-//        db.close();
         return cursor;
     }
 

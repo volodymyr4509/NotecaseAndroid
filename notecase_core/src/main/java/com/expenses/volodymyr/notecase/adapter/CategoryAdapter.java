@@ -2,6 +2,7 @@ package com.expenses.volodymyr.notecase.adapter;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
@@ -24,6 +25,7 @@ import java.util.List;
 public class CategoryAdapter extends ArrayAdapter<Category> {
 
     private boolean namesEnabled;
+//    private int oldSelectedPosition;
 
     public CategoryAdapter(Context context, List<Category> productList, boolean namesEnabled) {
         super(context, 0, productList);
@@ -42,6 +44,11 @@ public class CategoryAdapter extends ArrayAdapter<Category> {
         categoryImage.setBackgroundColor(category.getColor());
         categoryImage.setImageResource(category.getImage());
 
+//        //highlight existing expense category
+//        if (position == oldSelectedPosition){
+//            convertView.setBackgroundColor(Color.GRAY);
+//            oldSelectedPosition=-1;
+//        }
         if (namesEnabled){
             TextView categoryName = (TextView) convertView.findViewById(R.id.category_name);
             categoryName.setText(category.getName());
