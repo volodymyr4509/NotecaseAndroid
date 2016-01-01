@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -35,7 +36,6 @@ public class CategoryAdapter extends ArrayAdapter<Category> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         Category category = getItem(position);
-
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_category, parent, false);
         }
@@ -49,6 +49,8 @@ public class CategoryAdapter extends ArrayAdapter<Category> {
 //            convertView.setBackgroundColor(Color.GRAY);
 //            oldSelectedPosition=-1;
 //        }
+        ((GridView)parent).getChoiceMode();
+        ((GridView)parent).setSelection(3);
         if (namesEnabled){
             TextView categoryName = (TextView) convertView.findViewById(R.id.category_name);
             categoryName.setText(category.getName());

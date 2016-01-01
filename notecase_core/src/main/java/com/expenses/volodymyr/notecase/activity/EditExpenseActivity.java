@@ -1,9 +1,9 @@
 package com.expenses.volodymyr.notecase.activity;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -22,12 +22,13 @@ import java.util.List;
 /**
  * Created by vkret on 02.12.15.
  */
-public class EditExpenseActivity extends Activity implements View.OnClickListener {
+public class EditExpenseActivity extends Activity implements View.OnClickListener, AdapterView.OnItemClickListener {
     private EditText name, price;
     private TextView dateTime;
-    private ImageView save, navigationArrow, logo;
+    private ImageView save, navigationArrow, logo, categoryArea;
     private GridView categoryGrid;
     private Product product;
+    private Category category;
     private DBHandler dbHandler;
     private CategoryAdapter categoryAdapter;
 
@@ -36,12 +37,12 @@ public class EditExpenseActivity extends Activity implements View.OnClickListene
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_expense);
 
-        Intent intent = getIntent();
-        int productId = intent.getIntExtra(TabViewExpenses.PRODUCT_ID_KEY, -1);
+        int productId = getIntent().getIntExtra(TabViewExpenses.PRODUCT_ID_KEY, -1);
         dbHandler = DBHandler.getDbHandler(this);
         product = dbHandler.getProductById(productId);
+        category = dbHandler.getCategoryById(product.getCategoryId());
         List<Category> categories = dbHandler.getAllCategories();
-        System.out.println(categories);
+
 
         name = (EditText) findViewById(R.id.edit_expense_name);
         price = (EditText) findViewById(R.id.edit_expense_price);
@@ -50,25 +51,19 @@ public class EditExpenseActivity extends Activity implements View.OnClickListene
         navigationArrow = (ImageView) findViewById(R.id.navigation_arrow);
         logo = (ImageView) findViewById(R.id.logo);
         categoryGrid = (GridView) findViewById(R.id.categoriesGrid);
-        categoryAdapter = new CategoryAdapter(getApplicationContext(), categories, true);
+        categoryArea = (ImageView) findViewById(R.id.edit_expense_category);
+
+        categoryAdapter = new CategoryAdapter(this, categories, true);
         categoryGrid.setAdapter(categoryAdapter);
-        categoryGrid.setSelector(android.R.color.darker_gray);
-        categoryGrid.setSelection(2);
-        categoryGrid.setChoiceMode(GridView.CHOICE_MODE_SINGLE);
+        categoryGrid.setOnItemClickListener(this);
 
         name.setText(product.getName());
         price.setText(String.format("%.2f", product.getPrice()));
         dateTime.setText(product.getCreated().toString());
+        categoryArea.setImageResource(category.getImage());
+        categoryArea.setBackgroundColor(category.getColor());
 
         //set default category
-        int checkedCategory = -1;
-        for (int i = 0; i < categories.size(); i++) {
-            if (categories.get(i).getId() == product.getCategoryId()) {
-                checkedCategory = i;
-                break;
-            }
-        }
-        categoryGrid.setSelection(checkedCategory);
 
 
         save.setOnClickListener(this);
@@ -86,21 +81,26 @@ public class EditExpenseActivity extends Activity implements View.OnClickListene
                     double newPrice = Double.parseDouble(price.getText().toString().trim());
                     product.setName(newName);
                     product.setPrice(newPrice);
-                    Object selectedCategory = categoryGrid.getItemAtPosition(categoryGrid.getCheckedItemPosition());
-                    if (selectedCategory instanceof Category) {
-                        Category category = (Category) selectedCategory;
-                        product.setCategoryId(category.getId());
-                    }
+                    product.setCategoryId(category.getId());
+
                 } catch (RuntimeException e) {
                     e.printStackTrace();
                     Toast.makeText(getApplicationContext(), "Incorrect input", Toast.LENGTH_LONG).show();
                 }
                 dbHandler.updateProduct(product);
+                Toast.makeText(getApplicationContext(), "Saved", Toast.LENGTH_LONG).show();
                 break;
             case R.id.navigation_arrow:
             case R.id.logo:
                 break;
         }
         finish();
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        category = (Category) parent.getItemAtPosition(position);
+        categoryArea.setImageResource(category.getImage());
+        categoryArea.setBackgroundColor(category.getColor());
     }
 }

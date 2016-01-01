@@ -76,8 +76,6 @@ public class TabAddExpenses extends Fragment {
         });
         nameInput.setAdapter(productNameAdapter);
 
-
-
         addCategoriesOnScreen();
 
         final LinearLayout linearLayout = (LinearLayout) view.findViewById(R.id.linearLayout);

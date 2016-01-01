@@ -13,6 +13,7 @@ import android.widget.RadioButton;
 
 import com.expenses.volodymyr.notecase.R;
 import com.expenses.volodymyr.notecase.activity.EditExpenseActivity;
+import com.expenses.volodymyr.notecase.activity.ViewExpenseActivity;
 import com.expenses.volodymyr.notecase.adapter.ProductAdapter;
 import com.expenses.volodymyr.notecase.entity.Product;
 import com.expenses.volodymyr.notecase.util.DBHandler;
@@ -78,7 +79,7 @@ public class TabViewExpenses extends Fragment implements AdapterView.OnItemClick
     //AdapterView.OnItemClickListener
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Intent intent = new Intent(getActivity(), EditExpenseActivity.class);
+        Intent intent = new Intent(getActivity(), ViewExpenseActivity.class);
         Product product = (Product) parent.getAdapter().getItem(position);
         intent.putExtra(PRODUCT_ID_KEY, product.getId());
         startActivity(intent);
