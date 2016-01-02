@@ -20,6 +20,7 @@ import java.util.List;
  * Created by vkret on 02.12.15.
  */
 public class ViewCategoryActivity extends AppCompatActivity implements View.OnClickListener{
+    public static final String CATEGORY_ADD = "add";
     public static final String CATEGORY_ID_KEY = "categoryId";
     GridView gridView;
 
@@ -30,8 +31,11 @@ public class ViewCategoryActivity extends AppCompatActivity implements View.OnCl
 
         ImageView navigationArrow = (ImageView) findViewById(R.id.navigation_arrow);
         ImageView logo = (ImageView) findViewById(R.id.logo);
+        ImageView delete = (ImageView) findViewById(R.id.action_item_delete);
+
         navigationArrow.setOnClickListener(this);
         logo.setOnClickListener(this);
+        delete.setVisibility(View.GONE);
 
         gridView = (GridView) findViewById(R.id.categoriesGrid);
         ImageView addCategoryButton = (ImageView) findViewById(R.id.action_item);

@@ -1,6 +1,8 @@
 package com.expenses.volodymyr.notecase.activity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -17,6 +19,7 @@ import android.widget.Toast;
 import com.expenses.volodymyr.notecase.R;
 import com.expenses.volodymyr.notecase.adapter.ImageGridAdapter;
 import com.expenses.volodymyr.notecase.entity.Category;
+import com.expenses.volodymyr.notecase.entity.Product;
 import com.expenses.volodymyr.notecase.util.DBHandler;
 
 import java.util.ArrayList;
@@ -28,11 +31,13 @@ import java.util.List;
 public class AddEditCategoryActivity extends Activity implements SeekBar.OnSeekBarChangeListener, View.OnClickListener, AdapterView.OnItemClickListener {
     private EditText categoryName;
     private SeekBar colorSeekBar;
-    private ImageView resultImage, navigationArrow, logo, saveButton;
+    private ImageView resultImage, navigationArrow, logo, saveButton, delete;
     private GridView gridView;
     private int categoryId;
     private List<Integer> imagesIds;
     private int selectedImageId;
+    private Category category;
+    private DBHandler dbHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +51,7 @@ public class AddEditCategoryActivity extends Activity implements SeekBar.OnSeekB
         navigationArrow = (ImageView) findViewById(R.id.navigation_arrow);
         logo = (ImageView)findViewById(R.id.logo);
         gridView = (GridView) findViewById(R.id.select_image_grid);
+        delete = (ImageView) findViewById(R.id.action_item_delete);
 
         getImagesId();
         ListAdapter adapter = new ImageGridAdapter(getApplicationContext(), imagesIds);
@@ -59,6 +65,10 @@ public class AddEditCategoryActivity extends Activity implements SeekBar.OnSeekB
 
         if (categoryId != -1) {
             updateCategory(categoryId);
+            delete.setOnClickListener(this);
+        }else {
+            //adding new category - no need in delete button
+            delete.setVisibility(View.GONE);
         }
 
         colorSeekBar.setMax(256 * 7 - 1);
@@ -71,8 +81,8 @@ public class AddEditCategoryActivity extends Activity implements SeekBar.OnSeekB
     }
 
     public void updateCategory(int categoryId) {
-        DBHandler dbHandler = DBHandler.getDbHandler(this);
-        final Category category = dbHandler.getCategoryById(categoryId);
+        dbHandler = DBHandler.getDbHandler(this);
+        category = dbHandler.getCategoryById(categoryId);
         resultImage.setBackgroundColor(category.getColor());
         selectedImageId = category.getImage();
         resultImage.setImageResource(category.getImage());
@@ -148,11 +158,45 @@ public class AddEditCategoryActivity extends Activity implements SeekBar.OnSeekB
                     Toast.makeText(getApplicationContext(), "Category name should not be empty", Toast.LENGTH_LONG).show();
                 }
                 break;
+            case R.id.action_item_delete:
+                //delete not used category
+                List<Product> products = dbHandler.getProductsByCategoryId(categoryId);
+                if (products.size()>0){
+                    new AlertDialog.Builder(AddEditCategoryActivity.this)
+                            .setTitle("Delete category")
+                            .setMessage("You have " + products.size() + " product(s) with category " + category.getName() + ". You need to remove all category references.")
+                            .setNeutralButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                }
+                            })
+                            .setIcon(R.drawable.alert)
+                            .show();
+                }else {
+                    new AlertDialog.Builder(AddEditCategoryActivity.this)
+                            .setTitle("Delete category")
+                            .setMessage("Are you sure you want to delete this category?")
+                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dbHandler.deleteCategoryById(category.getId());
+                                    Toast.makeText(getApplicationContext(), "Deleted", Toast.LENGTH_LONG).show();
+                                    finish();
+                                }
+                            })
+                            .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                }
+                            })
+                            .setIcon(R.drawable.alert)
+                            .show();
+                }
+                break;
+
             case R.id.navigation_arrow:
             case R.id.logo:
                 finish();
                 break;
-
         }
 
     }

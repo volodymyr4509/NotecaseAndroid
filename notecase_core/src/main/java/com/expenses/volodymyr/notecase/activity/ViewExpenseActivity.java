@@ -1,6 +1,8 @@
 package com.expenses.volodymyr.notecase.activity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -9,6 +11,7 @@ import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.expenses.volodymyr.notecase.R;
@@ -25,7 +28,7 @@ import java.util.List;
  */
 public class ViewExpenseActivity extends Activity implements View.OnClickListener {
     private TextView name, price, dateTime, categoryName;
-    private ImageView categryImage, navigationArrow, logo, editButton;
+    private ImageView categryImage, navigationArrow, logo, editButton, delete;
     private Product product;
     private DBHandler dbHandler;
     private Toolbar toolbar;
@@ -44,10 +47,12 @@ public class ViewExpenseActivity extends Activity implements View.OnClickListene
         categryImage = (ImageView) findViewById(R.id.view_expense_category_image);
         categoryName = (TextView) findViewById(R.id.view_expense_category_name);
         editButton = (ImageView) findViewById(R.id.action_item);
+        delete = (ImageView) findViewById(R.id.action_item_delete);
 
         initFields();
 
         editButton.setOnClickListener(this);
+        delete.setOnClickListener(this);
         navigationArrow.setOnClickListener(this);
         logo.setOnClickListener(this);
     }
@@ -81,6 +86,24 @@ public class ViewExpenseActivity extends Activity implements View.OnClickListene
                 Intent editExpense = new Intent(this, EditExpenseActivity.class);
                 editExpense.putExtra(TabViewExpenses.PRODUCT_ID_KEY, product.getId());
                 startActivity(editExpense);
+                break;
+            case R.id.action_item_delete:
+                new AlertDialog.Builder(ViewExpenseActivity.this)
+                        .setTitle("Delete product")
+                        .setMessage("Are you sure you want to delete this product?")
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dbHandler.deleteProductById(product.getId());
+                                Toast.makeText(getApplicationContext(), "Deleted", Toast.LENGTH_LONG).show();
+                                finish();
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                            }
+                        })
+                        .setIcon(R.drawable.alert)
+                        .show();
                 break;
             case R.id.logo:
             case R.id.navigation_arrow:

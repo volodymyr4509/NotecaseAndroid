@@ -160,6 +160,11 @@ public class DBHandler extends SQLiteOpenHelper {
         return products;
     }
 
+    public void deleteProductById(int productId){
+        SQLiteDatabase db = getWritableDatabase();
+        db.delete(TABLE_PRODUCT, COLUMN_ID+"=?", new String[]{String.valueOf(productId)});
+    }
+
     public void addCategory(Category category) {
         SQLiteDatabase db = getWritableDatabase();
 
@@ -178,6 +183,11 @@ public class DBHandler extends SQLiteOpenHelper {
         values.put(CATEGORY_COLOR, category.getColor());
         values.put(CATEGORY_IMAGE, category.getImage());
         db.update(TABLE_CATEGORY, values, COLUMN_ID + " = " + category.getId(), null);
+    }
+
+    public void deleteCategoryById(int categoryId){
+        SQLiteDatabase db = getWritableDatabase();
+        db.delete(TABLE_CATEGORY, COLUMN_ID+"=?", new String[]{String.valueOf(categoryId)});
     }
 
     public Category getCategoryById(int categoryId) {
@@ -210,6 +220,27 @@ public class DBHandler extends SQLiteOpenHelper {
             categories.add(category);
         }
         return categories;
+    }
+
+    public List<Product> getProductsByCategoryId(int categoryId){
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_PRODUCT + " WHERE " + PRODUCT_CATEGORY + " = " + categoryId + ";", null);
+        List<Product> products = new ArrayList<>();
+        while (cursor.moveToNext()){
+            Product product = new Product();
+            product.setId(cursor.getInt(0));
+            product.setUserId(cursor.getInt(1));
+            product.setCategoryId(cursor.getInt(2));
+            product.setName(cursor.getString(3));
+            product.setPrice(cursor.getDouble(4));
+            Timestamp timestamp = null;
+            if (cursor.getString(5) != null) {
+                timestamp = Timestamp.valueOf(cursor.getString(5));
+            }
+            product.setCreated(timestamp);
+            products.add(product);
+        }
+        return products;
     }
 
     private void initDefaultCategories(SQLiteDatabase db) {

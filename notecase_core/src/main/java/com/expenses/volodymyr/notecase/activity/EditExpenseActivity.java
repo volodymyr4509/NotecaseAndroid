@@ -1,6 +1,9 @@
 package com.expenses.volodymyr.notecase.activity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -25,7 +28,7 @@ import java.util.List;
 public class EditExpenseActivity extends Activity implements View.OnClickListener, AdapterView.OnItemClickListener {
     private EditText name, price;
     private TextView dateTime;
-    private ImageView save, navigationArrow, logo, categoryArea;
+    private ImageView save, delete, navigationArrow, logo, categoryArea;
     private GridView categoryGrid;
     private Product product;
     private Category category;
@@ -48,6 +51,7 @@ public class EditExpenseActivity extends Activity implements View.OnClickListene
         price = (EditText) findViewById(R.id.edit_expense_price);
         dateTime = (TextView) findViewById(R.id.date_time);
         save = (ImageView) findViewById(R.id.action_item);
+        delete = (ImageView) findViewById(R.id.action_item_delete);
         navigationArrow = (ImageView) findViewById(R.id.navigation_arrow);
         logo = (ImageView) findViewById(R.id.logo);
         categoryGrid = (GridView) findViewById(R.id.categoriesGrid);
@@ -63,10 +67,9 @@ public class EditExpenseActivity extends Activity implements View.OnClickListene
         categoryArea.setImageResource(category.getImage());
         categoryArea.setBackgroundColor(category.getColor());
 
-        //set default category
-
 
         save.setOnClickListener(this);
+        delete.setVisibility(View.GONE);
         navigationArrow.setOnClickListener(this);
         logo.setOnClickListener(this);
     }
@@ -93,8 +96,10 @@ public class EditExpenseActivity extends Activity implements View.OnClickListene
             case R.id.navigation_arrow:
             case R.id.logo:
                 break;
+
         }
         finish();
+
     }
 
     @Override
