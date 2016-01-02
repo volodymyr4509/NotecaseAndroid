@@ -33,6 +33,14 @@ public class TabSettings extends Fragment {
         System.out.println("**************** TabSettings.onDestroy");
         super.onDestroy();
     }
+
+    @Override
+    public void onResume() {
+        System.out.println("**************** TabSettings.onResume");
+
+        super.onResume();
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         System.out.println("**************** TabSettings.onCreateView");

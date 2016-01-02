@@ -107,6 +107,12 @@ public class TabAddExpenses extends Fragment {
         }
     }
 
+    @Override
+    public void onResume() {
+        System.out.println("**************** TabAddExpenses.onResume");
+        super.onResume();
+    }
+
     public void addCategoriesOnScreen() {
         DBHandler dbHandler = DBHandler.getDbHandler(getActivity());
         List<Category> categoryList = dbHandler.getAllCategories();
@@ -157,4 +163,5 @@ public class TabAddExpenses extends Fragment {
             return null;
         }
     }
+
 }

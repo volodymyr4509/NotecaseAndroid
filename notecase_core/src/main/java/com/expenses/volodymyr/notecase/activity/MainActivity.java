@@ -7,6 +7,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 
 import com.expenses.volodymyr.notecase.R;
+import com.expenses.volodymyr.notecase.fragment.TabAddExpenses;
 import com.expenses.volodymyr.notecase.fragment.TabStatisticExpenses;
 import com.expenses.volodymyr.notecase.fragment.TabViewExpenses;
 import com.expenses.volodymyr.notecase.util.MyFragmentPagerAdapter;
@@ -74,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
         }
 
-        viewPager.setCurrentItem(tab.getPosition());
+        viewPager.setCurrentItem(position);
     }
 
     @Override

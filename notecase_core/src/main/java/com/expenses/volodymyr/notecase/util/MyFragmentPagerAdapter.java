@@ -33,7 +33,7 @@ public class MyFragmentPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-
+        System.out.println("-----getItem: position=" + position);
         switch (position) {
             case 0:
                 TabViewExpenses tab1 = new TabViewExpenses();

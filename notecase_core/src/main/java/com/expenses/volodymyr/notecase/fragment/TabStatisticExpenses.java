@@ -41,6 +41,13 @@ public class TabStatisticExpenses extends Fragment implements OnChartValueSelect
         System.out.println("**************** TabStatisticExpenses.onDestroy");
         super.onDestroy();
     }
+
+    @Override
+    public void onResume() {
+        System.out.println("**************** TabStatisticExpenses.onResume");
+        super.onResume();
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         System.out.println("**************** TabStatisticExpenses.onCreateView");

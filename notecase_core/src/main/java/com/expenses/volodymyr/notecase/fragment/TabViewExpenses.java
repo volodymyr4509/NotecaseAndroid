@@ -73,6 +73,8 @@ public class TabViewExpenses extends Fragment implements AdapterView.OnItemClick
 
     @Override
     public void onResume() {
+        System.out.println("**************** TabViewExpenses.onResume");
+
         super.onResume();
     }
 
@@ -86,6 +88,7 @@ public class TabViewExpenses extends Fragment implements AdapterView.OnItemClick
     }
 
     public void updateListView() {
+
         //last 24 hours by default
         long tillTimeMillis = System.currentTimeMillis();
         long sinceTimeMillis = tillTimeMillis - 24 * 60 * 60 * 1000;
@@ -113,4 +116,5 @@ public class TabViewExpenses extends Fragment implements AdapterView.OnItemClick
         checkedId = v.getId();
         updateListView();
     }
+
 }

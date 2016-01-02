@@ -99,7 +99,6 @@ public class EditExpenseActivity extends Activity implements View.OnClickListene
 
         }
         finish();
-
     }
 
     @Override

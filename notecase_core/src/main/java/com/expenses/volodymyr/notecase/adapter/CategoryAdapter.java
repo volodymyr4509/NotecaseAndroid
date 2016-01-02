@@ -26,7 +26,6 @@ import java.util.List;
 public class CategoryAdapter extends ArrayAdapter<Category> {
 
     private boolean namesEnabled;
-//    private int oldSelectedPosition;
 
     public CategoryAdapter(Context context, List<Category> productList, boolean namesEnabled) {
         super(context, 0, productList);
@@ -44,11 +43,6 @@ public class CategoryAdapter extends ArrayAdapter<Category> {
         categoryImage.setBackgroundColor(category.getColor());
         categoryImage.setImageResource(category.getImage());
 
-//        //highlight existing expense category
-//        if (position == oldSelectedPosition){
-//            convertView.setBackgroundColor(Color.GRAY);
-//            oldSelectedPosition=-1;
-//        }
         ((GridView)parent).getChoiceMode();
         ((GridView)parent).setSelection(3);
         if (namesEnabled){
