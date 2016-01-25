@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import com.expenses.volodymyr.notecase.R;
 import com.expenses.volodymyr.notecase.entity.Category;
@@ -20,6 +21,7 @@ import java.util.Map;
  * Created by volodymyr on 25.10.15.
  */
 public class DBHandler extends SQLiteOpenHelper {
+    private static String TAG = "DBHandler";
     private static DBHandler dbHandler;
 
     private static final int DATABASE_VERSION = 2;
@@ -81,6 +83,7 @@ public class DBHandler extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        Log.i(TAG, "Creating sqlite database tables");
         db.execSQL(CREATE_PRODUCT);
         db.execSQL(CREATE_CATEGORY);
         db.execSQL(CREATE_USER);
@@ -89,6 +92,7 @@ public class DBHandler extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        Log.i(TAG, "Drop and recreate sqlite database tables");
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_PRODUCT);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_CATEGORY);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_USER);
@@ -96,6 +100,7 @@ public class DBHandler extends SQLiteOpenHelper {
     }
 
     public void addProduct(Product product) {
+        Log.i(TAG, "Add new Product: " + product);
         ContentValues values = new ContentValues();
         values.put(PRODUCT_NAME, product.getName());
         values.put(PRODUCT_PRICE, product.getPrice());
@@ -107,6 +112,7 @@ public class DBHandler extends SQLiteOpenHelper {
     }
 
     public void updateProduct(Product product) {
+        Log.i(TAG, "Update Product: " + product);
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(PRODUCT_NAME, product.getName());
@@ -117,6 +123,7 @@ public class DBHandler extends SQLiteOpenHelper {
     }
 
     public Product getProductById(int productId) {
+        Log.i(TAG, "Retrieving product by id = " + productId + " from sqlite");
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_PRODUCT + " WHERE " + COLUMN_ID + " = " + productId + ";", null);
         Product product = null;
@@ -157,15 +164,18 @@ public class DBHandler extends SQLiteOpenHelper {
             product.setCreated(timestamp);
             products.add(product);
         }
+        Log.i(TAG, "Product were retrieved from sqlite: count = " + products.size() + ", since = " + since + ", till = " + till);
         return products;
     }
 
     public void deleteProductById(int productId){
+        Log.i(TAG, "Deleting product by productId = " + productId);
         SQLiteDatabase db = getWritableDatabase();
         db.delete(TABLE_PRODUCT, COLUMN_ID+"=?", new String[]{String.valueOf(productId)});
     }
 
     public void addCategory(Category category) {
+        Log.i(TAG, "Creating new category: " + category);
         SQLiteDatabase db = getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -177,6 +187,8 @@ public class DBHandler extends SQLiteOpenHelper {
     }
 
     public void updateCategory(Category category) {
+        Log.i(TAG, "Updating category: " + category);
+
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(CATEGORY_NAME, category.getName());
@@ -186,11 +198,13 @@ public class DBHandler extends SQLiteOpenHelper {
     }
 
     public void deleteCategoryById(int categoryId){
+        Log.i(TAG, "Deleting category by id: " + categoryId);
         SQLiteDatabase db = getWritableDatabase();
         db.delete(TABLE_CATEGORY, COLUMN_ID+"=?", new String[]{String.valueOf(categoryId)});
     }
 
     public Category getCategoryById(int categoryId) {
+        Log.i(TAG, "Retrieving category by id: " + categoryId);
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_CATEGORY + " WHERE " + COLUMN_ID + " = " + categoryId + ";", null);
         Category category = null;
@@ -200,7 +214,6 @@ public class DBHandler extends SQLiteOpenHelper {
             category.setName(cursor.getString(1));
             category.setColor(cursor.getInt(2));
             category.setImage(cursor.getInt(3));
-
         }
         return category;
     }
@@ -219,6 +232,7 @@ public class DBHandler extends SQLiteOpenHelper {
 
             categories.add(category);
         }
+        Log.i(TAG, "Retrieved " + categories.size() + " categories from sqlite");
         return categories;
     }
 
@@ -240,6 +254,7 @@ public class DBHandler extends SQLiteOpenHelper {
             product.setCreated(timestamp);
             products.add(product);
         }
+        Log.i(TAG, "Retrieved " + products.size() + " products by categoryid = " + categoryId);
         return products;
     }
 
@@ -288,6 +303,7 @@ public class DBHandler extends SQLiteOpenHelper {
             category.setColor(cursor.getInt(3));
             result.put(category, cursor.getDouble(0));
         }
+        Log.i(TAG, "Retrieved " + result.size() + " products by categories");
         return result;
     }
 
