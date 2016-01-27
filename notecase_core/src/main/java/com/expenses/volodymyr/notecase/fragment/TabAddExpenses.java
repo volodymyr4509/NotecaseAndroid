@@ -62,12 +62,11 @@ public class TabAddExpenses extends Fragment {
 
         final LinearLayout linearLayout = (LinearLayout) view.findViewById(R.id.linearLayout);
         Button moveButton = (Button) view.findViewById(R.id.move_button);
-        final Activity activity = getActivity();
 
         moveButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                closeKeyboard(activity);
+                closeKeyboard();
                 ClipData clipData = ClipData.newPlainText("mylabel", "mytext");
                 View.DragShadowBuilder myShadow = new MyDragShadowBuilder(linearLayout);
                 v.startDrag(clipData, myShadow, null, 0);
@@ -75,14 +74,14 @@ public class TabAddExpenses extends Fragment {
             }
         });
 
-        InputFilter filter = new PriceInputIntentFilter(getActivity());
+        InputFilter filter = new PriceInputIntentFilter();
         priceInput.setFilters(new InputFilter[]{filter});
         return view;
     }
 
 
-    public void closeKeyboard(Activity activity) {
-        View view = activity.getCurrentFocus();
+    public void closeKeyboard() {
+        View view = getActivity().getCurrentFocus();
         if (view != null) {
             InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
@@ -138,12 +137,6 @@ public class TabAddExpenses extends Fragment {
 
 
     private class PriceInputIntentFilter implements InputFilter {
-        Activity activity;
-
-        public PriceInputIntentFilter(Activity activity) {
-            this.activity = activity;
-        }
-
         @Override
         public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
             String currInput = priceInput.getText().toString() + source;
@@ -153,7 +146,7 @@ public class TabAddExpenses extends Fragment {
             //close keyboard within .12 precision
             int dotIndex = currInput.indexOf(DOT);
             if (dotIndex != -1 && currInput.length() - dotIndex > 2) {
-                closeKeyboard(activity);
+                closeKeyboard();
             }
             return null;
         }

@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
                     break;
             }
         }
-        //handling direct click
+        //handling direct onTab click
         viewPager.setCurrentItem(position);
     }
 
