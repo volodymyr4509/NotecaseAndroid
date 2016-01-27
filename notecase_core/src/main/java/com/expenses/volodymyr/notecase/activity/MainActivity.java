@@ -53,26 +53,38 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         int position = tab.getPosition();
         if (adapter instanceof MyFragmentPagerAdapter) {
             MyFragmentPagerAdapter myAdapter = (MyFragmentPagerAdapter) adapter;
-            if (position == 0) {
-                Object tabView = myAdapter.fragments.get(MyFragmentPagerAdapter.VIEW_TAB);
-                if (tabView instanceof TabViewExpenses) {
-                    TabViewExpenses fragment = (TabViewExpenses) tabView;
-                    if (fragment.isVisible()) {
-                        fragment.updateListView();
+            switch (position) {
+                case 0:
+                    Object tabView = myAdapter.fragments.get(MyFragmentPagerAdapter.VIEW_TAB);
+                    if (tabView instanceof TabViewExpenses) {
+                        TabViewExpenses fragment = (TabViewExpenses) tabView;
+                        if (fragment.isVisible()) {
+                            fragment.updateListView();
+                        }
                     }
-                }
-            }
-            if (position == 2) {
-                Object tabStatistic = myAdapter.fragments.get(MyFragmentPagerAdapter.STATISTIC_TAB);
-                if (tabStatistic instanceof TabStatisticExpenses) {
-                    TabStatisticExpenses fragment = (TabStatisticExpenses) tabStatistic;
-
-                    if (fragment.isVisible()) {
-                        fragment.setData();
+                    break;
+                case 1:
+                    Object tabAdd = myAdapter.fragments.get(MyFragmentPagerAdapter.ADD_TAB);
+                    myAdapter.getItem(1);
+                    if (tabAdd instanceof TabAddExpenses) {
+                        TabAddExpenses fragment = (TabAddExpenses) tabAdd;
+                        if (fragment.isVisible()) {
+                            fragment.addCategoriesOnScreen();
+                        }
                     }
-                }
+                    break;
+                case 2:
+                    if (position == 2) {
+                        Object tabStatistic = myAdapter.fragments.get(MyFragmentPagerAdapter.STATISTIC_TAB);
+                        if (tabStatistic instanceof TabStatisticExpenses) {
+                            TabStatisticExpenses fragment = (TabStatisticExpenses) tabStatistic;
+                            if (fragment.isVisible()) {
+                                fragment.setData();
+                            }
+                        }
+                    }
+                    break;
             }
-
         }
 
         viewPager.setCurrentItem(position);

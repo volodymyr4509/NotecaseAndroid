@@ -109,6 +109,7 @@ public class TabAddExpenses extends Fragment {
 
     @Override
     public void onResume() {
+//        addCategoriesOnScreen();
         System.out.println("**************** TabAddExpenses.onResume");
         super.onResume();
     }
@@ -116,6 +117,12 @@ public class TabAddExpenses extends Fragment {
     public void addCategoriesOnScreen() {
         DBHandler dbHandler = DBHandler.getDbHandler(getActivity());
         List<Category> categoryList = dbHandler.getAllCategories();
+
+        if (categoryList.size() == left_block.getChildCount() + right_block.getChildCount()) {
+            return;
+        }
+        left_block.removeAllViews();
+        right_block.removeAllViews();
 
         LinearLayout.LayoutParams leftParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 0.15f);
         leftParams.setMargins(0, 30, 0, 30);
@@ -137,6 +144,8 @@ public class TabAddExpenses extends Fragment {
                 right_block.addView(categoryView);
                 categoryView.setLayoutParams(rightParams);
             }
+            System.out.println("+++++++++Child count: " + left_block.getChildCount() + " " + right_block.getChildCount());
+
             categoryView.setOnDragListener(new MyOnDragListener(nameInput, priceInput, category.getId(), getActivity()));
         }
     }
@@ -155,7 +164,7 @@ public class TabAddExpenses extends Fragment {
             if (currInput.equals(".")) {
                 return "0.";
             }
-            //close keyboard with .12 precision
+            //close keyboard within .12 precision
             int dotIndex = currInput.indexOf(DOT);
             if (dotIndex != -1 && currInput.length() - dotIndex > 2) {
                 closeKeyboard(activity);
