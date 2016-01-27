@@ -3,6 +3,7 @@ package com.expenses.volodymyr.notecase.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,13 +12,20 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.RadioButton;
+import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.expenses.volodymyr.notecase.R;
-import com.expenses.volodymyr.notecase.activity.EditExpenseActivity;
 import com.expenses.volodymyr.notecase.activity.ViewExpenseActivity;
 import com.expenses.volodymyr.notecase.adapter.ProductAdapter;
 import com.expenses.volodymyr.notecase.entity.Product;
 import com.expenses.volodymyr.notecase.util.DBHandler;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.json.JSONObject;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -25,12 +33,13 @@ import java.util.List;
 /**
  * Created by vkret on 02.12.15.
  */
-public class TabViewExpenses extends Fragment implements AdapterView.OnItemClickListener, View.OnClickListener {
+public class TabViewExpenses extends Fragment implements AdapterView.OnItemClickListener, View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
     private static final String TAG = "TabViewExpenses";
     public static final String PRODUCT_ID_KEY = "productId";
     private ArrayAdapter<Product> adapter;
     private List<Product> productList;
     private DBHandler dbHandler;
+    private SwipeRefreshLayout swipeRefreshLayout;
     private ListView listView;
     private View view;
     private int checkedId;
@@ -40,7 +49,9 @@ public class TabViewExpenses extends Fragment implements AdapterView.OnItemClick
         Log.d(TAG, "Creating View fragment");
 
         view = inflater.inflate(R.layout.tab_view_expenses, container, false);
-        listView = (ListView) view.findViewById(R.id.costsList);
+        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh);
+        swipeRefreshLayout.setOnRefreshListener(this);
+        listView = (ListView) view.findViewById(R.id.costs_list);
 
         RadioButton last24 = (RadioButton) view.findViewById(R.id.last_24_hours);
         RadioButton lastWeek = (RadioButton) view.findViewById(R.id.last_week);
@@ -63,7 +74,7 @@ public class TabViewExpenses extends Fragment implements AdapterView.OnItemClick
     }
 
     @Override
-    public void onDestroy(){
+    public void onDestroy() {
         Log.d(TAG, "Destroying View fragment");
         super.onDestroy();
     }
@@ -89,7 +100,7 @@ public class TabViewExpenses extends Fragment implements AdapterView.OnItemClick
                 sinceTimeMillis = tillTimeMillis - 7 * 24 * 60 * 60 * 1000;
                 break;
             case R.id.last_month:
-                sinceTimeMillis = tillTimeMillis - (long)31 * 24 * 60 * 60 * 1000;
+                sinceTimeMillis = tillTimeMillis - (long) 31 * 24 * 60 * 60 * 1000;
                 break;
         }
 
@@ -108,4 +119,28 @@ public class TabViewExpenses extends Fragment implements AdapterView.OnItemClick
         updateListView();
     }
 
+    @Override
+    public void onRefresh() {
+        Log.i(TAG, "Refreshing Product list");
+        String url = "";
+        JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, url, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject jsonObject) {
+                        ObjectMapper objectMapper = new ObjectMapper();
+
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError volleyError) {
+                        Toast.makeText(getActivity(), "Network error", Toast.LENGTH_LONG).show();
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                }
+        );
+
+
+    }
 }
