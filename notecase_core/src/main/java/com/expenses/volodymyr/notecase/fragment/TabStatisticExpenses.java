@@ -3,6 +3,7 @@ package com.expenses.volodymyr.notecase.fragment;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,25 +33,14 @@ import java.util.Set;
  * Created by vkret on 02.12.15.
  */
 public class TabStatisticExpenses extends Fragment implements OnChartValueSelectedListener, View.OnClickListener{
+    private static String TAG = "TabStatisticExpenses";
     private boolean showCategoryName = false;
     private PieChart mChart;
     private int checkedId;
 
     @Override
-    public void onDestroy(){
-        System.out.println("**************** TabStatisticExpenses.onDestroy");
-        super.onDestroy();
-    }
-
-    @Override
-    public void onResume() {
-        System.out.println("**************** TabStatisticExpenses.onResume");
-        super.onResume();
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        System.out.println("**************** TabStatisticExpenses.onCreateView");
+        Log.d(TAG, "Creating Statistic fragment");
 
         View view = inflater.inflate(R.layout.tab_statistic_expenses, container, false);
 
@@ -69,7 +59,20 @@ public class TabStatisticExpenses extends Fragment implements OnChartValueSelect
         return view;
     }
 
+    @Override
+    public void onDestroy(){
+        Log.d(TAG, "Destroying Statistic tab");
+        super.onDestroy();
+    }
+
+    @Override
+    public void onResume() {
+        Log.d(TAG, "Resuming Statistic tab");
+        super.onResume();
+    }
+
     public void setData() {
+        Log.i(TAG, "Set up data for Statistic tab");
         long tillTimeMillis = System.currentTimeMillis();
         long sinceTimeMillis = tillTimeMillis - 24 * 60 * 60 * 1000;
 
@@ -133,7 +136,7 @@ public class TabStatisticExpenses extends Fragment implements OnChartValueSelect
     private void setMPChart(View view){
         mChart = (PieChart) view.findViewById(R.id.chart1);
         mChart.setUsePercentValues(true);
-        mChart.setDescription("Expense statistic pie chart");
+//        mChart.setDescription("Expense statistic pie chart");
         mChart.setDragDecelerationFrictionCoef(0.95f);
         mChart.setDrawSliceText(showCategoryName);
         mChart.setDrawHoleEnabled(false);
@@ -145,7 +148,7 @@ public class TabStatisticExpenses extends Fragment implements OnChartValueSelect
         mChart.setOnChartValueSelectedListener(this);
 
         mChart.animateY(1400, Easing.EasingOption.EaseInOutQuad);
-        // mChart.spin(2000, 0, 360);
+
         Legend l = mChart.getLegend();
         l.setPosition(Legend.LegendPosition.RIGHT_OF_CHART);
         l.setXEntrySpace(7f);

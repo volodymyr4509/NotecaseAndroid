@@ -2,9 +2,11 @@ package com.expenses.volodymyr.notecase.activity;
 
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import com.expenses.volodymyr.notecase.R;
 import com.expenses.volodymyr.notecase.fragment.TabAddExpenses;
@@ -13,21 +15,28 @@ import com.expenses.volodymyr.notecase.fragment.TabViewExpenses;
 import com.expenses.volodymyr.notecase.util.MyFragmentPagerAdapter;
 
 public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSelectedListener {
+    private static final String TAG = "MainActivity";
+
+    private static final String ADD_TAB = "Add";
+    private static final String VIEW_TAB = "View";
+    private static final String STATS_TAB = "Stats";
+    private static final String SETTING_TAB = "Settings";
+
     private ViewPager viewPager;
     MyFragmentPagerAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        System.out.println("**************** MainActivity.onCreate");
+        Log.d(TAG, "Creating MainActivity");
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
-        tabLayout.addTab(tabLayout.newTab().setText("View"));
-        tabLayout.addTab(tabLayout.newTab().setText("Add"));
-        tabLayout.addTab(tabLayout.newTab().setText("Statistic"));
-        tabLayout.addTab(tabLayout.newTab().setText("Settings"));
+        tabLayout.addTab(tabLayout.newTab().setText(ADD_TAB));
+        tabLayout.addTab(tabLayout.newTab().setText(VIEW_TAB));
+        tabLayout.addTab(tabLayout.newTab().setText(STATS_TAB));
+        tabLayout.addTab(tabLayout.newTab().setText(SETTING_TAB));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
         viewPager = (ViewPager) findViewById(R.id.pager);
@@ -36,13 +45,13 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
 
         //save all pages in memory
-        viewPager.setOffscreenPageLimit(5);
+        viewPager.setOffscreenPageLimit(4);
         tabLayout.setOnTabSelectedListener(this);
     }
 
     @Override
     public void onDestroy() {
-        System.out.println("**************** MainActivity.onDestroy");
+        Log.d(TAG, "Destroying MainActivity");
         super.onDestroy();
     }
 
@@ -55,7 +64,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
             MyFragmentPagerAdapter myAdapter = (MyFragmentPagerAdapter) adapter;
             switch (position) {
                 case 0:
-                    Object tabView = myAdapter.fragments.get(MyFragmentPagerAdapter.VIEW_TAB);
+                    Fragment tabView = myAdapter.getItem(position);
                     if (tabView instanceof TabViewExpenses) {
                         TabViewExpenses fragment = (TabViewExpenses) tabView;
                         if (fragment.isVisible()) {
@@ -64,8 +73,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
                     }
                     break;
                 case 1:
-                    Object tabAdd = myAdapter.fragments.get(MyFragmentPagerAdapter.ADD_TAB);
-                    myAdapter.getItem(1);
+                    Fragment tabAdd = myAdapter.getItem(position);
                     if (tabAdd instanceof TabAddExpenses) {
                         TabAddExpenses fragment = (TabAddExpenses) tabAdd;
                         if (fragment.isVisible()) {
@@ -74,19 +82,17 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
                     }
                     break;
                 case 2:
-                    if (position == 2) {
-                        Object tabStatistic = myAdapter.fragments.get(MyFragmentPagerAdapter.STATISTIC_TAB);
-                        if (tabStatistic instanceof TabStatisticExpenses) {
-                            TabStatisticExpenses fragment = (TabStatisticExpenses) tabStatistic;
-                            if (fragment.isVisible()) {
-                                fragment.setData();
-                            }
+                    Fragment tabStatistic = myAdapter.getItem(position);
+                    if (tabStatistic instanceof TabStatisticExpenses) {
+                        TabStatisticExpenses fragment = (TabStatisticExpenses) tabStatistic;
+                        if (fragment.isVisible()) {
+                            fragment.setData();
                         }
                     }
                     break;
             }
         }
-
+        //handling direct click
         viewPager.setCurrentItem(position);
     }
 

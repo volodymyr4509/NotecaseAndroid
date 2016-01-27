@@ -3,6 +3,7 @@ package com.expenses.volodymyr.notecase.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +21,7 @@ import java.util.List;
  * Created by vkret on 04.12.15.
  */
 public class TabSettings extends Fragment {
-    public static final String CATEGORY_ID_KEY = "categoryId";
+    private static final String TAG = "TabSettings";
     private List<String> settings;
 
     public TabSettings() {
@@ -29,22 +30,10 @@ public class TabSettings extends Fragment {
         settings.add("Manage category");
     }
 
-    public void onDestroy(){
-        System.out.println("**************** TabSettings.onDestroy");
-        super.onDestroy();
-    }
-
-    @Override
-    public void onResume() {
-        System.out.println("**************** TabSettings.onResume");
-
-        super.onResume();
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        System.out.println("**************** TabSettings.onCreateView");
-
+        Log.d(TAG, "Creating Settings fragment");
 
         View view = inflater.inflate(R.layout.tab_settings, container, false);
         ListView listView = (ListView) view.findViewById(R.id.settings_list);
@@ -52,7 +41,6 @@ public class TabSettings extends Fragment {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, settings);
 
         listView.setAdapter(adapter);
-
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -64,4 +52,17 @@ public class TabSettings extends Fragment {
         });
         return view;
     }
+
+
+    public void onDestroy() {
+        Log.d(TAG, "Destroying Settings fragment");
+        super.onDestroy();
+    }
+
+    @Override
+    public void onResume() {
+        Log.d(TAG, "Resuming Settigns fragment");
+        super.onResume();
+    }
+
 }

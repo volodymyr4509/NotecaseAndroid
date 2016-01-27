@@ -278,13 +278,17 @@ public class DBHandler extends SQLiteOpenHelper {
 
     public Cursor getProductNameCursor() {
         SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_PRODUCT + ";", null);
+        String query = "SELECT * FROM " + TABLE_PRODUCT + ";";
+        Log.i(TAG, "Loading product name cursor: \n" + query);
+        Cursor cursor = db.rawQuery(query, null);
         return cursor;
     }
 
     public Cursor suggestProductName(String partialProductName) {
         SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_PRODUCT + " WHERE Name like '" + partialProductName + "%' GROUP BY " + PRODUCT_NAME + ";", null);
+        String query = "SELECT * FROM " + TABLE_PRODUCT + " WHERE Name like '" + partialProductName + "%' GROUP BY " + PRODUCT_NAME + ";";
+        Log.i(TAG, "Loading suggested prod name: \n" + query);
+        Cursor cursor = db.rawQuery(query, null);
         return cursor;
     }
 
@@ -295,6 +299,7 @@ public class DBHandler extends SQLiteOpenHelper {
         String query = "SELECT SUM(p." + PRODUCT_PRICE + ") AS Sum, c.* FROM " + TABLE_PRODUCT + " p JOIN " +
                 TABLE_CATEGORY + " c ON p." + PRODUCT_CATEGORY + "=" + "c." + COLUMN_ID +
                 " WHERE p." + PRODUCT_TIMESTAMP + " BETWEEN '" + since + "' AND '" + till + "' GROUP BY p." + PRODUCT_CATEGORY + ";";
+        Log.i(TAG, "Loading grouped expenses by categories: \n" + query);
         Cursor cursor = db.rawQuery(query, null);
         while (cursor.moveToNext()) {
             Category category = new Category();

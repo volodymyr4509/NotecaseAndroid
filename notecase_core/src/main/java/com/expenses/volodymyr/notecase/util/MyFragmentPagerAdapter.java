@@ -19,60 +19,38 @@ import java.util.Map;
  * Created by vkret on 02.12.15.
  */
 public class MyFragmentPagerAdapter extends FragmentPagerAdapter {
-    public static String VIEW_TAB = "view";
-    public static String ADD_TAB = "add";
-    public static String STATISTIC_TAB = "stat";
-    public static String SETTING_TAB = "setting";
-    int mNumOfTabs;
-    public Map<String, Object> fragments = new HashMap<>();
+    private static final String TAG = "MyFragmentPagerAdapter";
+    public Map<Integer, Fragment> tabs = new HashMap<>();
+    {
+        tabs.put(0, new TabViewExpenses());
+        tabs.put(1, new TabAddExpenses());
+        tabs.put(2, new TabStatisticExpenses());
+        tabs.put(3, new TabSettings());
+    }
 
-    public MyFragmentPagerAdapter(FragmentManager fm, int NumOfTabs) {
+    public MyFragmentPagerAdapter(FragmentManager fm, int tabCount) {
         super(fm);
-        this.mNumOfTabs = NumOfTabs;
+        if (tabCount != tabs.size()){
+            Log.wtf(TAG, "TabLayout and PagerAdapter has different tab count");
+            throw new IllegalArgumentException("MyFragmentPagerAdapter has " + tabs.size() + " tabs and TabLayout has " + tabCount);
+        }
     }
 
     @Override
     public Fragment getItem(int position) {
-        System.out.println("-----getItem: position=" + position);
-        switch (position) {
-            case 0:
-                TabViewExpenses tab1 = new TabViewExpenses();
-                return tab1;
-            case 1:
-                TabAddExpenses tab2 = new TabAddExpenses();
-                return tab2;
-            case 2:
-                TabStatisticExpenses tab3 = new TabStatisticExpenses();
-                return tab3;
-            case 3:
-                TabSettings tab4 = new TabSettings();
-                return tab4;
-            default:
-                return null;
-        }
+        Log.d(TAG, "Return tab at position: " + position);
+        return tabs.get(position);
     }
 
     @Override
     public int getCount() {
-        return mNumOfTabs;
+        return tabs.size();
     }
 
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
-        Object item = super.instantiateItem(container, position);
-        String key = "";
-        switch (position){
-            case 0: key = VIEW_TAB;
-                break;
-            case 1: key = ADD_TAB;
-                break;
-            case 2: key = STATISTIC_TAB;
-                break;
-            case 3: key = SETTING_TAB;
-                break;
-        }
-        fragments.put(key, item);
-        return item;
+        Log.d(TAG, "Instantiating tab item at position: " + position);
+        return super.instantiateItem(container, position);
     }
 
     //TODO Change instantiateItem/destroyItem implementation for better performance;

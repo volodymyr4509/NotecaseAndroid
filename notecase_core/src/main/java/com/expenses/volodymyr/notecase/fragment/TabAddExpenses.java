@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.InputFilter;
 import android.text.Spanned;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -20,11 +21,9 @@ import android.widget.EditText;
 import android.widget.FilterQueryProvider;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
 import com.expenses.volodymyr.notecase.R;
-import com.expenses.volodymyr.notecase.adapter.CategoryAdapter;
 import com.expenses.volodymyr.notecase.entity.Category;
 import com.expenses.volodymyr.notecase.util.DBHandler;
 import com.expenses.volodymyr.notecase.util.MyDragShadowBuilder;
@@ -36,6 +35,7 @@ import java.util.List;
  * Created by vkret on 02.12.15.
  */
 public class TabAddExpenses extends Fragment {
+    private static final String TAG = "TabAddExpenses";
     private final String DOT = ".";
 
     LinearLayout left_block, right_block;
@@ -43,14 +43,8 @@ public class TabAddExpenses extends Fragment {
     AutoCompleteTextView nameInput;
 
     @Override
-    public void onDestroy() {
-        System.out.println("**************** TabAddExpenses.onDestroy");
-        super.onDestroy();
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        System.out.println("**************** TabAddExpenses.onCreateView");
+        Log.d(TAG, "Creating Add fragment");
         View view = inflater.inflate(R.layout.tab_add_expenses, container, false);
         nameInput = (AutoCompleteTextView) view.findViewById(R.id.commodityName);
         priceInput = (EditText) view.findViewById(R.id.commodityPrice);
@@ -58,23 +52,11 @@ public class TabAddExpenses extends Fragment {
         left_block = (LinearLayout) view.findViewById(R.id.left_category_block);
         right_block = (LinearLayout) view.findViewById(R.id.right_category_block);
 
-        final int[] to = new int[]{android.R.id.text1};
-        final String[] from = new String[]{DBHandler.PRODUCT_NAME};
-        final DBHandler dbHandler = DBHandler.getDbHandler(getActivity());
-        Cursor cursor = dbHandler.getProductNameCursor();
-        SimpleCursorAdapter productNameAdapter = new SimpleCursorAdapter(getActivity(), android.R.layout.simple_dropdown_item_1line, cursor, from, to, 0);
-        productNameAdapter.setStringConversionColumn(cursor.getColumnIndexOrThrow(DBHandler.PRODUCT_NAME));
-        productNameAdapter.setFilterQueryProvider(new FilterQueryProvider() {
-            @Override
-            public Cursor runQuery(CharSequence constraint) {
-                String partialItemName = null;
-                if (constraint != null) {
-                    partialItemName = constraint.toString();
-                }
-                return dbHandler.suggestProductName(partialItemName);
-            }
-        });
-        nameInput.setAdapter(productNameAdapter);
+
+        SimpleCursorAdapter productNameAdapter = getProductNameQueryAdapter();
+        if (productNameAdapter!=null){
+            nameInput.setAdapter(productNameAdapter);
+        }
 
         addCategoriesOnScreen();
 
@@ -109,9 +91,14 @@ public class TabAddExpenses extends Fragment {
 
     @Override
     public void onResume() {
-//        addCategoriesOnScreen();
-        System.out.println("**************** TabAddExpenses.onResume");
+        Log.d(TAG, "Resuming Add fragment");
         super.onResume();
+    }
+
+    @Override
+    public void onDestroy() {
+        Log.d(TAG, "Destroying Add fragment");
+        super.onDestroy();
     }
 
     public void addCategoriesOnScreen() {
@@ -144,8 +131,7 @@ public class TabAddExpenses extends Fragment {
                 right_block.addView(categoryView);
                 categoryView.setLayoutParams(rightParams);
             }
-            System.out.println("+++++++++Child count: " + left_block.getChildCount() + " " + right_block.getChildCount());
-
+            Log.i(TAG, "Add category to AddExpense fragment: " + left_block.getChildCount() + ":" + right_block.getChildCount());
             categoryView.setOnDragListener(new MyOnDragListener(nameInput, priceInput, category.getId(), getActivity()));
         }
     }
@@ -173,4 +159,23 @@ public class TabAddExpenses extends Fragment {
         }
     }
 
+    public SimpleCursorAdapter getProductNameQueryAdapter() {
+        final int[] to = new int[]{android.R.id.text1};
+        final String[] from = new String[]{DBHandler.PRODUCT_NAME};
+        final DBHandler dbHandler = DBHandler.getDbHandler(getActivity());
+        Cursor cursor = dbHandler.getProductNameCursor();
+        SimpleCursorAdapter productNameAdapter = new SimpleCursorAdapter(getActivity(), android.R.layout.simple_dropdown_item_1line, cursor, from, to, 0);
+        productNameAdapter.setStringConversionColumn(cursor.getColumnIndexOrThrow(DBHandler.PRODUCT_NAME));
+        productNameAdapter.setFilterQueryProvider(new FilterQueryProvider() {
+            @Override
+            public Cursor runQuery(CharSequence constraint) {
+                String partialItemName = null;
+                if (constraint != null) {
+                    partialItemName = constraint.toString();
+                }
+                return dbHandler.suggestProductName(partialItemName);
+            }
+        });
+        return productNameAdapter;
+    }
 }
