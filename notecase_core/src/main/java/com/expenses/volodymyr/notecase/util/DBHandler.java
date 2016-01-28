@@ -24,10 +24,11 @@ public class DBHandler extends SQLiteOpenHelper {
     private static String TAG = "DBHandler";
     private static DBHandler dbHandler;
 
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
     private static final String DATABASE_NAME = "notecase.db";
 
     private static final String COLUMN_ID = "_id";
+    private static final String DIRTY = "dirty";
 
     //Product table
     public static final String TABLE_PRODUCT = "product";
@@ -56,19 +57,22 @@ public class DBHandler extends SQLiteOpenHelper {
             PRODUCT_CATEGORY + " INTEGER, " +
             PRODUCT_NAME + " TEXT, " +
             PRODUCT_PRICE + " REAL, " +
-            PRODUCT_TIMESTAMP + " DATETIME);";
+            PRODUCT_TIMESTAMP + " DATETIME, " +
+            DIRTY + " INTEGER);";
 
     private static final String CREATE_CATEGORY = "CREATE TABLE " + TABLE_CATEGORY + " (" +
             COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             CATEGORY_NAME + " TEXT, " +
             CATEGORY_COLOR + " INTEGER, " +
-            CATEGORY_IMAGE + " INTEGER);";
+            CATEGORY_IMAGE + " INTEGER, " +
+            DIRTY + " INTEGER);";
 
     private static final String CREATE_USER = "CREATE TABLE " + TABLE_USER + " (" +
             COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             USER_NAME + " TEXT, " +
             USER_PASSWORD + " TEXT, " +
-            USER_EMAIL + " TEXT);";
+            USER_EMAIL + " TEXT, " +
+            DIRTY + " INTEGER);";
 
     public DBHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -106,6 +110,7 @@ public class DBHandler extends SQLiteOpenHelper {
         values.put(PRODUCT_PRICE, product.getPrice());
         values.put(PRODUCT_TIMESTAMP, product.getCreated().toString());
         values.put(PRODUCT_CATEGORY, product.getCategoryId());
+        values.put(DIRTY, product.isDirty());
 
         SQLiteDatabase db = getWritableDatabase();
         db.insert(TABLE_PRODUCT, null, values);
@@ -119,6 +124,8 @@ public class DBHandler extends SQLiteOpenHelper {
         values.put(PRODUCT_PRICE, product.getPrice());
         values.put(PRODUCT_TIMESTAMP, product.getCreated().toString());
         values.put(PRODUCT_CATEGORY, product.getCategoryId());
+        values.put(DIRTY, product.isDirty());
+
         db.update(TABLE_PRODUCT, values, COLUMN_ID + " = " + product.getId(), null);
     }
 
@@ -135,6 +142,7 @@ public class DBHandler extends SQLiteOpenHelper {
             product.setCategoryId(cursor.getInt(2));
             product.setName(cursor.getString(3));
             product.setPrice(cursor.getDouble(4));
+            product.setDirty(cursor.getInt(6) == 1);
             Timestamp timestamp = null;
             if (cursor.getString(5) != null) {
                 timestamp = Timestamp.valueOf(cursor.getString(5));
@@ -146,6 +154,7 @@ public class DBHandler extends SQLiteOpenHelper {
     }
 
     public List<Product> getAllProducts(Timestamp since, Timestamp till) {
+        long before = System.currentTimeMillis();
         SQLiteDatabase db = getReadableDatabase();
         String query = "SELECT * FROM " + TABLE_PRODUCT +
                 " WHERE " + PRODUCT_TIMESTAMP + " BETWEEN '" + since + "' AND '" + till + "' ORDER BY " + COLUMN_ID + " DESC LIMIT 500;";
@@ -159,6 +168,7 @@ public class DBHandler extends SQLiteOpenHelper {
             product.setCategoryId(cursor.getInt(2));
             product.setName(cursor.getString(3));
             product.setPrice(cursor.getDouble(4));
+            product.setDirty(cursor.getInt(6) == 1);
             Timestamp timestamp = null;
             if (cursor.getString(5) != null) {
                 timestamp = Timestamp.valueOf(cursor.getString(5));
@@ -167,13 +177,14 @@ public class DBHandler extends SQLiteOpenHelper {
             products.add(product);
         }
         Log.i(TAG, "Product were retrieved from sqlite: count = " + products.size() + ", since = " + since + ", till = " + till);
+        Log.w(TAG, "Getting all products: " + String.valueOf(System.currentTimeMillis() - before) + "ms");
         return products;
     }
 
-    public void deleteProductById(int productId){
+    public void deleteProductById(int productId) {
         Log.i(TAG, "Deleting product by productId = " + productId);
         SQLiteDatabase db = getWritableDatabase();
-        db.delete(TABLE_PRODUCT, COLUMN_ID+"=?", new String[]{String.valueOf(productId)});
+        db.delete(TABLE_PRODUCT, COLUMN_ID + "=?", new String[]{String.valueOf(productId)});
     }
 
     public void addCategory(Category category) {
@@ -199,10 +210,10 @@ public class DBHandler extends SQLiteOpenHelper {
         db.update(TABLE_CATEGORY, values, COLUMN_ID + " = " + category.getId(), null);
     }
 
-    public void deleteCategoryById(int categoryId){
+    public void deleteCategoryById(int categoryId) {
         Log.i(TAG, "Deleting category by id: " + categoryId);
         SQLiteDatabase db = getWritableDatabase();
-        db.delete(TABLE_CATEGORY, COLUMN_ID+"=?", new String[]{String.valueOf(categoryId)});
+        db.delete(TABLE_CATEGORY, COLUMN_ID + "=?", new String[]{String.valueOf(categoryId)});
     }
 
     public Category getCategoryById(int categoryId) {
@@ -238,17 +249,18 @@ public class DBHandler extends SQLiteOpenHelper {
         return categories;
     }
 
-    public List<Product> getProductsByCategoryId(int categoryId){
+    public List<Product> getProductsByCategoryId(int categoryId) {
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_PRODUCT + " WHERE " + PRODUCT_CATEGORY + " = " + categoryId + ";", null);
         List<Product> products = new ArrayList<>();
-        while (cursor.moveToNext()){
+        while (cursor.moveToNext()) {
             Product product = new Product();
             product.setId(cursor.getInt(0));
             product.setUserId(cursor.getInt(1));
             product.setCategoryId(cursor.getInt(2));
             product.setName(cursor.getString(3));
             product.setPrice(cursor.getDouble(4));
+            product.setDirty(cursor.getInt(6) == 1);
             Timestamp timestamp = null;
             if (cursor.getString(5) != null) {
                 timestamp = Timestamp.valueOf(cursor.getString(5));

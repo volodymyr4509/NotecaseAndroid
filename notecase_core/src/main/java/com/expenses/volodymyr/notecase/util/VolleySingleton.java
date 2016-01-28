@@ -4,9 +4,14 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.LruCache;
 
+import com.android.volley.Network;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.BasicNetwork;
+import com.android.volley.toolbox.HttpStack;
+import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.NoCache;
 import com.android.volley.toolbox.Volley;
 
 /**
@@ -18,7 +23,6 @@ public class VolleySingleton {
     private RequestQueue mRequestQueue;
     private ImageLoader mImageLoader;
     private Context mContext;
-
     public VolleySingleton(Context context) {
         this.mContext = context;
         mRequestQueue = getRequestQueue();

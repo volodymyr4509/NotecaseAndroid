@@ -162,11 +162,10 @@ public class TabAddExpenses extends Fragment {
         productNameAdapter.setFilterQueryProvider(new FilterQueryProvider() {
             @Override
             public Cursor runQuery(CharSequence constraint) {
-                String partialItemName = null;
                 if (constraint != null) {
-                    partialItemName = constraint.toString();
+                    return dbHandler.suggestProductName(constraint.toString());
                 }
-                return dbHandler.suggestProductName(partialItemName);
+                return null;
             }
         });
         return productNameAdapter;

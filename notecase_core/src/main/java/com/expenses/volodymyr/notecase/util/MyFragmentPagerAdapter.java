@@ -22,8 +22,8 @@ public class MyFragmentPagerAdapter extends FragmentPagerAdapter {
     private static final String TAG = "MyFragmentPagerAdapter";
     public Map<Integer, Fragment> tabs = new HashMap<>();
     {
-        tabs.put(0, new TabViewExpenses());
-        tabs.put(1, new TabAddExpenses());
+        tabs.put(0, new TabAddExpenses());
+        tabs.put(1, new TabViewExpenses());
         tabs.put(2, new TabStatisticExpenses());
         tabs.put(3, new TabSettings());
     }

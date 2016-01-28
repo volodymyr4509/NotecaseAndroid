@@ -1,11 +1,12 @@
 package com.expenses.volodymyr.notecase.entity;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 
 /**
  * Created by volodymyr on 25.10.15.
  */
-public class Product {
+public class Product implements Serializable{
 
     private int id;
     private int categoryId;
@@ -13,6 +14,7 @@ public class Product {
     private String name;
     private double price;
     private Timestamp created;
+    private boolean dirty = true;
 
     public Product(){}
 
@@ -72,6 +74,14 @@ public class Product {
         this.created = created;
     }
 
+    public boolean isDirty() {
+        return dirty;
+    }
+
+    public void setDirty(boolean dirty) {
+        this.dirty = dirty;
+    }
+
     @Override
     public String toString() {
         return "Product{" +
@@ -81,6 +91,7 @@ public class Product {
                 ", name='" + name + '\'' +
                 ", price=" + price +
                 ", created=" + created +
+                ", dirty=" + dirty +
                 '}';
     }
 }

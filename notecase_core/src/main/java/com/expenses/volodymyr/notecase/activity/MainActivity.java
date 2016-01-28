@@ -70,20 +70,20 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
             MyFragmentPagerAdapter myAdapter = (MyFragmentPagerAdapter) adapter;
             switch (position) {
                 case 0:
+                Fragment tabAdd = myAdapter.getItem(position);
+                if (tabAdd instanceof TabAddExpenses) {
+                    TabAddExpenses fragment = (TabAddExpenses) tabAdd;
+                    if (fragment.isVisible()) {
+                        fragment.addCategoriesOnScreen();
+                    }
+                }
+                break;
+                case 1:
                     Fragment tabView = myAdapter.getItem(position);
                     if (tabView instanceof TabViewExpenses) {
                         TabViewExpenses fragment = (TabViewExpenses) tabView;
                         if (fragment.isVisible()) {
                             fragment.updateListView();
-                        }
-                    }
-                    break;
-                case 1:
-                    Fragment tabAdd = myAdapter.getItem(position);
-                    if (tabAdd instanceof TabAddExpenses) {
-                        TabAddExpenses fragment = (TabAddExpenses) tabAdd;
-                        if (fragment.isVisible()) {
-                            fragment.addCategoriesOnScreen();
                         }
                     }
                     break;
