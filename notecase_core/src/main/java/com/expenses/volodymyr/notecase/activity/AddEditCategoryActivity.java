@@ -227,6 +227,7 @@ public class AddEditCategoryActivity extends Activity implements SeekBar.OnSeekB
         imagesIds.add(R.drawable.ic_watch_white_24dp);
         imagesIds.add(R.drawable.ic_wb_sunny_white_24dp);
         imagesIds.add(R.drawable.ic_wifi_tethering_white_18dp);
+        imagesIds.add(R.drawable.k_backet_192);
 
     }
 }

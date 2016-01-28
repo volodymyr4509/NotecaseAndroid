@@ -123,6 +123,7 @@ public class DBHandler extends SQLiteOpenHelper {
     }
 
     public Product getProductById(int productId) {
+        long before = System.currentTimeMillis();
         Log.i(TAG, "Retrieving product by id = " + productId + " from sqlite");
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_PRODUCT + " WHERE " + COLUMN_ID + " = " + productId + ";", null);
@@ -140,6 +141,7 @@ public class DBHandler extends SQLiteOpenHelper {
             }
             product.setCreated(timestamp);
         }
+        Log.w(TAG, "Getting product by id: " + String.valueOf(System.currentTimeMillis() - before) + "ms");
         return product;
     }
 
@@ -294,6 +296,7 @@ public class DBHandler extends SQLiteOpenHelper {
 
     //select SUM(p.Price), c.* from product p join category c on p.categoryId= c._id group by p.categoryId;
     public Map<Category, Double> getExpensesGroupedByCategories(Timestamp since, Timestamp till) {
+        long before = System.currentTimeMillis();
         SQLiteDatabase db = getReadableDatabase();
         Map<Category, Double> result = new HashMap<>();
         String query = "SELECT SUM(p." + PRODUCT_PRICE + ") AS Sum, c.* FROM " + TABLE_PRODUCT + " p JOIN " +
@@ -309,6 +312,7 @@ public class DBHandler extends SQLiteOpenHelper {
             result.put(category, cursor.getDouble(0));
         }
         Log.i(TAG, "Retrieved " + result.size() + " products by categories");
+        Log.w(TAG, "Getting expenses grouped by categories: " + String.valueOf(System.currentTimeMillis() - before) + "ms");
         return result;
     }
 
