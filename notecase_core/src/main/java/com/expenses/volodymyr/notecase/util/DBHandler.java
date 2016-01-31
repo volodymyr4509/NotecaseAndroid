@@ -103,7 +103,7 @@ public class DBHandler extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void addProduct(Product product) {
+    public int addProduct(Product product) {
         Log.i(TAG, "Add new Product: " + product);
         ContentValues values = new ContentValues();
         values.put(PRODUCT_NAME, product.getName());
@@ -113,7 +113,7 @@ public class DBHandler extends SQLiteOpenHelper {
         values.put(DIRTY, product.isDirty());
 
         SQLiteDatabase db = getWritableDatabase();
-        db.insert(TABLE_PRODUCT, null, values);
+        return (int)db.insert(TABLE_PRODUCT, null, values);
     }
 
     public void updateProduct(Product product) {

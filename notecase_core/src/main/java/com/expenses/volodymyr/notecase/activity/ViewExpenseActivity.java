@@ -14,12 +14,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.expenses.volodymyr.notecase.R;
 import com.expenses.volodymyr.notecase.adapter.CategoryAdapter;
 import com.expenses.volodymyr.notecase.entity.Category;
 import com.expenses.volodymyr.notecase.entity.Product;
 import com.expenses.volodymyr.notecase.fragment.TabViewExpenses;
+import com.expenses.volodymyr.notecase.request.GsonRequest;
+import com.expenses.volodymyr.notecase.util.AppProperties;
 import com.expenses.volodymyr.notecase.util.DBHandler;
+import com.expenses.volodymyr.notecase.util.VolleySingleton;
 
 import java.util.List;
 
@@ -93,8 +99,26 @@ public class ViewExpenseActivity extends Activity implements View.OnClickListene
                         .setMessage("Are you sure you want to delete this product?")
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
+                                product.setDirty(true);
                                 dbHandler.deleteProductById(product.getId());
                                 Toast.makeText(getApplicationContext(), "Deleted", Toast.LENGTH_LONG).show();
+
+                                String url = AppProperties.HOST + AppProperties.PORT + "/rest/product/delete/" + product.getId();
+                                GsonRequest<Product> gsonRequest = new GsonRequest<>(Request.Method.DELETE, url, Product.class, null,
+                                        new Response.Listener() {
+                                            @Override
+                                            public void onResponse(Object o) {
+                                                product.setDirty(false);
+                                                DBHandler.getDbHandler(getApplicationContext()).deleteProductById(product.getId());
+                                            }
+                                        },
+                                        new Response.ErrorListener() {
+                                            @Override
+                                            public void onErrorResponse(VolleyError volleyError) {
+                                                Toast.makeText(getApplicationContext(), "Product deleting failed", Toast.LENGTH_LONG).show();
+                                            }
+                                        }, null);
+                                VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(gsonRequest);
                                 finish();
                             }
                         })

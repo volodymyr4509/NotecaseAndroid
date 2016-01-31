@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
@@ -13,19 +14,29 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.expenses.volodymyr.notecase.R;
 import com.expenses.volodymyr.notecase.adapter.CategoryAdapter;
 import com.expenses.volodymyr.notecase.entity.Category;
 import com.expenses.volodymyr.notecase.entity.Product;
 import com.expenses.volodymyr.notecase.fragment.TabViewExpenses;
+import com.expenses.volodymyr.notecase.request.GsonRequest;
+import com.expenses.volodymyr.notecase.util.AppProperties;
 import com.expenses.volodymyr.notecase.util.DBHandler;
+import com.expenses.volodymyr.notecase.util.VolleySingleton;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by vkret on 02.12.15.
  */
 public class EditExpenseActivity extends Activity implements View.OnClickListener, AdapterView.OnItemClickListener {
+    private static final String TAG = "EditExpenseActivity";
+
     private EditText name, price;
     private TextView dateTime;
     private ImageView save, delete, navigationArrow, logo, categoryArea;
@@ -90,8 +101,31 @@ public class EditExpenseActivity extends Activity implements View.OnClickListene
                     e.printStackTrace();
                     Toast.makeText(getApplicationContext(), "Incorrect input", Toast.LENGTH_LONG).show();
                 }
+
+                String url = AppProperties.HOST + AppProperties.PORT + "/rest/product/update";
+                Log.i(TAG, "Update product, url: " + url + ", product: " + product);
+                Map<String, String> headers = new HashMap<>();
+                GsonRequest<Product> gsonRequest = new GsonRequest<>(Request.Method.PUT, url, Product.class, headers,
+                        new Response.Listener() {
+                            @Override
+                            public void onResponse(Object o) {
+                                product.setDirty(false);
+                                DBHandler.getDbHandler(getApplicationContext()).updateProduct(product);
+                            }
+                        },
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError volleyError) {
+                                Toast.makeText(getApplicationContext(), "Product sending failed", Toast.LENGTH_LONG).show();
+                            }
+                        }, product);
+
                 dbHandler.updateProduct(product);
                 Toast.makeText(getApplicationContext(), "Saved", Toast.LENGTH_LONG).show();
+
+                VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(gsonRequest);
+
+
                 break;
             case R.id.navigation_arrow:
             case R.id.logo:

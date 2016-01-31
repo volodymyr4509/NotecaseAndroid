@@ -7,12 +7,15 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.Response;
+import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.expenses.volodymyr.notecase.entity.Product;
 import com.expenses.volodymyr.notecase.request.GsonRequest;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -28,14 +31,14 @@ public class MyOnDragListener implements View.OnDragListener {
 
     private EditText name;
     private EditText price;
-    private int category;
+    private int categoryId;
     private Context applicationContext;
     private final String EMPTY_STRING = "";
 
     public MyOnDragListener(EditText name, EditText price, int category, Context applicationContext) {
         this.name = name;
         this.price = price;
-        this.category = category;
+        this.categoryId = category;
         this.applicationContext = applicationContext;
     }
 
@@ -44,7 +47,6 @@ public class MyOnDragListener implements View.OnDragListener {
         final int action = event.getAction();
         switch (action) {
             case DragEvent.ACTION_DROP:
-
                 DBHandler dbHandler = DBHandler.getDbHandler(applicationContext);
                 String productName = null;
                 double productPrice = 0;
@@ -63,15 +65,14 @@ public class MyOnDragListener implements View.OnDragListener {
                     return false;
                 }
 
-                final Product product = new Product(category, 1, productName, productPrice);
-                dbHandler.addProduct(product);
+                final Product product = new Product(categoryId, 1, productName, productPrice);
+                product.setDirty(true);
+                int id = dbHandler.addProduct(product);
+                product.setId(id);
 
-                //TODO
                 String url = AppProperties.HOST + AppProperties.PORT + "/rest/product/add";
-                Gson gson = new Gson();
-                JsonParser parser = new JsonParser();
-                JsonObject requestBody = parser.parse(gson.toJson(product)).getAsJsonObject();
-                Log.i(TAG, "Send product to url: " + url + ", request body: " + requestBody);
+
+                Log.i(TAG, "Send product to url: " + url + ", request body: " + product);
                 Map<String, String> headers = new HashMap<>();
                 GsonRequest<Product> gsonRequest = new GsonRequest<>(Request.Method.POST, url, Product.class, headers,
                         new Response.Listener() {
@@ -84,10 +85,11 @@ public class MyOnDragListener implements View.OnDragListener {
                         new Response.ErrorListener() {
                             @Override
                             public void onErrorResponse(VolleyError volleyError) {
-                                System.out.println("fail");
+                                Toast.makeText(applicationContext, "Product update failed", Toast.LENGTH_LONG).show();
 
                             }
                         }, product);
+                gsonRequest.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS, 0, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
                 VolleySingleton.getInstance(applicationContext).addToRequestQueue(gsonRequest);
 
                 //clean input fields after save
@@ -113,7 +115,7 @@ public class MyOnDragListener implements View.OnDragListener {
         return "MyOnDragListener{" +
                 "name=" + name +
                 ", price=" + price +
-                ", category=" + category +
+                ", categoryId=" + categoryId +
                 ", applicationContext=" + applicationContext +
                 '}';
     }

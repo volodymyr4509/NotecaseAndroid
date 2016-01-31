@@ -8,11 +8,9 @@ import com.android.volley.Response;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.expenses.volodymyr.notecase.entity.Product;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
@@ -20,7 +18,7 @@ import java.util.Map;
  * Created by volodymyr on 28.01.16.
  */
 public class GsonRequest<T> extends Request<T> {
-    private final Gson gson = new Gson();
+    private final Gson gson = new GsonBuilder().setDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz").create();
     private final Class<T> clazz;
     private final Map<String, String> headers;
     private final Response.Listener<T> listener;
@@ -29,8 +27,8 @@ public class GsonRequest<T> extends Request<T> {
     /**
      * Make a GET request and return a parsed object from JSON.
      *
-     * @param url URL of the request to make
-     * @param clazz Relevant class object, for Gson's reflection. Null causes NullPointerException
+     * @param url     URL of the request to make
+     * @param clazz   Relevant class object, for Gson's reflection. Null causes NullPointerException
      * @param headers Map of request headers
      */
     public GsonRequest(int method, String url, Class<T> clazz, Map<String, String> headers,
@@ -52,6 +50,7 @@ public class GsonRequest<T> extends Request<T> {
     protected void deliverResponse(T response) {
         listener.onResponse(response);
     }
+
     @Override
     public String getBodyContentType() {
         return "application/json";
@@ -59,10 +58,10 @@ public class GsonRequest<T> extends Request<T> {
 
     @Override
     public byte[] getBody() throws AuthFailureError {
-        byte [] body = null;
+        byte[] body = null;
         try {
             return gson.toJson(product).getBytes(getParamsEncoding());
-        }catch (UnsupportedEncodingException e){
+        } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
         return body;
