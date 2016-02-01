@@ -20,7 +20,7 @@ import com.data.volodymyr.notecase.entity.Category;
 import com.data.volodymyr.notecase.entity.Product;
 import com.expenses.volodymyr.notecase.R;
 import com.expenses.volodymyr.notecase.adapter.ImageGridAdapter;
-import com.expenses.volodymyr.notecase.util.DBHandler;
+import com.data.volodymyr.notecase.util.DBHandler;
 
 import java.util.ArrayList;
 import java.util.List;

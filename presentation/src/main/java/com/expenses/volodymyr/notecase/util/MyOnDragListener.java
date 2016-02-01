@@ -10,14 +10,12 @@ import android.widget.Toast;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.Response;
-import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.data.volodymyr.notecase.entity.Product;
-import com.expenses.volodymyr.notecase.request.GsonRequest;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.data.volodymyr.notecase.util.AppProperties;
+import com.data.volodymyr.notecase.util.DBHandler;
+import com.data.volodymyr.notecase.util.VolleySingleton;
+import com.data.volodymyr.notecase.request.GsonRequest;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,9 +1,10 @@
-package com.expenses.volodymyr.notecase.util;
+package com.data.volodymyr.notecase.util;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.LruCache;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Network;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -19,6 +20,7 @@ import com.android.volley.toolbox.Volley;
  */
 public class VolleySingleton {
     private static VolleySingleton mInstance;
+    private int DEFAULT_RETRIES = 0;
 
     private RequestQueue mRequestQueue;
     private ImageLoader mImageLoader;
@@ -55,6 +57,7 @@ public class VolleySingleton {
     }
 
     public <T> void addToRequestQueue(Request<T> request){
+        request.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS, DEFAULT_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         getRequestQueue().add(request);
     }
 

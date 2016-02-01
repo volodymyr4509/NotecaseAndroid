@@ -1,4 +1,4 @@
-package com.expenses.volodymyr.notecase.request;
+package com.data.volodymyr.notecase.request;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;

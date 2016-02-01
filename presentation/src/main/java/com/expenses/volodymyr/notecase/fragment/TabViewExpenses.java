@@ -22,8 +22,7 @@ import com.data.volodymyr.notecase.entity.Product;
 import com.expenses.volodymyr.notecase.R;
 import com.expenses.volodymyr.notecase.activity.ViewExpenseActivity;
 import com.expenses.volodymyr.notecase.adapter.ProductAdapter;
-import com.expenses.volodymyr.notecase.util.DBHandler;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.data.volodymyr.notecase.util.DBHandler;
 
 import org.json.JSONObject;
 
@@ -127,7 +126,7 @@ public class TabViewExpenses extends Fragment implements AdapterView.OnItemClick
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject jsonObject) {
-                        ObjectMapper objectMapper = new ObjectMapper();
+
 
                         swipeRefreshLayout.setRefreshing(false);
                     }

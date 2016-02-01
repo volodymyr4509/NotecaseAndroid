@@ -1,4 +1,4 @@
-package com.expenses.volodymyr.notecase.util;
+package com.data.volodymyr.notecase.util;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -7,9 +7,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.data.volodymyr.notecase.R;
 import com.data.volodymyr.notecase.entity.Category;
 import com.data.volodymyr.notecase.entity.Product;
-import com.expenses.volodymyr.notecase.R;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -27,28 +27,28 @@ public class DBHandler extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 3;
     private static final String DATABASE_NAME = "notecase.db";
 
-    private static final String COLUMN_ID = "_id";
-    private static final String DIRTY = "dirty";
+    public static final String COLUMN_ID = "_id";
+    public static final String DIRTY = "dirty";
 
     //Product table
     public static final String TABLE_PRODUCT = "product";
-    private static final String PRODUCT_CATEGORY = "CategoryId";
-    private static final String PRODUCT_USER = "UserId";
+    public static final String PRODUCT_CATEGORY = "CategoryId";
+    public static final String PRODUCT_USER = "UserId";
     public static final String PRODUCT_NAME = "Name";
-    private static final String PRODUCT_PRICE = "Price";
-    private static final String PRODUCT_TIMESTAMP = "Created";
+    public static final String PRODUCT_PRICE = "Price";
+    public static final String PRODUCT_TIMESTAMP = "Created";
 
     //CategoryDAO table
     public static final String TABLE_CATEGORY = "category";
-    private static final String CATEGORY_NAME = "Name";
-    private static final String CATEGORY_COLOR = "Color";
-    private static final String CATEGORY_IMAGE = "Image";
+    public static final String CATEGORY_NAME = "Name";
+    public static final String CATEGORY_COLOR = "Color";
+    public static final String CATEGORY_IMAGE = "Image";
 
     //User table
     public static final String TABLE_USER = "user";
-    private static final String USER_NAME = "Name";
-    private static final String USER_EMAIL = "Email";
-    private static final String USER_PASSWORD = "Password";
+    public static final String USER_NAME = "Name";
+    public static final String USER_EMAIL = "Email";
+    public static final String USER_PASSWORD = "Password";
 
     //Queries
     private static final String CREATE_PRODUCT = "CREATE TABLE " + TABLE_PRODUCT + " (" +
@@ -74,7 +74,7 @@ public class DBHandler extends SQLiteOpenHelper {
             USER_EMAIL + " TEXT, " +
             DIRTY + " INTEGER);";
 
-    public DBHandler(Context context) {
+    private DBHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 

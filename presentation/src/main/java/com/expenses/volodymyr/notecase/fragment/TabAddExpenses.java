@@ -1,6 +1,5 @@
 package com.expenses.volodymyr.notecase.fragment;
 
-import android.app.Activity;
 import android.content.ClipData;
 import android.content.Context;
 import android.database.Cursor;
@@ -25,7 +24,7 @@ import android.widget.SimpleCursorAdapter;
 
 import com.data.volodymyr.notecase.entity.Category;
 import com.expenses.volodymyr.notecase.R;
-import com.expenses.volodymyr.notecase.util.DBHandler;
+import com.data.volodymyr.notecase.util.DBHandler;
 import com.expenses.volodymyr.notecase.util.MyDragShadowBuilder;
 import com.expenses.volodymyr.notecase.util.MyOnDragListener;
 

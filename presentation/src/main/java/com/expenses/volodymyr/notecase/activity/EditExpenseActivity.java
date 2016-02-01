@@ -19,10 +19,10 @@ import com.data.volodymyr.notecase.entity.Product;
 import com.expenses.volodymyr.notecase.R;
 import com.expenses.volodymyr.notecase.adapter.CategoryAdapter;
 import com.expenses.volodymyr.notecase.fragment.TabViewExpenses;
-import com.expenses.volodymyr.notecase.request.GsonRequest;
-import com.expenses.volodymyr.notecase.util.AppProperties;
-import com.expenses.volodymyr.notecase.util.DBHandler;
-import com.expenses.volodymyr.notecase.util.VolleySingleton;
+import com.data.volodymyr.notecase.request.GsonRequest;
+import com.data.volodymyr.notecase.util.AppProperties;
+import com.data.volodymyr.notecase.util.DBHandler;
+import com.data.volodymyr.notecase.util.VolleySingleton;
 
 import java.util.HashMap;
 import java.util.List;

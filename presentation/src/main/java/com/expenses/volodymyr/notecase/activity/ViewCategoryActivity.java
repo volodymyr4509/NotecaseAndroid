@@ -12,7 +12,7 @@ import android.widget.ImageView;
 import com.data.volodymyr.notecase.entity.Category;
 import com.expenses.volodymyr.notecase.R;
 import com.expenses.volodymyr.notecase.adapter.CategoryAdapter;
-import com.expenses.volodymyr.notecase.util.DBHandler;
+import com.data.volodymyr.notecase.util.DBHandler;
 
 import java.util.List;
 

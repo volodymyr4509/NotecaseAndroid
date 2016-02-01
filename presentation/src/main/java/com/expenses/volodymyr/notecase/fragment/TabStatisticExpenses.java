@@ -11,7 +11,7 @@ import android.widget.RadioButton;
 
 import com.data.volodymyr.notecase.entity.Category;
 import com.expenses.volodymyr.notecase.R;
-import com.expenses.volodymyr.notecase.util.DBHandler;
+import com.data.volodymyr.notecase.util.DBHandler;
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
