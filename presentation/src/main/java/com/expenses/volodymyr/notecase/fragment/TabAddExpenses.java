@@ -109,10 +109,10 @@ public class TabAddExpenses extends Fragment {
         left_block.removeAllViews();
         right_block.removeAllViews();
 
-        LinearLayout.LayoutParams leftParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 0.15f);
+        LinearLayout.LayoutParams leftParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, 0.15f);
         leftParams.setMargins(0, 30, 0, 30);
         leftParams.gravity = Gravity.LEFT;
-        LinearLayout.LayoutParams rightParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 0.15f);
+        LinearLayout.LayoutParams rightParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, 0.15f);
         rightParams.gravity = Gravity.RIGHT;
         rightParams.setMargins(0, 30, 0, 30);
 

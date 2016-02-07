@@ -6,7 +6,7 @@ import com.data.volodymyr.notecase.entity.Product;
 /**
  * Created by vkret on 01.02.16.
  */
-public interface UserNetworkDAO {
+public interface ProductNetworkDAO {
     void getProduct(int id, Response.Listener success, Response.ErrorListener error);
     void updateProduct(Product product, Response.Listener success, Response.ErrorListener error);
     void saveProduct(Product product, Response.Listener success, Response.ErrorListener error);

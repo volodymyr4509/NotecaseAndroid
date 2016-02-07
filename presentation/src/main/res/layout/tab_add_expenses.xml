@@ -50,12 +50,10 @@
     <LinearLayout
         android:id="@+id/left_category_block"
         android:orientation="vertical"
-        android:layout_width="match_parent"
+        android:layout_width="80dp"
         android:layout_height="match_parent"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_toLeftOf="@+id/linearLayout"
-        android:layout_toStartOf="@+id/linearLayout"
         android:layout_alignTop="@+id/linearLayout"
         android:layout_alignParentBottom="true">
 
@@ -64,12 +62,10 @@
     <LinearLayout
         android:id="@+id/right_category_block"
         android:orientation="vertical"
-        android:layout_width="match_parent"
+        android:layout_width="80dp"
         android:layout_height="match_parent"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:layout_toRightOf="@+id/linearLayout"
-        android:layout_toEndOf="@+id/linearLayout"
         android:layout_alignParentBottom="true"
         android:layout_alignParentTop="true">
 

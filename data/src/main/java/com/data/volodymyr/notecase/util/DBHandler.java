@@ -274,12 +274,12 @@ public class DBHandler extends SQLiteOpenHelper {
 
     private void initDefaultCategories(SQLiteDatabase db) {
         List<Category> categoryList = new ArrayList<>();
-        categoryList.add(new Category("Food", -17595, R.drawable.ic_color_lens_white_24dp));
-        categoryList.add(new Category("Accommodation", -20151, R.drawable.ic_local_shipping_white_24dp));
-        categoryList.add(new Category("Transport", -26151, R.drawable.ic_pets_black_24dp));
-        categoryList.add(new Category("Travel", -14343, R.drawable.ic_watch_white_24dp));
-        categoryList.add(new Category("Dinner", -18141, R.drawable.ic_card_travel_black_24dp));
-        categoryList.add(new Category("Other", -17232, R.drawable.ic_wb_sunny_white_24dp));
+        categoryList.add(new Category("Beer", -17595, R.drawable.beer));
+        categoryList.add(new Category("Accommodation", -20151, R.drawable.bighouse));
+        categoryList.add(new Category("bucket", -26151, R.drawable.bucket));
+        categoryList.add(new Category("coffee", -14343, R.drawable.coffee));
+        categoryList.add(new Category("carrot", -18141, R.drawable.morkva));
+        categoryList.add(new Category("house", -17232, R.drawable.house));
 
         for (Category category : categoryList) {
             ContentValues values = new ContentValues();

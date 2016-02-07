@@ -210,14 +210,14 @@ public class AddEditCategoryActivity extends Activity implements SeekBar.OnSeekB
     private void getImagesId() {
 
         imagesIds = new ArrayList<>();
-        imagesIds.add(R.drawable.ic_attachment_black_24dp);
-        imagesIds.add(R.drawable.ic_build_black_24dp);
-        imagesIds.add(R.drawable.ic_business_black_24dp);
-        imagesIds.add(R.drawable.ic_card_travel_black_24dp);
-        imagesIds.add(R.drawable.ic_color_lens_white_24dp);
-        imagesIds.add(R.drawable.ic_directions_walk_white_24dp);
-        imagesIds.add(R.drawable.ic_explore_black_24dp);
-        imagesIds.add(R.drawable.ic_local_car_wash_white_24dp);
+        imagesIds.add(R.drawable.beer);
+        imagesIds.add(R.drawable.bighouse);
+        imagesIds.add(R.drawable.bucket);
+        imagesIds.add(R.drawable.carrot);
+        imagesIds.add(R.drawable.cherry);
+        imagesIds.add(R.drawable.coffee);
+        imagesIds.add(R.drawable.house);
+        imagesIds.add(R.drawable.soda);
         imagesIds.add(R.drawable.ic_local_shipping_white_24dp);
         imagesIds.add(R.drawable.ic_pets_black_24dp);
         imagesIds.add(R.drawable.ic_schedule_black_24dp);

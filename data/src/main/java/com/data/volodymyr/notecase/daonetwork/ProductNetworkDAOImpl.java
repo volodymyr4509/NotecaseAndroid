@@ -17,12 +17,12 @@ import java.util.Map;
 /**
  * Created by vkret on 01.02.16.
  */
-public class UserNetworkDAOImpl implements UserNetworkDAO {
-    private static final String TAG = "UserNetworkDAOImpl";
+public class ProductNetworkDAOImpl implements ProductNetworkDAO {
+    private static final String TAG = "ProductNetworkDAOImpl";
 
     private Context context;
 
-    public UserNetworkDAOImpl(Context context) {
+    public ProductNetworkDAOImpl(Context context) {
         this.context = context;
     }
 
@@ -55,7 +55,7 @@ public class UserNetworkDAOImpl implements UserNetworkDAO {
     public void saveProduct(Product product, Response.Listener success, Response.ErrorListener error) {
         String url = AppProperties.HOST + AppProperties.PORT + "/rest/product/add";
 
-        Log.i(TAG, "Send product to url: " + url + ", request body: " + product);
+        Log.i(TAG, "Send product to url: " + url + ", requestLoader body: " + product);
         Map<String, String> headers = new HashMap<>();
         GsonRequest<Product> gsonRequest = new GsonRequest<>(Request.Method.POST, url, Product.class, headers, success, error, product);
         VolleySingleton.getInstance(context).addToRequestQueue(gsonRequest);
