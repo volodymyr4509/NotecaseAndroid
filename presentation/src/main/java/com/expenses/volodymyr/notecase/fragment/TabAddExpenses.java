@@ -23,10 +23,12 @@ import android.widget.LinearLayout;
 import android.widget.SimpleCursorAdapter;
 
 import com.data.volodymyr.notecase.entity.Category;
+import com.domain.volodymyr.notecase.manager.CategoryManager;
+import com.domain.volodymyr.notecase.manager.CategoryManagerImpl;
 import com.expenses.volodymyr.notecase.R;
 import com.data.volodymyr.notecase.util.DBHandler;
 import com.expenses.volodymyr.notecase.util.MyDragShadowBuilder;
-import com.expenses.volodymyr.notecase.util.MyOnDragListener;
+import com.expenses.volodymyr.notecase.util.OnDragDropListener;
 
 import java.util.List;
 
@@ -41,6 +43,9 @@ public class TabAddExpenses extends Fragment {
     EditText priceInput;
     AutoCompleteTextView nameInput;
 
+    private CategoryManager categoryManager;
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(TAG, "Creating Add fragment");
@@ -51,7 +56,7 @@ public class TabAddExpenses extends Fragment {
         left_block = (LinearLayout) view.findViewById(R.id.left_category_block);
         right_block = (LinearLayout) view.findViewById(R.id.right_category_block);
 
-
+        categoryManager = new CategoryManagerImpl(getContext());
         SimpleCursorAdapter productNameAdapter = getProductNameQueryAdapter();
         if (productNameAdapter!=null){
             nameInput.setAdapter(productNameAdapter);
@@ -100,8 +105,7 @@ public class TabAddExpenses extends Fragment {
     }
 
     public void addCategoriesOnScreen() {
-        DBHandler dbHandler = DBHandler.getDbHandler(getActivity());
-        List<Category> categoryList = dbHandler.getAllCategories();
+        List<Category> categoryList = categoryManager.getAllCategories();
 
         if (categoryList.size() == left_block.getChildCount() + right_block.getChildCount()) {
             return;
@@ -130,7 +134,7 @@ public class TabAddExpenses extends Fragment {
                 categoryView.setLayoutParams(rightParams);
             }
             Log.i(TAG, "Add category to AddExpense fragment: " + left_block.getChildCount() + ":" + right_block.getChildCount());
-            categoryView.setOnDragListener(new MyOnDragListener(nameInput, priceInput, category.getId(), getActivity()));
+            categoryView.setOnDragListener(new OnDragDropListener(nameInput, priceInput, category.getId(), getActivity()));
         }
     }
 

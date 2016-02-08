@@ -1,14 +1,23 @@
 package com.data.volodymyr.notecase.daonetwork;
 
-import com.android.volley.Response;
 import com.data.volodymyr.notecase.entity.Product;
 
+import java.sql.Timestamp;
+import java.util.List;
+
 /**
- * Created by vkret on 01.02.16.
+ * Created by volodymyr on 07.02.16.
  */
 public interface ProductNetworkDAO {
-    void getProduct(int id, Response.Listener success, Response.ErrorListener error);
-    void updateProduct(Product product, Response.Listener success, Response.ErrorListener error);
-    void saveProduct(Product product, Response.Listener success, Response.ErrorListener error);
-    void deleteProduct(int id, Response.Listener success, Response.ErrorListener error);
+
+    Product getProduct(int id);
+
+    boolean updateProduct(Product product);
+
+    boolean addProduct(Product product);
+
+    boolean deleteProduct(int id);
+
+    List<Product> getProductsSinceUpdateTimestamp(Timestamp lastUpdateTimestamp);
+
 }

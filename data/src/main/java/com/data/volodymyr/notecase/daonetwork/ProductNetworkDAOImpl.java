@@ -1,70 +1,100 @@
 package com.data.volodymyr.notecase.daonetwork;
 
-import android.content.Context;
 import android.util.Log;
-import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.Response;
 import com.data.volodymyr.notecase.entity.Product;
-import com.data.volodymyr.notecase.request.GsonRequest;
+import com.data.volodymyr.notecase.request.RequestLoader;
+import com.data.volodymyr.notecase.request.RequestLoaderImpl;
 import com.data.volodymyr.notecase.util.AppProperties;
-import com.data.volodymyr.notecase.util.VolleySingleton;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.io.IOException;
+import java.sql.Timestamp;
+import java.util.List;
 
 /**
- * Created by vkret on 01.02.16.
+ * Created by volodymyr on 06.02.16.
  */
 public class ProductNetworkDAOImpl implements ProductNetworkDAO {
     private static final String TAG = "ProductNetworkDAOImpl";
-
-    private Context context;
-
-    public ProductNetworkDAOImpl(Context context) {
-        this.context = context;
-    }
+    private Gson gson = new Gson();
+    private RequestLoader requestLoader = new RequestLoaderImpl();
 
     @Override
-    public void getProduct(int id, Response.Listener success, Response.ErrorListener error) {
+    public Product getProduct(int id) {
         Product product = null;
         String url = AppProperties.HOST + AppProperties.PORT + "/rest/product/get/" + id;
         Log.i(TAG, "Get product, url: " + url + ", product: " + id);
-        Map<String, String> headers = new HashMap<>();
-        GsonRequest<Product> gsonRequest = new GsonRequest<>(Request.Method.PUT, url, Product.class, headers, success, error, product);
 
-        Toast.makeText(context, "Saved", Toast.LENGTH_LONG).show();
-
-        VolleySingleton.getInstance(context).addToRequestQueue(gsonRequest);
+        try {
+            String response = requestLoader.makeGet(url);
+            product = gson.fromJson(response, Product.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return product;
     }
 
     @Override
-    public void updateProduct(Product product, Response.Listener success, Response.ErrorListener error) {
+    public boolean updateProduct(Product product) {
+        boolean success;
         String url = AppProperties.HOST + AppProperties.PORT + "/rest/product/update";
         Log.i(TAG, "Update product, url: " + url + ", product: " + product);
-        Map<String, String> headers = new HashMap<>();
-        GsonRequest<Product> gsonRequest = new GsonRequest<>(Request.Method.PUT, url, Product.class, headers, success, error, product);
 
-        Toast.makeText(context, "Saved", Toast.LENGTH_LONG).show();
-
-        VolleySingleton.getInstance(context).addToRequestQueue(gsonRequest);
+        String productString = gson.toJson(product);
+        try {
+            String response = requestLoader.makePut(url, productString.getBytes());
+            success = Boolean.valueOf(response);
+        } catch (IOException e) {
+            success = false;
+            e.printStackTrace();
+        }
+        return success;
     }
 
-    @Override
-    public void saveProduct(Product product, Response.Listener success, Response.ErrorListener error) {
+    public boolean addProduct(Product product) {
+        boolean success;
         String url = AppProperties.HOST + AppProperties.PORT + "/rest/product/add";
+        Log.i(TAG, "Add product, url: " + url + ", product: " + product);
 
-        Log.i(TAG, "Send product to url: " + url + ", requestLoader body: " + product);
-        Map<String, String> headers = new HashMap<>();
-        GsonRequest<Product> gsonRequest = new GsonRequest<>(Request.Method.POST, url, Product.class, headers, success, error, product);
-        VolleySingleton.getInstance(context).addToRequestQueue(gsonRequest);
+        String productString = gson.toJson(product);
+        try {
+            String response = requestLoader.makePost(url, productString.getBytes());
+            success = Boolean.valueOf(response);
+        } catch (IOException e) {
+            success = false;
+            e.printStackTrace();
+        }
+        return success;
     }
 
     @Override
-    public void deleteProduct(int id, Response.Listener success, Response.ErrorListener error) {
+    public boolean deleteProduct(int id) {
+        boolean success;
         String url = AppProperties.HOST + AppProperties.PORT + "/rest/product/delete/" + id;
-        GsonRequest<Product> gsonRequest = new GsonRequest<>(Request.Method.DELETE, url, Product.class, null, success, error, null);
-        VolleySingleton.getInstance(context).addToRequestQueue(gsonRequest);
+        Log.i(TAG, "Delete product, url: " + url + ", product id: " + id);
+        try {
+            String response = requestLoader.makeDelete(url);
+            success = Boolean.valueOf(response);
+        }catch (IOException e){
+            success = false;
+            e.printStackTrace();
+        }
+        return success;
     }
+
+    public List<Product> getProductsSinceUpdateTimestamp(Timestamp lastUpdateTimestamp){
+        List<Product> productList = null;
+        String url = AppProperties.HOST + AppProperties.PORT + "/rest/product/getupdated?timestamp=" + lastUpdateTimestamp.getTime();
+        Log.i(TAG, "Upload product since" + lastUpdateTimestamp + ", url: " + url);
+        try {
+            String response = requestLoader.makeGet(url);
+            productList = gson.fromJson(response, new TypeToken<List<Product>>(){}.getType());
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+        return productList;
+    }
+
 }

@@ -1,8 +1,8 @@
 package com.expenses.volodymyr.notecase.activity;
 
 import android.app.Activity;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
@@ -11,22 +11,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.data.volodymyr.notecase.entity.Category;
 import com.data.volodymyr.notecase.entity.Product;
+import com.domain.volodymyr.notecase.manager.CategoryManager;
+import com.domain.volodymyr.notecase.manager.CategoryManagerImpl;
+import com.domain.volodymyr.notecase.manager.ProductManager;
+import com.domain.volodymyr.notecase.manager.ProductManagerImpl;
 import com.expenses.volodymyr.notecase.R;
 import com.expenses.volodymyr.notecase.adapter.CategoryAdapter;
 import com.expenses.volodymyr.notecase.fragment.TabViewExpenses;
-import com.data.volodymyr.notecase.request.GsonRequest;
-import com.data.volodymyr.notecase.util.AppProperties;
 import com.data.volodymyr.notecase.util.DBHandler;
-import com.data.volodymyr.notecase.util.VolleySingleton;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by vkret on 02.12.15.
@@ -40,20 +36,14 @@ public class EditExpenseActivity extends Activity implements View.OnClickListene
     private GridView categoryGrid;
     private Product product;
     private Category category;
-    private DBHandler dbHandler;
     private CategoryAdapter categoryAdapter;
+    private ProductManager productManager;
+    private CategoryManager categoryManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_expense);
-
-        int productId = getIntent().getIntExtra(TabViewExpenses.PRODUCT_ID_KEY, -1);
-        dbHandler = DBHandler.getDbHandler(this);
-        product = dbHandler.getProductById(productId);
-        category = dbHandler.getCategoryById(product.getCategoryId());
-        List<Category> categories = dbHandler.getAllCategories();
-
 
         name = (EditText) findViewById(R.id.edit_expense_name);
         price = (EditText) findViewById(R.id.edit_expense_price);
@@ -64,6 +54,15 @@ public class EditExpenseActivity extends Activity implements View.OnClickListene
         logo = (ImageView) findViewById(R.id.logo);
         categoryGrid = (GridView) findViewById(R.id.categoriesGrid);
         categoryArea = (ImageView) findViewById(R.id.edit_expense_category);
+
+        productManager = new ProductManagerImpl(getApplicationContext());
+        categoryManager = new CategoryManagerImpl(getApplicationContext());
+
+        int productId = getIntent().getIntExtra(TabViewExpenses.PRODUCT_ID_KEY, -1);
+        //In UI thread
+        product = productManager.getProductById(productId);
+        category = categoryManager.getCategoryById(product.getCategoryId());
+        List<Category> categories = categoryManager.getAllCategories();
 
         categoryAdapter = new CategoryAdapter(this, categories, true);
         categoryGrid.setAdapter(categoryAdapter);
@@ -98,30 +97,23 @@ public class EditExpenseActivity extends Activity implements View.OnClickListene
                     e.printStackTrace();
                     Toast.makeText(getApplicationContext(), "Incorrect input", Toast.LENGTH_LONG).show();
                 }
+                new AsyncTask<Product, Void, Boolean>(){
 
-                String url = AppProperties.HOST + AppProperties.PORT + "/rest/product/update";
-                Log.i(TAG, "Update product, url: " + url + ", product: " + product);
-                Map<String, String> headers = new HashMap<>();
-                GsonRequest<Product> gsonRequest = new GsonRequest<>(Request.Method.PUT, url, Product.class, headers,
-                        new Response.Listener() {
-                            @Override
-                            public void onResponse(Object o) {
-                                product.setDirty(false);
-                                DBHandler.getDbHandler(getApplicationContext()).updateProduct(product);
-                            }
-                        },
-                        new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError volleyError) {
-                                Toast.makeText(getApplicationContext(), "Product sending failed", Toast.LENGTH_LONG).show();
-                            }
-                        }, product);
+                    @Override
+                    protected Boolean doInBackground(Product... params) {
+                        Product product = params[0];
+                        return productManager.updateProduct(product);
+                    }
 
-                dbHandler.updateProduct(product);
-                Toast.makeText(getApplicationContext(), "Saved", Toast.LENGTH_LONG).show();
-
-                VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(gsonRequest);
-
+                    @Override
+                    protected void onPostExecute(Boolean success) {
+                        if (success){
+                            Toast.makeText(getApplicationContext(), "Product updated successfully", Toast.LENGTH_LONG);
+                        }else {
+                            Toast.makeText(getApplicationContext(), "Product update failed", Toast.LENGTH_LONG);
+                        }
+                    }
+                }.execute(product);
 
                 break;
             case R.id.navigation_arrow:
@@ -138,4 +130,5 @@ public class EditExpenseActivity extends Activity implements View.OnClickListene
         categoryArea.setImageResource(category.getImage());
         categoryArea.setBackgroundColor(category.getColor());
     }
+
 }

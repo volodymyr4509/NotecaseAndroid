@@ -4,7 +4,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.hardware.camera2.DngCreator;
 import android.util.Log;
 
 import com.data.volodymyr.notecase.entity.Category;
@@ -16,12 +15,12 @@ import java.util.List;
 /**
  * Created by volodymyr on 31.01.16.
  */
-public class CategoryDAOImpl implements CategoryDAO{
-    private static final String TAG = "CategoryDAOImpl";
+public class CategorySQLiteDAOImpl implements CategorySQLiteDAO {
+    private static final String TAG = "CategorySQLiteDAOImpl";
 
     private DBHandler dbHandler;
 
-    public CategoryDAOImpl(Context context) {
+    public CategorySQLiteDAOImpl(Context context) {
         this.dbHandler = DBHandler.getDbHandler(context);
     }
 

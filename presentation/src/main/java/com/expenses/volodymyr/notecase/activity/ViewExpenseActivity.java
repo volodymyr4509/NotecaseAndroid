@@ -4,34 +4,36 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.data.volodymyr.notecase.entity.Category;
 import com.data.volodymyr.notecase.entity.Product;
+import com.domain.volodymyr.notecase.manager.CategoryManager;
+import com.domain.volodymyr.notecase.manager.CategoryManagerImpl;
+import com.domain.volodymyr.notecase.manager.ProductManager;
+import com.domain.volodymyr.notecase.manager.ProductManagerImpl;
 import com.expenses.volodymyr.notecase.R;
 import com.expenses.volodymyr.notecase.fragment.TabViewExpenses;
-import com.data.volodymyr.notecase.request.GsonRequest;
-import com.data.volodymyr.notecase.util.AppProperties;
-import com.data.volodymyr.notecase.util.DBHandler;
-import com.data.volodymyr.notecase.util.VolleySingleton;
 
 /**
  * Created by volodymyr on 01.01.16.
  */
 public class ViewExpenseActivity extends Activity implements View.OnClickListener {
+    private static final String TAG = "ViewExpenseActivity";
     private TextView name, price, dateTime, categoryName;
     private ImageView categryImage, navigationArrow, logo, editButton, delete;
     private Product product;
-    private DBHandler dbHandler;
     private Toolbar toolbar;
+
+    private ProductManager productManager;
+    private CategoryManager categoryManager;
 
 
     @Override
@@ -49,6 +51,8 @@ public class ViewExpenseActivity extends Activity implements View.OnClickListene
         editButton = (ImageView) findViewById(R.id.action_item);
         delete = (ImageView) findViewById(R.id.action_item_delete);
 
+        productManager = new ProductManagerImpl(getApplicationContext());
+        categoryManager = new CategoryManagerImpl(getApplicationContext());
         initFields();
 
         editButton.setOnClickListener(this);
@@ -66,9 +70,8 @@ public class ViewExpenseActivity extends Activity implements View.OnClickListene
 
     public void initFields() {
         int productId = getIntent().getIntExtra(TabViewExpenses.PRODUCT_ID_KEY, -1);
-        dbHandler = DBHandler.getDbHandler(this);
-        product = dbHandler.getProductById(productId);
-        Category category = dbHandler.getCategoryById(product.getCategoryId());
+        product = productManager.getProductById(productId);
+        Category category = categoryManager.getCategoryById(product.getCategoryId());
 
         name.setText(product.getName());
         price.setText(String.valueOf(product.getPrice()));
@@ -94,25 +97,43 @@ public class ViewExpenseActivity extends Activity implements View.OnClickListene
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 product.setDirty(true);
-                                dbHandler.deleteProductById(product.getId());
-                                Toast.makeText(getApplicationContext(), "Deleted", Toast.LENGTH_LONG).show();
 
-                                String url = AppProperties.HOST + AppProperties.PORT + "/rest/product/delete/" + product.getId();
-                                GsonRequest<Product> gsonRequest = new GsonRequest<>(Request.Method.DELETE, url, Product.class, null,
-                                        new Response.Listener() {
-                                            @Override
-                                            public void onResponse(Object o) {
-                                                product.setDirty(false);
-                                                DBHandler.getDbHandler(getApplicationContext()).deleteProductById(product.getId());
-                                            }
-                                        },
-                                        new Response.ErrorListener() {
-                                            @Override
-                                            public void onErrorResponse(VolleyError volleyError) {
-                                                Toast.makeText(getApplicationContext(), "Product deleting failed", Toast.LENGTH_LONG).show();
-                                            }
-                                        }, null);
-                                VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(gsonRequest);
+                                new AsyncTask<Product, Void, Boolean>() {
+                                    @Override
+                                    protected Boolean doInBackground(Product... params) {
+                                        Product product = params[0];
+                                        return productManager.deleteProductById(product.getId());
+                                    }
+
+                                    @Override
+                                    protected void onPostExecute(Boolean success) {
+                                        if (success){
+                                            Log.i(TAG, "Product with Id = " + product.getId()+ ", Name = " + product.getName() +" deleted.");
+                                        }else {
+                                            Toast.makeText(getApplicationContext(), "Product with id = " + product.getId() + " deleted", Toast.LENGTH_LONG);
+                                            Log.e(TAG, "Product delete failed. Id = " + product.getId());
+                                        }
+                                    }
+                                }.execute(product);
+                                productManager.deleteProductById(product.getId());
+//                                Toast.makeText(getApplicationContext(), "Deleted", Toast.LENGTH_LONG).show();
+
+//                                String url = AppProperties.HOST + AppProperties.PORT + "/rest/product/delete/" + product.getId();
+//                                GsonRequest<Product> gsonRequest = new GsonRequest<>(Request.Method.DELETE, url, Product.class, null,
+//                                        new Response.Listener() {
+//                                            @Override
+//                                            public void onResponse(Object o) {
+//                                                product.setDirty(false);
+//                                                DBHandler.getDbHandler(getApplicationContext()).deleteProductById(product.getId());
+//                                            }
+//                                        },
+//                                        new Response.ErrorListener() {
+//                                            @Override
+//                                            public void onErrorResponse(VolleyError volleyError) {
+//                                                Toast.makeText(getApplicationContext(), "Product deleting failed", Toast.LENGTH_LONG).show();
+//                                            }
+//                                        }, null);
+//                                VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(gsonRequest);
                                 finish();
                             }
                         })

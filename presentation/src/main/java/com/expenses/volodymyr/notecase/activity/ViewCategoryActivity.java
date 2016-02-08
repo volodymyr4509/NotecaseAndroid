@@ -10,6 +10,8 @@ import android.widget.GridView;
 import android.widget.ImageView;
 
 import com.data.volodymyr.notecase.entity.Category;
+import com.domain.volodymyr.notecase.manager.CategoryManager;
+import com.domain.volodymyr.notecase.manager.CategoryManagerImpl;
 import com.expenses.volodymyr.notecase.R;
 import com.expenses.volodymyr.notecase.adapter.CategoryAdapter;
 import com.data.volodymyr.notecase.util.DBHandler;
@@ -23,6 +25,8 @@ public class ViewCategoryActivity extends AppCompatActivity implements View.OnCl
     public static final String CATEGORY_ADD = "add";
     public static final String CATEGORY_ID_KEY = "categoryId";
     GridView gridView;
+
+    private CategoryManager categoryManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +45,7 @@ public class ViewCategoryActivity extends AppCompatActivity implements View.OnCl
         ImageView addCategoryButton = (ImageView) findViewById(R.id.action_item);
         addCategoryButton.setImageResource(R.drawable.ic_control_point_white_24dp);
 
+        categoryManager = new CategoryManagerImpl(getApplicationContext());
         initCategories();
 
         addCategoryButton.setOnClickListener(new View.OnClickListener() {
@@ -76,8 +81,7 @@ public class ViewCategoryActivity extends AppCompatActivity implements View.OnCl
     }
 
     public void initCategories() {
-        DBHandler dbHandler = DBHandler.getDbHandler(this);
-        List<Category> categoryList = dbHandler.getAllCategories();
+        List<Category> categoryList = categoryManager.getAllCategories();
         ArrayAdapter<Category> adapter = new CategoryAdapter(this, categoryList, true);
         gridView.setAdapter(adapter);
     }

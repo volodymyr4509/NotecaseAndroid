@@ -2,8 +2,10 @@ package com.data.volodymyr.notecase.dao;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.data.volodymyr.notecase.entity.Category;
@@ -19,11 +21,15 @@ import java.util.Map;
 /**
  * Created by volodymyr on 31.01.16.
  */
-public class ProductDAOImpl implements ProductDAO {
-    private static final String TAG = "ProductDAOImpl";
-    private DBHandler dbHandler;
+public class ProductSQLiteDAOImpl implements ProductSQLiteDAO {
+    private static final String TAG = "ProductSQLiteDAOImpl";
+    private static final String LAST_SYNC_TIMESTAMP = "lastSyncTimestamp";
 
-    public ProductDAOImpl(Context context) {
+    private DBHandler dbHandler;
+    private Context context;
+
+    public ProductSQLiteDAOImpl(Context context) {
+        this.context = context;
         this.dbHandler = DBHandler.getDbHandler(context);
     }
 
@@ -86,7 +92,6 @@ public class ProductDAOImpl implements ProductDAO {
         SQLiteDatabase db = dbHandler.getReadableDatabase();
         String query = "SELECT * FROM " + DBHandler.TABLE_PRODUCT +
                 " WHERE " + DBHandler.PRODUCT_TIMESTAMP + " BETWEEN '" + since + "' AND '" + till + "' ORDER BY " + DBHandler.COLUMN_ID + " DESC LIMIT 500;";
-        System.out.println(query);
         Cursor cursor = db.rawQuery(query, null);
         List<Product> products = new ArrayList();
         while (cursor.moveToNext()) {
@@ -107,6 +112,31 @@ public class ProductDAOImpl implements ProductDAO {
         Log.i(TAG, "Product were retrieved from sqlite: count = " + products.size() + ", since = " + since + ", till = " + till);
         Log.w(TAG, "Getting all products: " + String.valueOf(System.currentTimeMillis() - before) + "ms");
         return products;
+    }
+
+    @Override
+    public List<Product> getDirtyProducts(){
+        SQLiteDatabase db = dbHandler.getReadableDatabase();
+        String query = "SELECT * FROM " + DBHandler.TABLE_PRODUCT + " WHERE " + DBHandler.DIRTY + " = 1;";
+        Cursor cursor = db.rawQuery(query, null);
+        List<Product> productList = new ArrayList<>();
+        while (cursor.moveToNext()){
+            Product product = new Product();
+            product.setId(cursor.getInt(0));
+            product.setUserId(cursor.getInt(1));
+            product.setCategoryId(cursor.getInt(2));
+            product.setName(cursor.getString(3));
+            product.setPrice(cursor.getDouble(4));
+            product.setDirty(cursor.getInt(6) == 1);
+            Timestamp timestamp = null;
+            if (cursor.getString(5) != null) {
+                timestamp = Timestamp.valueOf(cursor.getString(5));
+            }
+            product.setCreated(timestamp);
+            productList.add(product);
+        }
+        Log.i(TAG, "Dirty products were retrieved from sqlite: count = " + productList.size());
+        return productList;
     }
 
     @Override
@@ -176,6 +206,19 @@ public class ProductDAOImpl implements ProductDAO {
         Log.i(TAG, "Loading suggested prod name: \n" + query);
         Cursor cursor = db.rawQuery(query, null);
         return cursor;
+    }
+
+    public Timestamp getLastSyncTimestamp(){
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        long timestamp = preferences.getLong(LAST_SYNC_TIMESTAMP, 0l);
+        Timestamp lastSync = new Timestamp(timestamp);
+        return lastSync;
+    }
+
+    public void updateLastSyncTimestamp(Timestamp timestamp){
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor prefEditor = preferences.edit();
+        prefEditor.putLong(LAST_SYNC_TIMESTAMP, timestamp.getTime());
     }
 
 }

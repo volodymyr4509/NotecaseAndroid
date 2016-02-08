@@ -5,6 +5,7 @@ import android.database.Cursor;
 import com.data.volodymyr.notecase.entity.Category;
 import com.data.volodymyr.notecase.entity.Product;
 
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
@@ -12,15 +13,22 @@ import java.util.Map;
 /**
  * Created by volodymyr on 31.01.16.
  */
-public interface ProductDAO {
+public interface ProductSQLiteDAO {
 
     int addProduct(Product product);
 
     void updateProduct(Product product);
 
+    /**
+     *
+     * @param productId
+     * @return product by id or null if product doesnt exist
+     */
     Product getProductById(int productId);
 
     List<Product> getAllProducts(Timestamp since, Timestamp till);
+
+    List<Product> getDirtyProducts();
 
     void deleteProductById(int productId);
 
@@ -32,4 +40,7 @@ public interface ProductDAO {
 
     Cursor suggestProductName(String partialProductName);
 
+    Timestamp getLastSyncTimestamp();
+
+    void updateLastSyncTimestamp(Timestamp timestamp);
 }

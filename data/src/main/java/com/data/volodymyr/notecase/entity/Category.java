@@ -55,7 +55,7 @@ public class Category {
 
     @Override
     public String toString() {
-        return "CategoryDAO{" +
+        return "CategorySQLiteDAO{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", color=" + color +

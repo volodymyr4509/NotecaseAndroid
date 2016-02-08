@@ -18,6 +18,8 @@ import android.widget.Toast;
 
 import com.data.volodymyr.notecase.entity.Category;
 import com.data.volodymyr.notecase.entity.Product;
+import com.domain.volodymyr.notecase.manager.CategoryManager;
+import com.domain.volodymyr.notecase.manager.CategoryManagerImpl;
 import com.expenses.volodymyr.notecase.R;
 import com.expenses.volodymyr.notecase.adapter.ImageGridAdapter;
 import com.data.volodymyr.notecase.util.DBHandler;
@@ -39,6 +41,8 @@ public class AddEditCategoryActivity extends Activity implements SeekBar.OnSeekB
     private Category category;
     private DBHandler dbHandler;
 
+    private CategoryManager categoryManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,6 +62,7 @@ public class AddEditCategoryActivity extends Activity implements SeekBar.OnSeekB
         gridView.setAdapter(adapter);
         gridView.setOnItemClickListener(this);
 
+        categoryManager = new CategoryManagerImpl(getApplicationContext());
 
         Intent intent = getIntent();
         categoryId = intent.getIntExtra(ViewCategoryActivity.CATEGORY_ID_KEY, -1);
@@ -82,7 +87,7 @@ public class AddEditCategoryActivity extends Activity implements SeekBar.OnSeekB
 
     public void updateCategory(int categoryId) {
         dbHandler = DBHandler.getDbHandler(this);
-        category = dbHandler.getCategoryById(categoryId);
+        category = categoryManager.getCategoryById(categoryId);
         resultImage.setBackgroundColor(category.getColor());
         selectedImageId = category.getImage();
         resultImage.setImageResource(category.getImage());
@@ -145,21 +150,21 @@ public class AddEditCategoryActivity extends Activity implements SeekBar.OnSeekB
 
                 if (newCategoryName != null) {
                     Category newCategory = new Category(newCategoryName, newCategoryColor, selectedImageId);
-                    DBHandler dbHandler = DBHandler.getDbHandler(getApplicationContext());
                     if (categoryId < 0) {
-                        dbHandler.addCategory(newCategory);
+                        categoryManager.addCategory(newCategory);
                     } else {
                         newCategory.setId(categoryId);
-                        dbHandler.updateCategory(newCategory);
+                        categoryManager.updateCategory(category);
                     }
-                    Toast.makeText(getApplicationContext(), "CategoryDAO saved", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "CategorySQLiteDAO saved", Toast.LENGTH_LONG).show();
                     finish();
                 } else {
-                    Toast.makeText(getApplicationContext(), "CategoryDAO name should not be empty", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "CategorySQLiteDAO name should not be empty", Toast.LENGTH_LONG).show();
                 }
                 break;
             case R.id.action_item_delete:
                 //delete not used category
+
                 List<Product> products = dbHandler.getProductsByCategoryId(categoryId);
                 if (products.size()>0){
                     new AlertDialog.Builder(AddEditCategoryActivity.this)
@@ -179,7 +184,7 @@ public class AddEditCategoryActivity extends Activity implements SeekBar.OnSeekB
                             .setMessage("Are you sure you want to delete this category?")
                             .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
-                                    dbHandler.deleteCategoryById(category.getId());
+                                    categoryManager.deleteCategoryById(category.getId());
                                     Toast.makeText(getApplicationContext(), "Deleted", Toast.LENGTH_LONG).show();
                                     finish();
                                 }

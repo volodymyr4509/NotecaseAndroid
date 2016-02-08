@@ -1,6 +1,7 @@
 package com.expenses.volodymyr.notecase.fragment;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -19,6 +20,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.data.volodymyr.notecase.entity.Product;
+import com.domain.volodymyr.notecase.manager.ProductManager;
+import com.domain.volodymyr.notecase.manager.ProductManagerImpl;
 import com.expenses.volodymyr.notecase.R;
 import com.expenses.volodymyr.notecase.activity.ViewExpenseActivity;
 import com.expenses.volodymyr.notecase.adapter.ProductAdapter;
@@ -26,6 +29,7 @@ import com.data.volodymyr.notecase.util.DBHandler;
 
 import org.json.JSONObject;
 
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -43,6 +47,8 @@ public class TabViewExpenses extends Fragment implements AdapterView.OnItemClick
     private View view;
     private int checkedId;
 
+    private ProductManager productManager;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(TAG, "Creating View fragment");
@@ -51,6 +57,8 @@ public class TabViewExpenses extends Fragment implements AdapterView.OnItemClick
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh);
         swipeRefreshLayout.setOnRefreshListener(this);
         listView = (ListView) view.findViewById(R.id.costs_list);
+
+        productManager = new ProductManagerImpl(getContext());
 
         RadioButton last24 = (RadioButton) view.findViewById(R.id.last_24_hours);
         RadioButton lastWeek = (RadioButton) view.findViewById(R.id.last_week);
@@ -106,9 +114,23 @@ public class TabViewExpenses extends Fragment implements AdapterView.OnItemClick
         Timestamp till = new Timestamp(tillTimeMillis);
         Timestamp since = new Timestamp(sinceTimeMillis);
 
-        dbHandler = DBHandler.getDbHandler(getActivity());
-        productList = dbHandler.getAllProducts(since, till);
-        adapter = new ProductAdapter(getActivity(), productList);
+        new AsyncTask<Timestamp, Void, List<Product>>(){
+            @Override
+            protected List<Product> doInBackground(Timestamp... params) {
+                Timestamp begin = params[0];
+                Timestamp end = params[1];
+                return productManager.getAllProducts(begin, end);
+            }
+
+            @Override
+            protected void onPostExecute(List<Product> products) {
+                adapter = new ProductAdapter(getContext(), products);
+
+            }
+        }.execute(since, till);
+
+//        productList = productManager.getAllProducts(since, till);
+//        adapter = new ProductAdapter(getActivity(), productList);
         listView.setAdapter(adapter);
     }
 
