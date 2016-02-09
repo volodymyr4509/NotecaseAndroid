@@ -20,6 +20,8 @@ import com.data.volodymyr.notecase.entity.Category;
 import com.data.volodymyr.notecase.entity.Product;
 import com.domain.volodymyr.notecase.manager.CategoryManager;
 import com.domain.volodymyr.notecase.manager.CategoryManagerImpl;
+import com.domain.volodymyr.notecase.manager.ProductManager;
+import com.domain.volodymyr.notecase.manager.ProductManagerImpl;
 import com.expenses.volodymyr.notecase.R;
 import com.expenses.volodymyr.notecase.adapter.ImageGridAdapter;
 import com.data.volodymyr.notecase.util.DBHandler;
@@ -42,6 +44,7 @@ public class AddEditCategoryActivity extends Activity implements SeekBar.OnSeekB
     private DBHandler dbHandler;
 
     private CategoryManager categoryManager;
+    private ProductManager productManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +66,7 @@ public class AddEditCategoryActivity extends Activity implements SeekBar.OnSeekB
         gridView.setOnItemClickListener(this);
 
         categoryManager = new CategoryManagerImpl(getApplicationContext());
+        productManager = new ProductManagerImpl(getApplicationContext());
 
         Intent intent = getIntent();
         categoryId = intent.getIntExtra(ViewCategoryActivity.CATEGORY_ID_KEY, -1);
@@ -165,7 +169,7 @@ public class AddEditCategoryActivity extends Activity implements SeekBar.OnSeekB
             case R.id.action_item_delete:
                 //delete not used category
 
-                List<Product> products = dbHandler.getProductsByCategoryId(categoryId);
+                List<Product> products = productManager.getProductsByCategoryId(categoryId);
                 if (products.size()>0){
                     new AlertDialog.Builder(AddEditCategoryActivity.this)
                             .setTitle("Delete category")

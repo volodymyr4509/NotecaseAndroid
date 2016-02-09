@@ -1,27 +1,29 @@
 package com.domain.volodymyr.notecase.manager;
 
 import android.content.Context;
+import android.database.Cursor;
 
 import com.data.volodymyr.notecase.dao.ProductSQLiteDAO;
 import com.data.volodymyr.notecase.dao.ProductSQLiteDAOImpl;
 import com.data.volodymyr.notecase.daonetwork.ProductNetworkDAO;
 import com.data.volodymyr.notecase.daonetwork.ProductNetworkDAOImpl;
+import com.data.volodymyr.notecase.entity.Category;
 import com.data.volodymyr.notecase.entity.Product;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by volodymyr on 07.02.16.
  */
 public class ProductManagerImpl implements ProductManager {
-    private Context context;
 
     private ProductNetworkDAO productNetworkDAO = new ProductNetworkDAOImpl();
-    private ProductSQLiteDAO productSQLiteDAO = new ProductSQLiteDAOImpl(context);
+    private ProductSQLiteDAO productSQLiteDAO;
 
     public ProductManagerImpl(Context context) {
-        this.context = context;
+        this.productSQLiteDAO = new ProductSQLiteDAOImpl(context);
     }
 
     @Override
@@ -94,6 +96,26 @@ public class ProductManagerImpl implements ProductManager {
 
         productSQLiteDAO.updateLastSyncTimestamp(new Timestamp(System.currentTimeMillis()));
         return shouldRenderAgain;
+    }
+
+    @Override
+    public List<Product> getProductsByCategoryId(int categoryId) {
+        return productSQLiteDAO.getProductsByCategoryId(categoryId);
+    }
+
+    @Override
+    public Cursor getProductNameCursor() {
+        return productSQLiteDAO.getProductNameCursor();
+    }
+
+    @Override
+    public Cursor suggestProductName(String partialProductName) {
+        return productSQLiteDAO.suggestProductName(partialProductName);
+    }
+
+    @Override
+    public Map<Category, Double> getExpensesGroupedByCategories(Timestamp since, Timestamp till) {
+        return productSQLiteDAO.getExpensesGroupedByCategories(since, till);
     }
 
 }

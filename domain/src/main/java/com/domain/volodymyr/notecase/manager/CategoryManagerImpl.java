@@ -12,13 +12,12 @@ import java.util.List;
  * Created by vkret on 08.02.16.
  */
 public class CategoryManagerImpl implements CategoryManager{
-    private Context context;
 
 //    private ProductNetworkDAO productNetworkDAO = new ProductNetworkDAOImpl();
-    private CategorySQLiteDAO categorySQLiteDAO = new CategorySQLiteDAOImpl(context);
+    private CategorySQLiteDAO categorySQLiteDAO;
 
     public CategoryManagerImpl(Context context) {
-        this.context = context;
+        this.categorySQLiteDAO = new CategorySQLiteDAOImpl(context);
     }
 
     @Override

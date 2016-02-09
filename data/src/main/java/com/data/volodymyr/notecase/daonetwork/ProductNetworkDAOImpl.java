@@ -30,7 +30,7 @@ public class ProductNetworkDAOImpl implements ProductNetworkDAO {
         try {
             String response = requestLoader.makeGet(url);
             product = gson.fromJson(response, Product.class);
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return product;
@@ -46,7 +46,7 @@ public class ProductNetworkDAOImpl implements ProductNetworkDAO {
         try {
             String response = requestLoader.makePut(url, productString.getBytes());
             success = Boolean.valueOf(response);
-        } catch (IOException e) {
+        } catch (Exception e) {
             success = false;
             e.printStackTrace();
         }
@@ -62,7 +62,7 @@ public class ProductNetworkDAOImpl implements ProductNetworkDAO {
         try {
             String response = requestLoader.makePost(url, productString.getBytes());
             success = Boolean.valueOf(response);
-        } catch (IOException e) {
+        } catch (Exception e) {
             success = false;
             e.printStackTrace();
         }
@@ -77,7 +77,7 @@ public class ProductNetworkDAOImpl implements ProductNetworkDAO {
         try {
             String response = requestLoader.makeDelete(url);
             success = Boolean.valueOf(response);
-        }catch (IOException e){
+        }catch (Exception e){
             success = false;
             e.printStackTrace();
         }
@@ -91,7 +91,7 @@ public class ProductNetworkDAOImpl implements ProductNetworkDAO {
         try {
             String response = requestLoader.makeGet(url);
             productList = gson.fromJson(response, new TypeToken<List<Product>>(){}.getType());
-        }catch (IOException e){
+        }catch (Exception e){
             e.printStackTrace();
         }
         return productList;

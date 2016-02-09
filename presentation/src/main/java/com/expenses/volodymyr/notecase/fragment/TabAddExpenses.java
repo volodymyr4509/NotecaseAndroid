@@ -25,6 +25,8 @@ import android.widget.SimpleCursorAdapter;
 import com.data.volodymyr.notecase.entity.Category;
 import com.domain.volodymyr.notecase.manager.CategoryManager;
 import com.domain.volodymyr.notecase.manager.CategoryManagerImpl;
+import com.domain.volodymyr.notecase.manager.ProductManager;
+import com.domain.volodymyr.notecase.manager.ProductManagerImpl;
 import com.expenses.volodymyr.notecase.R;
 import com.data.volodymyr.notecase.util.DBHandler;
 import com.expenses.volodymyr.notecase.util.MyDragShadowBuilder;
@@ -44,6 +46,7 @@ public class TabAddExpenses extends Fragment {
     AutoCompleteTextView nameInput;
 
     private CategoryManager categoryManager;
+    private ProductManager productManager;
 
 
     @Override
@@ -57,6 +60,8 @@ public class TabAddExpenses extends Fragment {
         right_block = (LinearLayout) view.findViewById(R.id.right_category_block);
 
         categoryManager = new CategoryManagerImpl(getContext());
+        productManager = new ProductManagerImpl(getContext());
+
         SimpleCursorAdapter productNameAdapter = getProductNameQueryAdapter();
         if (productNameAdapter!=null){
             nameInput.setAdapter(productNameAdapter);
@@ -158,15 +163,14 @@ public class TabAddExpenses extends Fragment {
     public SimpleCursorAdapter getProductNameQueryAdapter() {
         final int[] to = new int[]{android.R.id.text1};
         final String[] from = new String[]{DBHandler.PRODUCT_NAME};
-        final DBHandler dbHandler = DBHandler.getDbHandler(getActivity());
-        Cursor cursor = dbHandler.getProductNameCursor();
+        Cursor cursor = productManager.getProductNameCursor();
         SimpleCursorAdapter productNameAdapter = new SimpleCursorAdapter(getActivity(), android.R.layout.simple_dropdown_item_1line, cursor, from, to, 0);
         productNameAdapter.setStringConversionColumn(cursor.getColumnIndexOrThrow(DBHandler.PRODUCT_NAME));
         productNameAdapter.setFilterQueryProvider(new FilterQueryProvider() {
             @Override
             public Cursor runQuery(CharSequence constraint) {
                 if (constraint != null) {
-                    return dbHandler.suggestProductName(constraint.toString());
+                    return productManager.suggestProductName(constraint.toString());
                 }
                 return null;
             }

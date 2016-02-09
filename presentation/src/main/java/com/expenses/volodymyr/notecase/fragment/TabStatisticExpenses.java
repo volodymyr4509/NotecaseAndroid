@@ -1,6 +1,7 @@
 package com.expenses.volodymyr.notecase.fragment;
 
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -10,6 +11,8 @@ import android.view.ViewGroup;
 import android.widget.RadioButton;
 
 import com.data.volodymyr.notecase.entity.Category;
+import com.domain.volodymyr.notecase.manager.ProductManager;
+import com.domain.volodymyr.notecase.manager.ProductManagerImpl;
 import com.expenses.volodymyr.notecase.R;
 import com.data.volodymyr.notecase.util.DBHandler;
 import com.github.mikephil.charting.animation.Easing;
@@ -38,11 +41,15 @@ public class TabStatisticExpenses extends Fragment implements OnChartValueSelect
     private PieChart mChart;
     private int checkedId;
 
+    private ProductManager productManager;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(TAG, "Creating Statistic fragment");
 
         View view = inflater.inflate(R.layout.tab_statistic_expenses, container, false);
+
+        productManager = new ProductManagerImpl(getContext());
 
         setMPChart(view);
 
@@ -88,49 +95,57 @@ public class TabStatisticExpenses extends Fragment implements OnChartValueSelect
         Timestamp till = new Timestamp(tillTimeMillis);
         Timestamp since = new Timestamp(sinceTimeMillis);
 
-        DBHandler dbHandler = DBHandler.getDbHandler(getActivity());
-        Map<Category, Double> groupedByCategories = dbHandler.getExpensesGroupedByCategories(since, till);
+        new AsyncTask<Timestamp, Void, Map<Category, Double>>(){
+            @Override
+            protected Map<Category, Double> doInBackground(Timestamp... params) {
+                Timestamp since = params[0];
+                Timestamp till = params[1];
+                return productManager.getExpensesGroupedByCategories(since, till);
+            }
 
-        ArrayList<String> xVals = new ArrayList<>();
-        List<Entry> yVals = new ArrayList<>();
-        ArrayList<Integer> colors = new ArrayList<>();
+            @Override
+            protected void onPostExecute(Map<Category, Double> categoryDoubleMap) {
+                ArrayList<String> xVals = new ArrayList<>();
+                List<Entry> yVals = new ArrayList<>();
+                ArrayList<Integer> colors = new ArrayList<>();
 
-        double sum = 0;
-        Iterator<Double> it = groupedByCategories.values().iterator();
-        while (it.hasNext()) {
-            sum += it.next();
-        }
+                double sum = 0;
+                Iterator<Double> it = categoryDoubleMap.values().iterator();
+                while (it.hasNext()) {
+                    sum += it.next();
+                }
 
-        Set<Category> categorySet = groupedByCategories.keySet();
-        Iterator<Category> catIt = categorySet.iterator();
-        int i = 0;
-        while (catIt.hasNext()) {
-            Category category = catIt.next();
-            xVals.add(category.getName());
-            double percentage = groupedByCategories.get(category) / sum;
-            yVals.add(new Entry((float) percentage, i));
-            colors.add(category.getColor());
-            i++;
-        }
+                Set<Category> categorySet = categoryDoubleMap.keySet();
+                Iterator<Category> catIt = categorySet.iterator();
+                int i = 0;
+                while (catIt.hasNext()) {
+                    Category category = catIt.next();
+                    xVals.add(category.getName());
+                    double percentage = categoryDoubleMap.get(category) / sum;
+                    yVals.add(new Entry((float) percentage, i));
+                    colors.add(category.getColor());
+                    i++;
+                }
+                PieDataSet dataSet = new PieDataSet(yVals, "Categories");
+                dataSet.setSliceSpace(3);
+                dataSet.setSelectionShift(5);
 
-        PieDataSet dataSet = new PieDataSet(yVals, "Categories");
-        dataSet.setSliceSpace(3);
-        dataSet.setSelectionShift(5);
+                dataSet.setColors(colors);
+                //dataSet.setSelectionShift(0f);
 
-        dataSet.setColors(colors);
-        //dataSet.setSelectionShift(0f);
+                PieData data = new PieData(xVals, dataSet);
+                data.setValueFormatter(new PercentFormatter());
+                data.setValueTextSize(11f);
+                data.setValueTextColor(Color.WHITE);
+                mChart.setData(data);
 
-        PieData data = new PieData(xVals, dataSet);
-        data.setValueFormatter(new PercentFormatter());
-        data.setValueTextSize(11f);
-        data.setValueTextColor(Color.WHITE);
+                // undo all highlights
+                mChart.highlightValues(null);
 
-        mChart.setData(data);
+                mChart.invalidate();
+            }
+        }.execute(since, till);
 
-        // undo all highlights
-        mChart.highlightValues(null);
-
-        mChart.invalidate();
     }
 
     private void setMPChart(View view) {

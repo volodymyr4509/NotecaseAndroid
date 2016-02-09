@@ -40,8 +40,6 @@ public class TabViewExpenses extends Fragment implements AdapterView.OnItemClick
     private static final String TAG = "TabViewExpenses";
     public static final String PRODUCT_ID_KEY = "productId";
     private ArrayAdapter<Product> adapter;
-    private List<Product> productList;
-    private DBHandler dbHandler;
     private SwipeRefreshLayout swipeRefreshLayout;
     private ListView listView;
     private View view;
@@ -125,7 +123,6 @@ public class TabViewExpenses extends Fragment implements AdapterView.OnItemClick
             @Override
             protected void onPostExecute(List<Product> products) {
                 adapter = new ProductAdapter(getContext(), products);
-
             }
         }.execute(since, till);
 

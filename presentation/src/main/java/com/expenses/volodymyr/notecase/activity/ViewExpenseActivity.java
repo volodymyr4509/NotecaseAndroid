@@ -115,6 +115,7 @@ public class ViewExpenseActivity extends Activity implements View.OnClickListene
                                         }
                                     }
                                 }.execute(product);
+
                                 productManager.deleteProductById(product.getId());
 //                                Toast.makeText(getApplicationContext(), "Deleted", Toast.LENGTH_LONG).show();
 

@@ -103,29 +103,6 @@ public class DBHandler extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public List<Product> getProductsByCategoryId(int categoryId) {
-        SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_PRODUCT + " WHERE " + PRODUCT_CATEGORY + " = " + categoryId + ";", null);
-        List<Product> products = new ArrayList<>();
-        while (cursor.moveToNext()) {
-            Product product = new Product();
-            product.setId(cursor.getInt(0));
-            product.setUserId(cursor.getInt(1));
-            product.setCategoryId(cursor.getInt(2));
-            product.setName(cursor.getString(3));
-            product.setPrice(cursor.getDouble(4));
-            product.setDirty(cursor.getInt(6) == 1);
-            Timestamp timestamp = null;
-            if (cursor.getString(5) != null) {
-                timestamp = Timestamp.valueOf(cursor.getString(5));
-            }
-            product.setCreated(timestamp);
-            products.add(product);
-        }
-        Log.i(TAG, "Retrieved " + products.size() + " products by categoryid = " + categoryId);
-        return products;
-    }
-
     private void initDefaultCategories(SQLiteDatabase db) {
         List<Category> categoryList = new ArrayList<>();
         categoryList.add(new Category("Beer", -17595, R.drawable.beer));
@@ -142,44 +119,6 @@ public class DBHandler extends SQLiteOpenHelper {
             values.put(CATEGORY_IMAGE, category.getImage());
             db.insert(TABLE_CATEGORY, null, values);
         }
-    }
-
-    public Cursor getProductNameCursor() {
-        SQLiteDatabase db = getReadableDatabase();
-        String query = "SELECT * FROM " + TABLE_PRODUCT + ";";
-        Log.i(TAG, "Loading product name cursor: \n" + query);
-        Cursor cursor = db.rawQuery(query, null);
-        return cursor;
-    }
-
-    public Cursor suggestProductName(String partialProductName) {
-        SQLiteDatabase db = getReadableDatabase();
-        String query = "SELECT * FROM " + TABLE_PRODUCT + " WHERE Name like '" + partialProductName + "%' GROUP BY " + PRODUCT_NAME + ";";
-        Log.i(TAG, "Loading suggested prod name: \n" + query);
-        Cursor cursor = db.rawQuery(query, null);
-        return cursor;
-    }
-
-    //select SUM(p.Price), c.* from product p join category c on p.categoryId= c._id group by p.categoryId;
-    public Map<Category, Double> getExpensesGroupedByCategories(Timestamp since, Timestamp till) {
-        long before = System.currentTimeMillis();
-        SQLiteDatabase db = getReadableDatabase();
-        Map<Category, Double> result = new HashMap<>();
-        String query = "SELECT SUM(p." + PRODUCT_PRICE + ") AS Sum, c.* FROM " + TABLE_PRODUCT + " p JOIN " +
-                TABLE_CATEGORY + " c ON p." + PRODUCT_CATEGORY + "=" + "c." + COLUMN_ID +
-                " WHERE p." + PRODUCT_TIMESTAMP + " BETWEEN '" + since + "' AND '" + till + "' GROUP BY p." + PRODUCT_CATEGORY + ";";
-        Log.i(TAG, "Loading grouped expenses by categories: \n" + query);
-        Cursor cursor = db.rawQuery(query, null);
-        while (cursor.moveToNext()) {
-            Category category = new Category();
-            category.setId(cursor.getInt(1));
-            category.setName(cursor.getString(2));
-            category.setColor(cursor.getInt(3));
-            result.put(category, cursor.getDouble(0));
-        }
-        Log.i(TAG, "Retrieved " + result.size() + " products by categories");
-        Log.w(TAG, "Getting expenses grouped by categories: " + String.valueOf(System.currentTimeMillis() - before) + "ms");
-        return result;
     }
 
 }
