@@ -7,10 +7,18 @@ import com.data.volodymyr.notecase.request.RequestLoader;
 import com.data.volodymyr.notecase.request.RequestLoaderImpl;
 import com.data.volodymyr.notecase.util.AppProperties;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
+import java.sql.Date;
 import java.sql.Timestamp;
+import java.text.DateFormat;
 import java.util.List;
 
 /**
@@ -18,7 +26,9 @@ import java.util.List;
  */
 public class ProductNetworkDAOImpl implements ProductNetworkDAO {
     private static final String TAG = "ProductNetworkDAOImpl";
-    private Gson gson = new Gson();
+    private static final String TIMESTAMP_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
+
+    private Gson gson = new GsonBuilder().setDateFormat(TIMESTAMP_PATTERN).create();
     private RequestLoader requestLoader = new RequestLoaderImpl();
 
     @Override
@@ -58,6 +68,7 @@ public class ProductNetworkDAOImpl implements ProductNetworkDAO {
         String url = AppProperties.HOST + AppProperties.PORT + "/rest/product/add";
         Log.i(TAG, "Add product, url: " + url + ", product: " + product);
 
+
         String productString = gson.toJson(product);
         try {
             String response = requestLoader.makePost(url, productString.getBytes());
@@ -86,10 +97,11 @@ public class ProductNetworkDAOImpl implements ProductNetworkDAO {
 
     public List<Product> getProductsSinceUpdateTimestamp(Timestamp lastUpdateTimestamp){
         List<Product> productList = null;
-        String url = AppProperties.HOST + AppProperties.PORT + "/rest/product/getupdated?timestamp=" + lastUpdateTimestamp.getTime();
+        String url = AppProperties.HOST + AppProperties.PORT + "/rest/product/getupdated/" + lastUpdateTimestamp.getTime();
         Log.i(TAG, "Upload product since" + lastUpdateTimestamp + ", url: " + url);
         try {
             String response = requestLoader.makeGet(url);
+
             productList = gson.fromJson(response, new TypeToken<List<Product>>(){}.getType());
         }catch (Exception e){
             e.printStackTrace();

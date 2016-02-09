@@ -72,7 +72,9 @@ public class ViewExpenseActivity extends Activity implements View.OnClickListene
         int productId = getIntent().getIntExtra(TabViewExpenses.PRODUCT_ID_KEY, -1);
         product = productManager.getProductById(productId);
         Category category = categoryManager.getCategoryById(product.getCategoryId());
-
+        if (category == null) {
+            return;
+        }
         name.setText(product.getName());
         price.setText(String.valueOf(product.getPrice()));
         dateTime.setText(product.getCreated().toString());
@@ -96,8 +98,6 @@ public class ViewExpenseActivity extends Activity implements View.OnClickListene
                         .setMessage("Are you sure you want to delete this product?")
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-                                product.setDirty(true);
-
                                 new AsyncTask<Product, Void, Boolean>() {
                                     @Override
                                     protected Boolean doInBackground(Product... params) {
@@ -107,34 +107,15 @@ public class ViewExpenseActivity extends Activity implements View.OnClickListene
 
                                     @Override
                                     protected void onPostExecute(Boolean success) {
-                                        if (success){
-                                            Log.i(TAG, "Product with Id = " + product.getId()+ ", Name = " + product.getName() +" deleted.");
-                                        }else {
+                                        if (success) {
+                                            Log.i(TAG, "Product with Id = " + product.getId() + ", Name = " + product.getName() + " deleted.");
+                                        } else {
                                             Toast.makeText(getApplicationContext(), "Product with id = " + product.getId() + " deleted", Toast.LENGTH_LONG);
                                             Log.e(TAG, "Product delete failed. Id = " + product.getId());
                                         }
                                     }
                                 }.execute(product);
 
-                                productManager.deleteProductById(product.getId());
-//                                Toast.makeText(getApplicationContext(), "Deleted", Toast.LENGTH_LONG).show();
-
-//                                String url = AppProperties.HOST + AppProperties.PORT + "/rest/product/delete/" + product.getId();
-//                                GsonRequest<Product> gsonRequest = new GsonRequest<>(Request.Method.DELETE, url, Product.class, null,
-//                                        new Response.Listener() {
-//                                            @Override
-//                                            public void onResponse(Object o) {
-//                                                product.setDirty(false);
-//                                                DBHandler.getDbHandler(getApplicationContext()).deleteProductById(product.getId());
-//                                            }
-//                                        },
-//                                        new Response.ErrorListener() {
-//                                            @Override
-//                                            public void onErrorResponse(VolleyError volleyError) {
-//                                                Toast.makeText(getApplicationContext(), "Product deleting failed", Toast.LENGTH_LONG).show();
-//                                            }
-//                                        }, null);
-//                                VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(gsonRequest);
                                 finish();
                             }
                         })

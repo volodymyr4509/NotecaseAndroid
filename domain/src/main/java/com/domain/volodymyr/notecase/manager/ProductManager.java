@@ -14,13 +14,23 @@ import java.util.Map;
  */
 public interface ProductManager {
     Product getProductById(int id);
+
     List<Product> getAllProducts(Timestamp since, Timestamp till);
+
     boolean updateProduct(Product product);
+
     boolean addProduct(Product product);
+
     boolean deleteProductById(int id);
+
     List<Product> getProductsByCategoryId(int categoryId);
+
     Cursor getProductNameCursor();
+
     Cursor suggestProductName(String partialProductName);
+
     Map<Category, Double> getExpensesGroupedByCategories(Timestamp since, Timestamp till);
+
+    boolean syncProducts();
 
 }

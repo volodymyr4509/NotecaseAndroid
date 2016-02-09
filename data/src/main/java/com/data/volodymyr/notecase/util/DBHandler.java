@@ -2,20 +2,15 @@ package com.data.volodymyr.notecase.util;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import com.data.volodymyr.notecase.R;
 import com.data.volodymyr.notecase.entity.Category;
-import com.data.volodymyr.notecase.entity.Product;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by volodymyr on 25.10.15.

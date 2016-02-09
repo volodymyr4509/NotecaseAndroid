@@ -29,10 +29,11 @@ public class ProductManagerImpl implements ProductManager {
     @Override
     public boolean updateProduct(Product product) {
         boolean success = productNetworkDAO.updateProduct(product);
-        if (success) {
-            product.setDirty(false);
-            productSQLiteDAO.updateProduct(product);
+        if (!success) {
+            product.setDirty(true);
         }
+        productSQLiteDAO.updateProduct(product);
+
         return success;
     }
 
@@ -49,11 +50,14 @@ public class ProductManagerImpl implements ProductManager {
 
     @Override
     public boolean addProduct(Product product) {
+        int id = productSQLiteDAO.addProduct(product);
+        product.setId(id);
+
         boolean uploaded = productNetworkDAO.addProduct(product);
         if (uploaded) {
             product.setDirty(false);
+            productSQLiteDAO.updateProduct(product);
         }
-        productSQLiteDAO.addProduct(product);
         return uploaded;
     }
 
@@ -80,22 +84,24 @@ public class ProductManagerImpl implements ProductManager {
             }
         }
 
-        boolean shouldRenderAgain = false;
+        boolean renderAgain = false;
         //upload all newly updated products from server
         List<Product> updatedProducts = productNetworkDAO.getProductsSinceUpdateTimestamp(productSQLiteDAO.getLastSyncTimestamp());
-        for (Product product : updatedProducts) {
-            Product deviceProd = productSQLiteDAO.getProductById(product.getId());
-            if (deviceProd == null) {
-                productSQLiteDAO.addProduct(product);
-            } else {
+        if (updatedProducts!=null){
+            for (Product product : updatedProducts) {
+                Product deviceProd = productSQLiteDAO.getProductById(product.getId());
+                if (deviceProd == null) {
+                    productSQLiteDAO.addProduct(product);
+                } else {
+                    productSQLiteDAO.updateProduct(product);
+                }
                 productSQLiteDAO.updateProduct(product);
+                renderAgain = true;
             }
-            productSQLiteDAO.updateProduct(product);
-            shouldRenderAgain = true;
         }
 
         productSQLiteDAO.updateLastSyncTimestamp(new Timestamp(System.currentTimeMillis()));
-        return shouldRenderAgain;
+        return renderAgain;
     }
 
     @Override

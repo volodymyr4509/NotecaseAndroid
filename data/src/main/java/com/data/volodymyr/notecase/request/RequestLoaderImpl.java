@@ -18,6 +18,8 @@ import java.net.URL;
  */
 public class RequestLoaderImpl implements RequestLoader {
     private static final String TAG = "RequestLoaderImpl";
+    private static final String CONTENT_TYPE = "Content-Type";
+    private static final String APPLICATION_JSON = "application/json";
     private static final int REQUEST_TIMEOUT = 5000;
 
     public String makeGet(String myurl) throws IOException {
@@ -77,15 +79,15 @@ public class RequestLoaderImpl implements RequestLoader {
             conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod(method.toString());
             conn.setDoOutput(true);
+            conn.setRequestProperty(CONTENT_TYPE, APPLICATION_JSON);
             conn.setReadTimeout(REQUEST_TIMEOUT);
             conn.setConnectTimeout(REQUEST_TIMEOUT);
-
+            dos = new DataOutputStream(conn.getOutputStream());
+            dos.write(data);
             conn.connect();
             int response = conn.getResponseCode();
 
             Log.i(TAG, "Request: " + method + ", url: " + myurl + ", response code: " + response);
-            dos = new DataOutputStream(conn.getOutputStream());
-            dos.write(data);
 
             is = conn.getInputStream();
 

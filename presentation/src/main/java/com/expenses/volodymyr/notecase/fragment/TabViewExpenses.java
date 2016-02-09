@@ -25,11 +25,9 @@ import com.domain.volodymyr.notecase.manager.ProductManagerImpl;
 import com.expenses.volodymyr.notecase.R;
 import com.expenses.volodymyr.notecase.activity.ViewExpenseActivity;
 import com.expenses.volodymyr.notecase.adapter.ProductAdapter;
-import com.data.volodymyr.notecase.util.DBHandler;
 
 import org.json.JSONObject;
 
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -112,22 +110,19 @@ public class TabViewExpenses extends Fragment implements AdapterView.OnItemClick
         Timestamp till = new Timestamp(tillTimeMillis);
         Timestamp since = new Timestamp(sinceTimeMillis);
 
-        new AsyncTask<Timestamp, Void, List<Product>>(){
+        new AsyncTask<Timestamp, Void, List<Product>>() {
             @Override
             protected List<Product> doInBackground(Timestamp... params) {
                 Timestamp begin = params[0];
                 Timestamp end = params[1];
                 return productManager.getAllProducts(begin, end);
             }
-
             @Override
             protected void onPostExecute(List<Product> products) {
                 adapter = new ProductAdapter(getContext(), products);
             }
         }.execute(since, till);
 
-//        productList = productManager.getAllProducts(since, till);
-//        adapter = new ProductAdapter(getActivity(), productList);
         listView.setAdapter(adapter);
     }
 
@@ -139,26 +134,20 @@ public class TabViewExpenses extends Fragment implements AdapterView.OnItemClick
 
     @Override
     public void onRefresh() {
-        Log.i(TAG, "Refreshing Product list");
-        String url = "";
-        JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, url, null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject jsonObject) {
-
-
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError volleyError) {
-                        Toast.makeText(getActivity(), "Network error", Toast.LENGTH_LONG).show();
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
+        Log.i(TAG, "Sync Product list");
+        new AsyncTask<Void, Void, Boolean>(){
+            @Override
+            protected Boolean doInBackground(Void... params) {
+                return productManager.syncProducts();
+            }
+            @Override
+            protected void onPostExecute(Boolean renderAgain) {
+                swipeRefreshLayout.setRefreshing(false);
+                if (renderAgain){
+                    updateListView();
                 }
-        );
-
-
+            }
+        }.execute();
     }
+
 }
