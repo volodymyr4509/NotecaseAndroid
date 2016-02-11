@@ -24,7 +24,6 @@ import com.domain.volodymyr.notecase.manager.ProductManager;
 import com.domain.volodymyr.notecase.manager.ProductManagerImpl;
 import com.expenses.volodymyr.notecase.R;
 import com.expenses.volodymyr.notecase.adapter.ImageGridAdapter;
-import com.data.volodymyr.notecase.util.DBHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +40,6 @@ public class AddEditCategoryActivity extends Activity implements SeekBar.OnSeekB
     private List<Integer> imagesIds;
     private int selectedImageId;
     private Category category;
-    private DBHandler dbHandler;
 
     private CategoryManager categoryManager;
     private ProductManager productManager;
@@ -54,11 +52,11 @@ public class AddEditCategoryActivity extends Activity implements SeekBar.OnSeekB
         categoryName = (EditText) findViewById(R.id.category_name);
         colorSeekBar = (SeekBar) findViewById(R.id.color_picker);
         resultImage = (ImageView) findViewById(R.id.result_image);
-        saveButton = (ImageView) findViewById(R.id.action_item);
+        saveButton = (ImageView) findViewById(R.id.action_item_right);
         navigationArrow = (ImageView) findViewById(R.id.navigation_arrow);
         logo = (ImageView)findViewById(R.id.logo);
         gridView = (GridView) findViewById(R.id.select_image_grid);
-        delete = (ImageView) findViewById(R.id.action_item_delete);
+        delete = (ImageView) findViewById(R.id.action_item_left);
 
         getImagesId();
         ListAdapter adapter = new ImageGridAdapter(getApplicationContext(), imagesIds);
@@ -90,7 +88,6 @@ public class AddEditCategoryActivity extends Activity implements SeekBar.OnSeekB
     }
 
     public void updateCategory(int categoryId) {
-        dbHandler = DBHandler.getDbHandler(this);
         category = categoryManager.getCategoryById(categoryId);
         resultImage.setBackgroundColor(category.getColor());
         selectedImageId = category.getImage();
@@ -147,7 +144,7 @@ public class AddEditCategoryActivity extends Activity implements SeekBar.OnSeekB
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.action_item:
+            case R.id.action_item_right:
                 String newCategoryName = categoryName.getText().toString();
                 ColorDrawable colorDrawable = (ColorDrawable) resultImage.getBackground();
                 int newCategoryColor = colorDrawable.getColor();
@@ -166,7 +163,7 @@ public class AddEditCategoryActivity extends Activity implements SeekBar.OnSeekB
                     Toast.makeText(getApplicationContext(), "CategorySQLiteDAO name should not be empty", Toast.LENGTH_LONG).show();
                 }
                 break;
-            case R.id.action_item_delete:
+            case R.id.action_item_left:
                 //delete not used category
 
                 List<Product> products = productManager.getProductsByCategoryId(categoryId);

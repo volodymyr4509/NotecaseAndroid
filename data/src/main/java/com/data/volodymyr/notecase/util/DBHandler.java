@@ -104,7 +104,7 @@ public class DBHandler extends SQLiteOpenHelper {
         categoryList.add(new Category("Accommodation", -20151, R.drawable.bighouse));
         categoryList.add(new Category("bucket", -26151, R.drawable.bucket));
         categoryList.add(new Category("coffee", -14343, R.drawable.coffee));
-        categoryList.add(new Category("carrot", -18141, R.drawable.morkva));
+        categoryList.add(new Category("carrot", -18141, R.drawable.ic_business_black_24dp));
         categoryList.add(new Category("house", -17232, R.drawable.house));
 
         for (Category category : categoryList) {
@@ -112,6 +112,7 @@ public class DBHandler extends SQLiteOpenHelper {
             values.put(CATEGORY_NAME, category.getName());
             values.put(CATEGORY_COLOR, category.getColor());
             values.put(CATEGORY_IMAGE, category.getImage());
+            values.put(DIRTY, category.isDirty());
             db.insert(TABLE_CATEGORY, null, values);
         }
     }

@@ -35,13 +35,12 @@ public class ProductNetworkDAOImpl implements ProductNetworkDAO {
     public Product getProduct(int id) {
         Product product = null;
         String url = AppProperties.HOST + AppProperties.PORT + "/rest/product/get/" + id;
-        Log.i(TAG, "Get product, url: " + url + ", product: " + id);
-
         try {
             String response = requestLoader.makeGet(url);
             product = gson.fromJson(response, Product.class);
+            Log.i(TAG, "Product uploaded: " + product );
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(TAG, "Cannot upload Product from url: " + url, e);
         }
         return product;
     }
@@ -50,15 +49,14 @@ public class ProductNetworkDAOImpl implements ProductNetworkDAO {
     public boolean updateProduct(Product product) {
         boolean success;
         String url = AppProperties.HOST + AppProperties.PORT + "/rest/product/update";
-        Log.i(TAG, "Update product, url: " + url + ", product: " + product);
-
         String productString = gson.toJson(product);
         try {
             String response = requestLoader.makePut(url, productString.getBytes());
             success = Boolean.valueOf(response);
+            Log.i(TAG, "Product updated, url: " + url);
         } catch (Exception e) {
             success = false;
-            e.printStackTrace();
+            Log.e(TAG, "Cannot update Product from url: " + url + ", Product: " + product, e);
         }
         return success;
     }
@@ -66,16 +64,14 @@ public class ProductNetworkDAOImpl implements ProductNetworkDAO {
     public boolean addProduct(Product product) {
         boolean success;
         String url = AppProperties.HOST + AppProperties.PORT + "/rest/product/add";
-        Log.i(TAG, "Add product, url: " + url + ", product: " + product);
-
-
         String productString = gson.toJson(product);
         try {
             String response = requestLoader.makePost(url, productString.getBytes());
             success = Boolean.valueOf(response);
+            Log.e(TAG, "Producct uploaded with url: " + url + ", Product: " + product);
         } catch (Exception e) {
             success = false;
-            e.printStackTrace();
+            Log.e(TAG, "Cannot add Product with url: " + url, e);
         }
         return success;
     }
@@ -84,13 +80,13 @@ public class ProductNetworkDAOImpl implements ProductNetworkDAO {
     public boolean deleteProduct(int id) {
         boolean success;
         String url = AppProperties.HOST + AppProperties.PORT + "/rest/product/delete/" + id;
-        Log.i(TAG, "Delete product, url: " + url + ", product id: " + id);
         try {
             String response = requestLoader.makeDelete(url);
             success = Boolean.valueOf(response);
+            Log.i(TAG, "Cannot delete Product with url: " + url);
         }catch (Exception e){
             success = false;
-            e.printStackTrace();
+            Log.e(TAG, "Cannot delete Product with url: " + url, e);
         }
         return success;
     }
@@ -98,13 +94,12 @@ public class ProductNetworkDAOImpl implements ProductNetworkDAO {
     public List<Product> getProductsSinceUpdateTimestamp(Timestamp lastUpdateTimestamp){
         List<Product> productList = null;
         String url = AppProperties.HOST + AppProperties.PORT + "/rest/product/getupdated/" + lastUpdateTimestamp.getTime();
-        Log.i(TAG, "Upload product since" + lastUpdateTimestamp + ", url: " + url);
         try {
             String response = requestLoader.makeGet(url);
-
             productList = gson.fromJson(response, new TypeToken<List<Product>>(){}.getType());
+            Log.i(TAG, "Product list uploaded from url: " + url + ", size: " + productList.size());
         }catch (Exception e){
-            e.printStackTrace();
+            Log.e(TAG, "Cannot upload Product list from url: " + url, e);
         }
         return productList;
     }

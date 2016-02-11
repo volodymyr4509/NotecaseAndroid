@@ -20,7 +20,6 @@ import com.domain.volodymyr.notecase.manager.ProductManagerImpl;
 import com.expenses.volodymyr.notecase.R;
 import com.expenses.volodymyr.notecase.adapter.CategoryAdapter;
 import com.expenses.volodymyr.notecase.fragment.TabViewExpenses;
-import com.data.volodymyr.notecase.util.DBHandler;
 
 import java.util.List;
 
@@ -48,8 +47,8 @@ public class EditExpenseActivity extends Activity implements View.OnClickListene
         name = (EditText) findViewById(R.id.edit_expense_name);
         price = (EditText) findViewById(R.id.edit_expense_price);
         dateTime = (TextView) findViewById(R.id.date_time);
-        save = (ImageView) findViewById(R.id.action_item);
-        delete = (ImageView) findViewById(R.id.action_item_delete);
+        save = (ImageView) findViewById(R.id.action_item_right);
+        delete = (ImageView) findViewById(R.id.action_item_left);
         navigationArrow = (ImageView) findViewById(R.id.navigation_arrow);
         logo = (ImageView) findViewById(R.id.logo);
         categoryGrid = (GridView) findViewById(R.id.categoriesGrid);
@@ -85,7 +84,7 @@ public class EditExpenseActivity extends Activity implements View.OnClickListene
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.action_item:
+            case R.id.action_item_right:
                 try {
                     String newName = name.getText().toString().trim();
                     double newPrice = Double.parseDouble(price.getText().toString().trim());

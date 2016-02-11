@@ -23,7 +23,7 @@ import java.util.Map;
  */
 public class ProductSQLiteDAOImpl implements ProductSQLiteDAO {
     private static final String TAG = "ProductSQLiteDAOImpl";
-    private static final String LAST_SYNC_TIMESTAMP = "lastSyncTimestamp";
+    private static final String LAST_PRODUCT_SYNC_TIMESTAMP = "lastSyncTimestamp";
 
     private DBHandler dbHandler;
     private Context context;
@@ -210,15 +210,17 @@ public class ProductSQLiteDAOImpl implements ProductSQLiteDAO {
 
     public Timestamp getLastSyncTimestamp(){
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        long timestamp = preferences.getLong(LAST_SYNC_TIMESTAMP, 0l);
+        long timestamp = preferences.getLong(LAST_PRODUCT_SYNC_TIMESTAMP, 0l);
         Timestamp lastSync = new Timestamp(timestamp);
+        Log.i(TAG, "Last Product update timestamp retrieved(SharedPreferences): " + timestamp);
         return lastSync;
     }
 
     public void updateLastSyncTimestamp(Timestamp timestamp){
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor prefEditor = preferences.edit();
-        prefEditor.putLong(LAST_SYNC_TIMESTAMP, timestamp.getTime());
+        prefEditor.putLong(LAST_PRODUCT_SYNC_TIMESTAMP, timestamp.getTime());
+        Log.i(TAG, "Last Product update timestamp updated(SharedPreferences): " + timestamp);
     }
 
 }

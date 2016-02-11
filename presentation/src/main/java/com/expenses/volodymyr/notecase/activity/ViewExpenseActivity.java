@@ -48,8 +48,8 @@ public class ViewExpenseActivity extends Activity implements View.OnClickListene
         dateTime = (TextView) findViewById(R.id.view_expense_datetime);
         categryImage = (ImageView) findViewById(R.id.view_expense_category_image);
         categoryName = (TextView) findViewById(R.id.view_expense_category_name);
-        editButton = (ImageView) findViewById(R.id.action_item);
-        delete = (ImageView) findViewById(R.id.action_item_delete);
+        editButton = (ImageView) findViewById(R.id.action_item_right);
+        delete = (ImageView) findViewById(R.id.action_item_left);
 
         productManager = new ProductManagerImpl(getApplicationContext());
         categoryManager = new CategoryManagerImpl(getApplicationContext());
@@ -87,12 +87,12 @@ public class ViewExpenseActivity extends Activity implements View.OnClickListene
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.action_item:
+            case R.id.action_item_right:
                 Intent editExpense = new Intent(this, EditExpenseActivity.class);
                 editExpense.putExtra(TabViewExpenses.PRODUCT_ID_KEY, product.getId());
                 startActivity(editExpense);
                 break;
-            case R.id.action_item_delete:
+            case R.id.action_item_left:
                 new AlertDialog.Builder(ViewExpenseActivity.this)
                         .setTitle("Delete product")
                         .setMessage("Are you sure you want to delete this product?")

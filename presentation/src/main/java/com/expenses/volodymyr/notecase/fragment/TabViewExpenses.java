@@ -13,20 +13,13 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.RadioButton;
-import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.data.volodymyr.notecase.entity.Product;
 import com.domain.volodymyr.notecase.manager.ProductManager;
 import com.domain.volodymyr.notecase.manager.ProductManagerImpl;
 import com.expenses.volodymyr.notecase.R;
 import com.expenses.volodymyr.notecase.activity.ViewExpenseActivity;
 import com.expenses.volodymyr.notecase.adapter.ProductAdapter;
-
-import org.json.JSONObject;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -117,6 +110,7 @@ public class TabViewExpenses extends Fragment implements AdapterView.OnItemClick
                 Timestamp end = params[1];
                 return productManager.getAllProducts(begin, end);
             }
+
             @Override
             protected void onPostExecute(List<Product> products) {
                 adapter = new ProductAdapter(getContext(), products);
@@ -135,15 +129,16 @@ public class TabViewExpenses extends Fragment implements AdapterView.OnItemClick
     @Override
     public void onRefresh() {
         Log.i(TAG, "Sync Product list");
-        new AsyncTask<Void, Void, Boolean>(){
+        new AsyncTask<Void, Void, Boolean>() {
             @Override
             protected Boolean doInBackground(Void... params) {
                 return productManager.syncProducts();
             }
+
             @Override
             protected void onPostExecute(Boolean renderAgain) {
                 swipeRefreshLayout.setRefreshing(false);
-                if (renderAgain){
+                if (renderAgain) {
                     updateListView();
                 }
             }

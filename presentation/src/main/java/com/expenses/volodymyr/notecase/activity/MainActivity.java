@@ -51,7 +51,6 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
     @Override
     protected void onResume() {
-        Log.e(TAG, "Resuming MainActivity");
         super.onResume();
     }
 

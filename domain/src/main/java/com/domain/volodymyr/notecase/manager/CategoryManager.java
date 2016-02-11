@@ -8,14 +8,17 @@ import java.util.List;
  * Created by vkret on 08.02.16.
  */
 public interface CategoryManager {
+
     Category getCategoryById(int categoryId);
 
-    void addCategory(Category category);
+    boolean addCategory(Category category);
 
-    void updateCategory(Category category);
+    boolean updateCategory(Category category);
 
-    void deleteCategoryById(int categoryId);
-
+    boolean deleteCategoryById(int categoryId);
 
     List<Category> getAllCategories();
+
+    boolean syncCategories();
+
 }

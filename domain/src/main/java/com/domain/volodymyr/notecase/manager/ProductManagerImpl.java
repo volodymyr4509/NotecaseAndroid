@@ -91,16 +91,15 @@ public class ProductManagerImpl implements ProductManager {
             for (Product product : updatedProducts) {
                 Product deviceProd = productSQLiteDAO.getProductById(product.getId());
                 if (deviceProd == null) {
+                    product.setDirty(false);
                     productSQLiteDAO.addProduct(product);
                 } else {
                     productSQLiteDAO.updateProduct(product);
                 }
-                productSQLiteDAO.updateProduct(product);
                 renderAgain = true;
             }
+            productSQLiteDAO.updateLastSyncTimestamp(new Timestamp(System.currentTimeMillis()));
         }
-
-        productSQLiteDAO.updateLastSyncTimestamp(new Timestamp(System.currentTimeMillis()));
         return renderAgain;
     }
 

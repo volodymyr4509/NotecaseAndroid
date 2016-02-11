@@ -7,18 +7,19 @@
     tools:context=".activity.ViewCategoryActivity">
 
 
- <include layout="@layout/toolbar"
-     android:layout_alignParentTop="true"
-     android:layout_width="match_parent"
-     android:layout_height="wrap_content"
-     android:id="@+id/category_view_toolbar" />
+    <include
+        android:id="@+id/category_view_toolbar"
+        layout="@layout/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true" />
 
     <include
+        android:id="@+id/category_grid"
         layout="@layout/category_grid"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:id="@+id/category_grid"
         android:layout_below="@+id/category_view_toolbar" />
 
 

@@ -2,13 +2,14 @@ package com.data.volodymyr.notecase.dao;
 
 import com.data.volodymyr.notecase.entity.Category;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
  * Created by volodymyr on 31.01.16.
  */
 public interface CategorySQLiteDAO {
-    void addCategory(Category category);
+    int addCategory(Category category);
 
     void updateCategory(Category category);
 
@@ -18,5 +19,10 @@ public interface CategorySQLiteDAO {
 
     List<Category> getAllCategories();
 
+    List<Category> getDirtyCategories();
+
+    Timestamp getLastSyncTimestamp();
+
+    void updateLastSyncTimestamp(Timestamp timestamp);
 
 }

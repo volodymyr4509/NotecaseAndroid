@@ -1,7 +1,5 @@
 package com.data.volodymyr.notecase.entity;
 
-import java.util.Objects;
-
 /**
  * Created by volodymyr on 15.11.15.
  */
@@ -11,6 +9,7 @@ public class Category {
     private String name;
     private int color;
     private int image;
+    private boolean dirty = true;
 
     public Category() {
     }
@@ -53,13 +52,22 @@ public class Category {
         this.image = image;
     }
 
+    public boolean isDirty() {
+        return dirty;
+    }
+
+    public void setDirty(boolean dirty) {
+        this.dirty = dirty;
+    }
+
     @Override
     public String toString() {
-        return "CategorySQLiteDAO{" +
+        return "Category{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", color=" + color +
                 ", image=" + image +
+                ", dirty=" + dirty +
                 '}';
     }
 

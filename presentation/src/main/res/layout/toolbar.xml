@@ -40,7 +40,7 @@
             android:foregroundGravity="left"
             android:src="@drawable/logo" />
         <ImageView
-            android:id="@+id/action_item"
+            android:id="@+id/action_item_right"
             android:layout_width="wrap_content"
             android:layout_height="35dp"
             android:layout_alignParentBottom="true"
@@ -50,7 +50,7 @@
             android:src="@drawable/ic_save_white_24dp" />
 
         <ImageView
-            android:id="@+id/action_item_delete"
+            android:id="@+id/action_item_left"
             android:layout_width="wrap_content"
             android:layout_height="35dp"
             android:layout_alignParentBottom="true"
