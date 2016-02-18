@@ -4,19 +4,20 @@ package com.data.volodymyr.notecase.entity;
  * Created by volodymyr on 15.11.15.
  */
 public class User {
-
     private int id;
     private String name;
-    private double email;
-    private double password;
+    private String email;
+    private boolean owner;
+    private boolean dirty;
 
     public User() {
     }
 
-    public User(String name, double email, double password) {
+    public User(int id, String name, String email, boolean owner) {
+        this.id = id;
         this.name = name;
         this.email = email;
-        this.password = password;
+        this.owner = owner;
     }
 
     public int getId() {
@@ -35,20 +36,28 @@ public class User {
         this.name = name;
     }
 
-    public double getEmail() {
+    public String getEmail() {
         return email;
     }
 
-    public void setEmail(double email) {
+    public void setEmail(String email) {
         this.email = email;
     }
 
-    public double getPassword() {
-        return password;
+    public boolean isOwner() {
+        return owner;
     }
 
-    public void setPassword(double password) {
-        this.password = password;
+    public void setOwner(boolean owner) {
+        this.owner = owner;
+    }
+
+    public boolean isDirty() {
+        return dirty;
+    }
+
+    public void setDirty(boolean dirty) {
+        this.dirty = dirty;
     }
 
     @Override
@@ -56,8 +65,10 @@ public class User {
         return "User{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", email=" + email +
-                ", password=" + password +
+                ", email='" + email + '\'' +
+                ", owner=" + owner + '\'' +
+                ", dirty=" + dirty + '\'' +
                 '}';
     }
+
 }

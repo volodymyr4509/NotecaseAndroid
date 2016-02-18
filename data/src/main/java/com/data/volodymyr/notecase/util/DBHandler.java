@@ -43,7 +43,8 @@ public class DBHandler extends SQLiteOpenHelper {
     public static final String TABLE_USER = "user";
     public static final String USER_NAME = "Name";
     public static final String USER_EMAIL = "Email";
-    public static final String USER_PASSWORD = "Password";
+    public static final String USER_OWNER = "Owner";
+
 
     //Queries
     private static final String CREATE_PRODUCT = "CREATE TABLE " + TABLE_PRODUCT + " (" +
@@ -65,8 +66,8 @@ public class DBHandler extends SQLiteOpenHelper {
     private static final String CREATE_USER = "CREATE TABLE " + TABLE_USER + " (" +
             COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             USER_NAME + " TEXT, " +
-            USER_PASSWORD + " TEXT, " +
             USER_EMAIL + " TEXT, " +
+            USER_OWNER + " INTEGER, " +
             DIRTY + " INTEGER);";
 
     private DBHandler(Context context) {

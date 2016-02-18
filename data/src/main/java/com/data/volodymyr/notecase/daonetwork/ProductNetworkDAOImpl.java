@@ -8,17 +8,9 @@ import com.data.volodymyr.notecase.request.RequestLoaderImpl;
 import com.data.volodymyr.notecase.util.AppProperties;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 
-import java.io.IOException;
-import java.lang.reflect.Type;
-import java.sql.Date;
 import java.sql.Timestamp;
-import java.text.DateFormat;
 import java.util.List;
 
 /**
@@ -38,7 +30,7 @@ public class ProductNetworkDAOImpl implements ProductNetworkDAO {
         try {
             String response = requestLoader.makeGet(url);
             product = gson.fromJson(response, Product.class);
-            Log.i(TAG, "Product uploaded: " + product );
+            Log.i(TAG, "Product uploaded: " + product);
         } catch (Exception e) {
             Log.e(TAG, "Cannot upload Product from url: " + url, e);
         }
@@ -84,21 +76,22 @@ public class ProductNetworkDAOImpl implements ProductNetworkDAO {
             String response = requestLoader.makeDelete(url);
             success = Boolean.valueOf(response);
             Log.i(TAG, "Cannot delete Product with url: " + url);
-        }catch (Exception e){
+        } catch (Exception e) {
             success = false;
             Log.e(TAG, "Cannot delete Product with url: " + url, e);
         }
         return success;
     }
 
-    public List<Product> getProductsSinceUpdateTimestamp(Timestamp lastUpdateTimestamp){
+    public List<Product> getProductsSinceUpdateTimestamp(Timestamp lastUpdateTimestamp) {
         List<Product> productList = null;
         String url = AppProperties.HOST + AppProperties.PORT + "/rest/product/getupdated/" + lastUpdateTimestamp.getTime();
         try {
             String response = requestLoader.makeGet(url);
-            productList = gson.fromJson(response, new TypeToken<List<Product>>(){}.getType());
+            productList = gson.fromJson(response, new TypeToken<List<Product>>() {
+            }.getType());
             Log.i(TAG, "Product list uploaded from url: " + url + ", size: " + productList.size());
-        }catch (Exception e){
+        } catch (Exception e) {
             Log.e(TAG, "Cannot upload Product list from url: " + url, e);
         }
         return productList;

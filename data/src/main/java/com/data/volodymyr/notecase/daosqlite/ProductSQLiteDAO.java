@@ -1,11 +1,10 @@
-package com.data.volodymyr.notecase.dao;
+package com.data.volodymyr.notecase.daosqlite;
 
 import android.database.Cursor;
 
 import com.data.volodymyr.notecase.entity.Category;
 import com.data.volodymyr.notecase.entity.Product;
 
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
@@ -43,4 +42,5 @@ public interface ProductSQLiteDAO {
     Timestamp getLastSyncTimestamp();
 
     void updateLastSyncTimestamp(Timestamp timestamp);
+
 }

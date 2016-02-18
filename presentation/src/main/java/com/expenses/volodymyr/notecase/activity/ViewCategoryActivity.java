@@ -49,7 +49,6 @@ public class ViewCategoryActivity extends AppCompatActivity implements View.OnCl
         syncCategoryButton.setImageResource(R.drawable.ic_sync_white_24dp);
         addCategoryButton.setImageResource(R.drawable.ic_control_point_white_24dp);
 
-        initCategories();
 
         navigationArrow.setOnClickListener(this);
         logo.setOnClickListener(this);

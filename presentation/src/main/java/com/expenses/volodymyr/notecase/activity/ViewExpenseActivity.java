@@ -28,7 +28,7 @@ import com.expenses.volodymyr.notecase.fragment.TabViewExpenses;
 public class ViewExpenseActivity extends Activity implements View.OnClickListener {
     private static final String TAG = "ViewExpenseActivity";
     private TextView name, price, dateTime, categoryName;
-    private ImageView categryImage, navigationArrow, logo, editButton, delete;
+    private ImageView categoryImage, navigationArrow, logo, editButton, delete;
     private Product product;
     private Toolbar toolbar;
 
@@ -46,7 +46,7 @@ public class ViewExpenseActivity extends Activity implements View.OnClickListene
         navigationArrow = (ImageView) findViewById(R.id.navigation_arrow);
         logo = (ImageView) findViewById(R.id.logo);
         dateTime = (TextView) findViewById(R.id.view_expense_datetime);
-        categryImage = (ImageView) findViewById(R.id.view_expense_category_image);
+        categoryImage = (ImageView) findViewById(R.id.view_expense_category_image);
         categoryName = (TextView) findViewById(R.id.view_expense_category_name);
         editButton = (ImageView) findViewById(R.id.action_item_right);
         delete = (ImageView) findViewById(R.id.action_item_left);
@@ -79,8 +79,8 @@ public class ViewExpenseActivity extends Activity implements View.OnClickListene
         price.setText(String.valueOf(product.getPrice()));
         dateTime.setText(product.getCreated().toString());
         categoryName.setText(category.getName());
-        categryImage.setBackgroundColor(category.getColor());
-        categryImage.setImageResource(category.getImage());
+        categoryImage.setBackgroundColor(category.getColor());
+        categoryImage.setImageResource(category.getImage());
         editButton.setImageResource(R.drawable.ic_mode_edit_white_24dp);
     }
 

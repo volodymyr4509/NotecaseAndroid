@@ -1,4 +1,4 @@
-package com.data.volodymyr.notecase.dao;
+package com.data.volodymyr.notecase.daosqlite;
 
 import com.data.volodymyr.notecase.entity.Category;
 
@@ -9,6 +9,7 @@ import java.util.List;
  * Created by volodymyr on 31.01.16.
  */
 public interface CategorySQLiteDAO {
+
     int addCategory(Category category);
 
     void updateCategory(Category category);

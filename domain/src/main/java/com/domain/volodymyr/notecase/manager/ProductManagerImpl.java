@@ -3,8 +3,8 @@ package com.domain.volodymyr.notecase.manager;
 import android.content.Context;
 import android.database.Cursor;
 
-import com.data.volodymyr.notecase.dao.ProductSQLiteDAO;
-import com.data.volodymyr.notecase.dao.ProductSQLiteDAOImpl;
+import com.data.volodymyr.notecase.daosqlite.ProductSQLiteDAO;
+import com.data.volodymyr.notecase.daosqlite.ProductSQLiteDAOImpl;
 import com.data.volodymyr.notecase.daonetwork.ProductNetworkDAO;
 import com.data.volodymyr.notecase.daonetwork.ProductNetworkDAOImpl;
 import com.data.volodymyr.notecase.entity.Category;
@@ -19,6 +19,7 @@ import java.util.Map;
  */
 public class ProductManagerImpl implements ProductManager {
 
+    //TODO dissable products/categories/users not delete them
     private ProductNetworkDAO productNetworkDAO = new ProductNetworkDAOImpl();
     private ProductSQLiteDAO productSQLiteDAO;
 

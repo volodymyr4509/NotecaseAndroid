@@ -2,8 +2,8 @@ package com.domain.volodymyr.notecase.manager;
 
 import android.content.Context;
 
-import com.data.volodymyr.notecase.dao.CategorySQLiteDAO;
-import com.data.volodymyr.notecase.dao.CategorySQLiteDAOImpl;
+import com.data.volodymyr.notecase.daosqlite.CategorySQLiteDAO;
+import com.data.volodymyr.notecase.daosqlite.CategorySQLiteDAOImpl;
 import com.data.volodymyr.notecase.daonetwork.CategoryNetworkDAO;
 import com.data.volodymyr.notecase.daonetwork.CategoryNetworkDAOImpl;
 import com.data.volodymyr.notecase.entity.Category;

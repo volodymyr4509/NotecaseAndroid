@@ -1,4 +1,4 @@
-package com.data.volodymyr.notecase.dao;
+package com.data.volodymyr.notecase.daosqlite;
 
 import android.content.ContentValues;
 import android.content.Context;
