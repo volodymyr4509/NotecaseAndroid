@@ -35,7 +35,7 @@ public class UserSQLiteDAOImpl implements UserSQLiteDAO {
         values.put(DBHandler.DIRTY, user.isDirty());
 
         SQLiteDatabase db = dbHandler.getWritableDatabase();
-        int id = (int) db.insert(DBHandler.TABLE_PRODUCT, null, values);
+        int id = (int) db.insert(DBHandler.TABLE_USER, null, values);
         Log.i(TAG, "Saved new User: " + user + " with id = " + id);
         return id;
     }
@@ -76,6 +76,25 @@ public class UserSQLiteDAOImpl implements UserSQLiteDAO {
         }
         Log.w(TAG, "Retrieved User by id: " + id + ", User: " + user);
         return user;
+    }
+
+    @Override
+    public List<User> getAllUsers() {
+        SQLiteDatabase db = dbHandler.getReadableDatabase();
+        String query = "SELECT * FROM " + DBHandler.TABLE_USER + " WHERE " + DBHandler.USER_OWNER + " = 0;";
+        Cursor cursor = db.rawQuery(query, null);
+        List<User> userList = new ArrayList<>();
+        while (cursor.moveToNext()){
+            User user = new User();
+            user.setId(cursor.getInt(0));
+            user.setName(cursor.getString(1));
+            user.setEmail(cursor.getString(2));
+            user.setOwner(cursor.getInt(3) == 1);
+            user.setDirty(cursor.getInt(4) == 1);
+            userList.add(user);
+        }
+        Log.i(TAG, "All users were retrieved from sqlite: count = " + userList.size());
+        return userList;
     }
 
     @Override

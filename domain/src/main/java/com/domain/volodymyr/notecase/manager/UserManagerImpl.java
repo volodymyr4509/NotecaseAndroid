@@ -18,7 +18,26 @@ public class UserManagerImpl implements UserManager {
     private UserSQLiteDAO userSQLiteDAO;
 
     public UserManagerImpl(Context context) {
-        userSQLiteDAO  = new UserSQLiteDAOImpl(context);
+        userSQLiteDAO = new UserSQLiteDAOImpl(context);
+    }
+
+    @Override
+    public boolean addUser(User user) {
+        int id = userSQLiteDAO.addUser(user);
+        user.setId(id);
+
+        boolean uploaded = userNetworkDAO.addUser(user);
+        if (uploaded) {
+            user.setDirty(false);
+            userSQLiteDAO.updateUser(user);
+        }
+        return uploaded;
+    }
+
+
+    @Override
+    public List<User> getAllUsers() {
+        return userSQLiteDAO.getAllUsers();
     }
 
     @Override

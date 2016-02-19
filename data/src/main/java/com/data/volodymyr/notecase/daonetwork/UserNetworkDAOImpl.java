@@ -49,7 +49,7 @@ public class UserNetworkDAOImpl implements UserNetworkDAO {
             Log.i(TAG, "User added with url: " + url + ", User: " + user);
         }catch (Exception e){
             success = false;
-            Log.e(TAG, "Cannot add Category: " + user, e);
+            Log.e(TAG, "Cannot add user: " + user, e);
         }
         return success;
     }

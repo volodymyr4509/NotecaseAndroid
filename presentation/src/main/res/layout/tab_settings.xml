@@ -9,17 +9,31 @@
     android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context=".activity.ViewCategoryActivity">
 
+    <View style="@style/Divider"
+        android:id="@+id/delimiter0"
+        android:layout_alignTop="@+id/category_manager"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
     <TextView
         android:id="@+id/category_manager"
-        android:textAppearance="?android:attr/textAppearanceLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
+        android:height="65dp"
         android:text="Category Manager"
-        android:layout_below="@+id/result_client_id"
-        android:layout_alignRight="@+id/result_client_id"
-        android:layout_alignEnd="@+id/result_client_id" />
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:gravity="center_vertical"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <View style="@style/Divider"
+        android:id="@+id/delimiter1"
+        android:layout_alignBottom="@+id/category_manager"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
     <TextView
         android:id="@+id/user_manager"
@@ -27,16 +41,27 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="User Manager"
-        android:layout_below="@+id/category_manager"
+        android:height="65dp"
+        android:layout_below="@+id/delimiter1"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignRight="@+id/category_manager"
+        android:layout_alignEnd="@+id/category_manager"
+        android:gravity="center_vertical" />
+
+    <View style="@style/Divider"
+        android:id="@+id/delimiter2"
+        android:layout_alignBottom="@+id/user_manager"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
     <com.google.android.gms.common.SignInButton
         android:id="@+id/sign_in_button"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
+        android:layout_height="65dp"
+        android:layout_below="@+id/delimiter2"
+        android:layout_alignRight="@+id/delimiter2"
+        android:layout_alignEnd="@+id/delimiter2"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
@@ -44,12 +69,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Small Text"
+        android:text="No user"
         android:id="@+id/result_client_id"
+        android:layout_alignRight="@+id/sign_in_button"
+        android:layout_alignEnd="@+id/sign_in_button"
         android:layout_below="@+id/sign_in_button"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignRight="@+id/sign_in_button"
-        android:layout_alignEnd="@+id/sign_in_button" />
+        android:layout_alignParentStart="true" />
 
+    <View style="@style/Divider"
+        android:id="@+id/delimiter3"
+        android:layout_below="@+id/result_client_id"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 </RelativeLayout>

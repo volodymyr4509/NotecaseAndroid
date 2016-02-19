@@ -17,6 +17,8 @@ public interface UserSQLiteDAO {
 
     void deleteUser(int id);
 
+    List<User> getAllUsers();
+
     List<User> getDirtyUsers();
 
 }

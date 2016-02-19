@@ -13,6 +13,7 @@ import java.util.Map;
  * Created by volodymyr on 07.02.16.
  */
 public interface ProductManager {
+
     Product getProductById(int id);
 
     List<Product> getAllProducts(Timestamp since, Timestamp till);

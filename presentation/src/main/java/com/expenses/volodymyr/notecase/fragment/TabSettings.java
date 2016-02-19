@@ -90,7 +90,7 @@ public class TabSettings extends Fragment implements View.OnClickListener {
 
     @Override
     public void onResume() {
-        Log.d(TAG, "Resuming Settigns fragment");
+        Log.d(TAG, "Resuming Settings fragment");
         super.onResume();
     }
 
