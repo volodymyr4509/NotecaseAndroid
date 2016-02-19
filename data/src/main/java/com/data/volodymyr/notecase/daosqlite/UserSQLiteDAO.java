@@ -21,4 +21,6 @@ public interface UserSQLiteDAO {
 
     List<User> getDirtyUsers();
 
+    User getOwner();
+
 }

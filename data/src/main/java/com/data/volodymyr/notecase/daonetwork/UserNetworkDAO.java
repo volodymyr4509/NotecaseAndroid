@@ -15,5 +15,7 @@ public interface UserNetworkDAO {
 
     boolean deleteUser(int id);
 
-    List<User> getAllCategories();
+    List<User> getAllTrustedUsers(int userId);
+
+    boolean sendIdToken(String idToken);
 }

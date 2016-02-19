@@ -116,4 +116,21 @@ public class UserSQLiteDAOImpl implements UserSQLiteDAO {
         return userList;
     }
 
+    @Override
+    public User getOwner() {
+        Log.i(TAG, "Retrieving device owner from sqlite");
+        SQLiteDatabase db = dbHandler.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM " + DBHandler.TABLE_USER + " WHERE " + DBHandler.USER_OWNER + " = " + 1 + ";", null);
+        User user = null;
+        if (cursor.moveToNext()) {
+            user = new User();
+            user.setId(cursor.getInt(0));
+            user.setName(cursor.getString(1));
+            user.setEmail(cursor.getString(2));
+            user.setOwner(cursor.getInt(3) == 1);
+            user.setDirty(cursor.getInt(4) == 1);
+        }
+        Log.w(TAG, "Retrieved device owner, User: " + user);
+        return user;
+    }
 }

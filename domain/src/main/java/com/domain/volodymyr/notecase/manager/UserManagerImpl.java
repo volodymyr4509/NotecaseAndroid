@@ -54,20 +54,28 @@ public class UserManagerImpl implements UserManager {
 
         boolean renderAgain = false;
         //upload all users from server
-        List<User> updatedUsers = userNetworkDAO.getAllCategories();
-        if (updatedUsers != null) {
-            for (User user : updatedUsers) {
-                User deviceUser = userSQLiteDAO.getUser(user.getId());
-                user.setDirty(false);
-                if (deviceUser == null) {
-                    userSQLiteDAO.addUser(user);
-                } else {
-                    userSQLiteDAO.updateUser(user);
+        User owner = userSQLiteDAO.getOwner();
+        if (owner != null) {
+            List<User> updatedUsers = userNetworkDAO.getAllTrustedUsers(owner.getId());
+            if (updatedUsers != null) {
+                for (User user : updatedUsers) {
+                    User deviceUser = userSQLiteDAO.getUser(user.getId());
+                    user.setDirty(false);
+                    if (deviceUser == null) {
+                        userSQLiteDAO.addUser(user);
+                    } else {
+                        userSQLiteDAO.updateUser(user);
+                    }
+                    renderAgain = true;
                 }
-                renderAgain = true;
             }
         }
         return renderAgain;
+    }
+
+    @Override
+    public boolean sendUserIdToken(String idToken) {
+        return userNetworkDAO.sendIdToken(idToken);
     }
 
 }

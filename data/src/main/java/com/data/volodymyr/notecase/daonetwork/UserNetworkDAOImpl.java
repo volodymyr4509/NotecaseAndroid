@@ -70,9 +70,9 @@ public class UserNetworkDAOImpl implements UserNetworkDAO {
     }
 
     @Override
-    public List<User> getAllCategories() {
+    public List<User> getAllTrustedUsers(int userId) {
         List<User> userList = null;
-        String url = AppProperties.HOST + AppProperties.PORT + "/rest/user/getupdated";
+        String url = AppProperties.HOST + AppProperties.PORT + "/rest/user/getall/" + userId;
         try {
             String response = requestLoader.makeGet(url);
             userList = gson.fromJson(response, new TypeToken<List<User>>(){}.getType());
@@ -82,4 +82,20 @@ public class UserNetworkDAOImpl implements UserNetworkDAO {
         }
         return userList;
     }
+
+    @Override
+    public boolean sendIdToken(String idToken) {
+        boolean success;
+        String url = AppProperties.HOST + AppProperties.PORT + "/rest/user/registeridtoken";
+        try {
+            String response = requestLoader.makePost(url, idToken.getBytes());
+            success = Boolean.valueOf(response);
+            Log.i(TAG, "User id token was sent");
+        }catch (Exception e) {
+            success = false;
+            Log.e(TAG, "Cannot send idToken");
+        }
+        return success;
+    }
+
 }

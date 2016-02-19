@@ -1,6 +1,7 @@
 package com.expenses.volodymyr.notecase.fragment;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -9,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.domain.volodymyr.notecase.manager.UserManager;
+import com.domain.volodymyr.notecase.manager.UserManagerImpl;
 import com.expenses.volodymyr.notecase.R;
 import com.expenses.volodymyr.notecase.activity.ConnectionProblemActivity;
 import com.expenses.volodymyr.notecase.activity.ViewCategoryActivity;
@@ -28,6 +31,8 @@ public class TabSettings extends Fragment implements View.OnClickListener {
     private static final String TAG = "TabSettings";
     private static final int RC_SIGN_IN = 9001;
 
+    private UserManager userManager;
+
     private SignInButton signInButton;
     private TextView manageCategory;
     private TextView manageUser;
@@ -43,6 +48,8 @@ public class TabSettings extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(TAG, "Creating Settings fragment");
+
+        userManager = new UserManagerImpl(getContext());
 
         View view = inflater.inflate(R.layout.tab_settings, container, false);
         manageCategory = (TextView) view.findViewById(R.id.category_manager);
@@ -120,7 +127,16 @@ public class TabSettings extends Fragment implements View.OnClickListener {
         if (result.isSuccess()) {
             // Signed in successfully, show authenticated UI.
             GoogleSignInAccount acct = result.getSignInAccount();
+
             resultText.setText(acct.getDisplayName());
+
+            new AsyncTask<String, Void, Boolean>(){
+                @Override
+                protected Boolean doInBackground(String... params) {
+                    return userManager.sendUserIdToken(params[0]);
+                }
+            }.execute(acct.getIdToken());
         }
     }
+
 }

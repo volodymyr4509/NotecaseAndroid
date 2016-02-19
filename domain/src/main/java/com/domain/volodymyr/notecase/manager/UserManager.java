@@ -15,4 +15,5 @@ public interface UserManager {
 
     boolean syncUsers();
 
+    boolean sendUserIdToken(String idToken);
 }
