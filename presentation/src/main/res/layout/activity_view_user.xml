@@ -9,14 +9,23 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <ListView
-        android:paddingBottom="@dimen/activity_vertical_margin"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin"
+    <android.support.v4.widget.SwipeRefreshLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/user_swipe_refresh"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/user_list"
-        android:layout_gravity="center_horizontal" />
+        android:layout_height="match_parent">
+
+        <ListView
+            android:id="@+id/user_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:paddingBottom="@dimen/activity_vertical_margin"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:paddingTop="@dimen/activity_vertical_margin" />
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+
 
 </LinearLayout>

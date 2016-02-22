@@ -3,6 +3,8 @@ package com.expenses.volodymyr.notecase.activity;
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
+import android.widget.Toast;
 
 import com.data.volodymyr.notecase.entity.User;
 import com.domain.volodymyr.notecase.manager.UserManager;
@@ -25,7 +28,7 @@ import java.util.List;
 /**
  * Created by volodymyr on 12.02.16.
  */
-public class ViewUserActivity extends Activity implements View.OnClickListener {
+public class ViewUserActivity extends Activity implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
     private static final String TAG = "ViewUserActivity";
 
     private ImageView addUserButton;
@@ -36,10 +39,13 @@ public class ViewUserActivity extends Activity implements View.OnClickListener {
     private ListView userListView;
     private UserManager userManager;
     private ArrayAdapter userAdapter;
+    private SwipeRefreshLayout swipeRefresh;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Log.d(TAG, "Creating ViewUserActivity");
         setContentView(R.layout.activity_view_user);
 
         navigationArrow = (ImageView) findViewById(R.id.navigation_arrow);
@@ -48,6 +54,7 @@ public class ViewUserActivity extends Activity implements View.OnClickListener {
         leftActionItem.setVisibility(View.GONE);
         addUserButton = (ImageView) findViewById(R.id.action_item_right);
         addUserButton.setImageResource(R.drawable.ic_control_point_white_24dp);
+        swipeRefresh = (SwipeRefreshLayout) findViewById(R.id.user_swipe_refresh);
 
         userListView = (ListView) findViewById(R.id.user_list);
 
@@ -55,6 +62,7 @@ public class ViewUserActivity extends Activity implements View.OnClickListener {
         logo.setOnClickListener(this);
         navigationArrow.setOnClickListener(this);
         addUserButton.setOnClickListener(this);
+        swipeRefresh.setOnRefreshListener(this);
 
         userManager = new UserManagerImpl(getApplicationContext());
     }
@@ -90,18 +98,23 @@ public class ViewUserActivity extends Activity implements View.OnClickListener {
                         User user = new User();
                         user.setEmail(userEmail.getText().toString());
                         user.setName(userName.getText().toString());
-                        new AsyncTask<User, Void, Boolean>(){
-                            @Override
-                            protected Boolean doInBackground(User... users) {
-                                return userManager.addUser(users[0]);
-                            }
+                        if (android.util.Patterns.EMAIL_ADDRESS.matcher(user.getEmail()).matches()) {
+                            new AsyncTask<User, Void, Boolean>() {
+                                @Override
+                                protected Boolean doInBackground(User... users) {
+                                    return userManager.addUser(users[0]);
+                                }
+                                @Override
+                                protected void onPostExecute(Boolean aBoolean) {
+                                    renderUserList();
+                                    popupWindow.dismiss();
+                                }
+                            }.execute(user);
+                            popupWindow.dismiss();
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Please provide valid email", Toast.LENGTH_LONG).show();
+                        }
 
-                            @Override
-                            protected void onPostExecute(Boolean aBoolean) {
-                                renderUserList();
-                                popupWindow.dismiss();
-                            }
-                        }.execute(user);
                     }
                 });
                 popupWindow.showAtLocation(popupView, Gravity.TOP, 0, 300);
@@ -113,17 +126,38 @@ public class ViewUserActivity extends Activity implements View.OnClickListener {
         }
     }
 
-    public void renderUserList(){
-        new AsyncTask<Void, Void, List<User>>(){
+    @Override
+    public void onRefresh() {
+        Log.i(TAG, "OnRefresh SwipeRefreshLayout");
+        System.out.println("here");
+        new AsyncTask<Void, Void, Boolean>(){
+            @Override
+            protected Boolean doInBackground(Void... params) {
+                return userManager.syncUsers();
+            }
+            @Override
+            protected void onPostExecute(Boolean success) {
+                swipeRefresh.setRefreshing(false);
+                if (success){
+                    Log.i(TAG, "Users synchronized successfully");
+                    renderUserList();
+                }
+            }
+        }.execute();
+    }
+
+    public void renderUserList() {
+        Log.i(TAG, "Rendering user list");
+        new AsyncTask<Void, Void, List<User>>() {
             @Override
             protected List<User> doInBackground(Void... params) {
                 return userManager.getAllUsers();
             }
-
             @Override
             protected void onPostExecute(List<User> userList) {
                 userAdapter = new UserAdapter(getApplicationContext(), userList);
                 userListView.setAdapter(userAdapter);
+                Log.i(TAG, "User list updated. Size: " + userList.size());
             }
         }.execute();
     }

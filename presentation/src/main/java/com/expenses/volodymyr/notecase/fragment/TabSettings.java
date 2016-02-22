@@ -111,6 +111,7 @@ public class TabSettings extends Fragment implements View.OnClickListener {
             case R.id.user_manager:
                 Intent userIntent = new Intent(getActivity(), ViewUserActivity.class);
                 startActivity(userIntent);
+                break;
             case R.id.sign_in_button:
                 signIn();
                 break;
@@ -123,8 +124,8 @@ public class TabSettings extends Fragment implements View.OnClickListener {
     }
 
     private void handleSignInResult(GoogleSignInResult result) {
-        Log.d(TAG, "handleSignInResult:" + result.isSuccess());
-        if (result.isSuccess()) {
+        if (result != null && result.isSuccess()) {
+            Log.d(TAG, "handleSignInResult:" + result.isSuccess());
             // Signed in successfully, show authenticated UI.
             GoogleSignInAccount acct = result.getSignInAccount();
 
