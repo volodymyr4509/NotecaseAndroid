@@ -1,0 +1,113 @@
+package com.expenses.volodymyr.notecase.activity;
+
+import android.content.Intent;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
+
+import com.data.volodymyr.notecase.entity.User;
+import com.domain.volodymyr.notecase.manager.UserManager;
+import com.domain.volodymyr.notecase.manager.UserManagerImpl;
+import com.expenses.volodymyr.notecase.R;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.common.api.GoogleApiClient;
+
+/**
+ * Created by volodymyr on 03.03.16.
+ */
+public class LoginActivity extends FragmentActivity implements View.OnClickListener {
+    private static final String TAG = "LoginActivity";
+
+    private SignInButton signInButton;
+    private TextView resultText;
+    private GoogleApiClient googleApiClient;
+    private static final int RC_SIGN_IN = 9001;
+    private UserManager userManager;
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+
+        userManager = new UserManagerImpl(this);
+
+        setContentView(R.layout.login_activity);
+
+        signInButton = (SignInButton) findViewById(R.id.sign_in_button);
+        resultText = (TextView) findViewById(R.id.result_client_id);
+
+        // Configure sign-in to request the user's ID, email address, and basic
+        // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.servlet_client_id))
+                .requestEmail()
+                .build();
+        googleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this, new GoogleApiClient.OnConnectionFailedListener() {
+                    @Override
+                    public void onConnectionFailed(ConnectionResult connectionResult) {
+                        Intent intent = new Intent(getApplicationContext(), ConnectionProblemActivity.class);
+                        startActivity(intent);
+                    }
+                })
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .build();
+
+
+        signInButton.setOnClickListener(this);
+
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.sign_in_button:
+                Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
+                startActivityForResult(signInIntent, RC_SIGN_IN);
+                break;
+        }
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
+        if (requestCode == RC_SIGN_IN) {
+            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+
+
+            if (result != null && result.isSuccess()) {
+                Log.d(TAG, "handleSignInResult:" + result.isSuccess());
+                // Signed in successfully, show authenticated UI.
+                final GoogleSignInAccount acct = result.getSignInAccount();
+
+                resultText.setText(acct.getDisplayName());
+
+                new AsyncTask<String, Void, Void>() {
+                    @Override
+                    protected Void doInBackground(String... params) {
+                        User user = new User();
+                        user.setName(acct.getDisplayName());
+                        user.setEmail(acct.getEmail());
+                        user.setIdToken(acct.getIdToken());
+                        user.setOwner(true);
+                        user.setDirty(true);
+
+                        userManager.authenticateUser(user);
+                        return null;
+                    }
+                }.execute(acct.getIdToken());
+            }
+        }
+    }
+}

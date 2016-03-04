@@ -7,6 +7,8 @@ public class User {
     private int id;
     private String name;
     private String email;
+    private String idToken;
+    private String authToken;
     private boolean owner;
     private boolean dirty;
 
@@ -44,6 +46,22 @@ public class User {
         this.email = email;
     }
 
+    public String getIdToken() {
+        return idToken;
+    }
+
+    public void setIdToken(String idToken) {
+        this.idToken = idToken;
+    }
+
+    public String getAuthToken() {
+        return authToken;
+    }
+
+    public void setAuthToken(String authToken) {
+        this.authToken = authToken;
+    }
+
     public boolean isOwner() {
         return owner;
     }
@@ -66,9 +84,10 @@ public class User {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
-                ", owner=" + owner + '\'' +
-                ", dirty=" + dirty + '\'' +
+                ", idToken='" + idToken + '\'' +
+                ", authToken='" + authToken + '\'' +
+                ", owner=" + owner +
+                ", dirty=" + dirty +
                 '}';
     }
-
 }

@@ -13,7 +13,9 @@ public interface UserSQLiteDAO {
 
     User getUser(int id);
 
-    void updateUser(User user);
+    User getUserByEmail(String email);
+
+    void updateOwnerUser(User user);
 
     void deleteUser(int id);
 

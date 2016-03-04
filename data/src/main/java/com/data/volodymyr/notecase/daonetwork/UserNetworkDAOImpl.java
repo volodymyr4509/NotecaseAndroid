@@ -39,19 +39,31 @@ public class UserNetworkDAOImpl implements UserNetworkDAO {
     }
 
     @Override
-    public boolean addUser(User user) {
-        boolean success;
+    public String addUser(User user) {
+        String authToken = null;
         String url = AppProperties.HOST + AppProperties.PORT + "/rest/user/add";
         String userString = gson.toJson(user);
         try {
-            String response = requestLoader.makePost(url, userString.getBytes());
-            success = Boolean.valueOf(response);
+            authToken = requestLoader.makePost(url, userString.getBytes());
             Log.i(TAG, "User added with url: " + url + ", User: " + user);
-        }catch (Exception e){
-            success = false;
+        } catch (Exception e) {
             Log.e(TAG, "Cannot add user: " + user, e);
         }
-        return success;
+        return authToken;
+    }
+
+    @Override
+    public String authenticateOwnerUser(String idToken) {
+        String authToken = null;
+        String url = AppProperties.HOST + AppProperties.PORT + "/rest/user/authenticate";
+        try {
+            authToken = requestLoader.makePost(url, idToken.getBytes());
+            Log.i(TAG, "User authentication: " + url + ", retrieved authToken: " + authToken);
+        } catch (Exception e) {
+            Log.e(TAG, "Cannot authenticate user", e);
+        }
+
+        return authToken;
     }
 
     @Override
@@ -62,7 +74,7 @@ public class UserNetworkDAOImpl implements UserNetworkDAO {
             String response = requestLoader.makeDelete(url);
             success = Boolean.valueOf(response);
             Log.i(TAG, "User deleted with url: " + url);
-        }catch (Exception e){
+        } catch (Exception e) {
             Log.e(TAG, "Cannot delete user with url: " + url, e);
             success = false;
         }
@@ -75,9 +87,10 @@ public class UserNetworkDAOImpl implements UserNetworkDAO {
         String url = AppProperties.HOST + AppProperties.PORT + "/rest/user/getall/" + userId;
         try {
             String response = requestLoader.makeGet(url);
-            userList = gson.fromJson(response, new TypeToken<List<User>>(){}.getType());
+            userList = gson.fromJson(response, new TypeToken<List<User>>() {
+            }.getType());
             Log.i(TAG, "User list uploaded with url: " + url);
-        }catch (Exception e){
+        } catch (Exception e) {
             Log.e(TAG, "Cannot upload user list with url: " + url, e);
         }
         return userList;
@@ -91,7 +104,7 @@ public class UserNetworkDAOImpl implements UserNetworkDAO {
             String response = requestLoader.makePost(url, idToken.getBytes());
             success = Boolean.valueOf(response);
             Log.i(TAG, "User id token was sent");
-        }catch (Exception e) {
+        } catch (Exception e) {
             success = false;
             Log.e(TAG, "Cannot send idToken");
         }

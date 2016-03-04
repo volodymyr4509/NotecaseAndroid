@@ -19,10 +19,8 @@ public class UserSQLiteDAOImpl implements UserSQLiteDAO {
     private static final String TAG = "ProductSQLiteDAOImpl";
 
     private DBHandler dbHandler;
-    private Context context;
 
     public UserSQLiteDAOImpl(Context context) {
-        this.context = context;
         this.dbHandler = DBHandler.getDbHandler(context);
     }
 
@@ -30,6 +28,7 @@ public class UserSQLiteDAOImpl implements UserSQLiteDAO {
     public int addUser(User user) {
         ContentValues values = new ContentValues();
         values.put(DBHandler.USER_NAME, user.getName());
+        values.put(DBHandler.USER_AUTH_TOKEN, user.getAuthToken());
         values.put(DBHandler.USER_EMAIL, user.getEmail());
         values.put(DBHandler.USER_OWNER, user.isOwner());
         values.put(DBHandler.DIRTY, user.isDirty());
@@ -48,15 +47,17 @@ public class UserSQLiteDAOImpl implements UserSQLiteDAO {
     }
 
     @Override
-    public void updateUser(User user) {
+    public void updateOwnerUser(User user) {
         ContentValues values = new ContentValues();
         values.put(DBHandler.USER_NAME, user.getName());
+        values.put(DBHandler.USER_AUTH_TOKEN, user.getAuthToken());
         values.put(DBHandler.USER_EMAIL, user.getEmail());
         values.put(DBHandler.USER_OWNER, user.isOwner());
         values.put(DBHandler.DIRTY, user.isDirty());
 
         SQLiteDatabase db = dbHandler.getWritableDatabase();
-        db.update(DBHandler.TABLE_USER, values, DBHandler.COLUMN_ID + " = " + user.getId(), null);
+        String whereClause = DBHandler.USER_OWNER + " = 1;";
+        db.update(DBHandler.TABLE_USER, values, whereClause, null);
         Log.i(TAG, "Updated User: " + user);
     }
 
@@ -70,11 +71,33 @@ public class UserSQLiteDAOImpl implements UserSQLiteDAO {
             user = new User();
             user.setId(cursor.getInt(0));
             user.setName(cursor.getString(1));
-            user.setEmail(cursor.getString(2));
-            user.setOwner(cursor.getInt(3) == 1);
-            user.setDirty(cursor.getInt(4) == 1);
+            user.setAuthToken(cursor.getString(2));
+            user.setEmail(cursor.getString(3));
+            user.setOwner(cursor.getInt(4) == 1);
+            user.setDirty(cursor.getInt(5) == 1);
         }
         Log.w(TAG, "Retrieved User by id: " + id + ", User: " + user);
+        return user;
+    }
+
+    @Override
+    public User getUserByEmail(String email) {
+        Log.i(TAG, "Retrieving User by email = " + email + " from sqlite");
+        SQLiteDatabase db = dbHandler.getReadableDatabase();
+        String query = "SELECT * FROM " + DBHandler.TABLE_USER + " WHERE " + DBHandler.USER_EMAIL + " = '" + email + "';";
+        Log.d(TAG, "SQLite query: " + query);
+        Cursor cursor = db.rawQuery(query, null);
+        User user = null;
+        if (cursor.moveToNext()) {
+            user = new User();
+            user.setId(cursor.getInt(0));
+            user.setName(cursor.getString(1));
+            user.setEmail(cursor.getString(2));
+            user.setAuthToken(cursor.getString(3));
+            user.setOwner(cursor.getInt(4) == 1);
+            user.setDirty(cursor.getInt(5) == 1);
+        }
+        Log.w(TAG, "Retrieved User by id: " + email + ", User: " + user);
         return user;
     }
 

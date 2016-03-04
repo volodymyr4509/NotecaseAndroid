@@ -26,14 +26,36 @@ public class UserManagerImpl implements UserManager {
         int id = userSQLiteDAO.addUser(user);
         user.setId(id);
 
-        boolean uploaded = userNetworkDAO.addUser(user);
-        if (uploaded) {
+        User securedUser = new User();
+        securedUser.setIdToken(user.getIdToken());
+        String authToken = userNetworkDAO.addUser(securedUser);
+        if (authToken != null) {
             user.setDirty(false);
-            userSQLiteDAO.updateUser(user);
+            user.setAuthToken(authToken);
+            userSQLiteDAO.updateOwnerUser(user);
+            return true;
         }
-        return uploaded;
+        return false;
     }
 
+    @Override
+    public boolean authenticateUser(User user) {
+        User existingUser = userSQLiteDAO.getUserByEmail(user.getEmail());
+        if (existingUser == null) {
+            userSQLiteDAO.addUser(user);
+        } else {
+            user.setDirty(true);
+            userSQLiteDAO.updateOwnerUser(user);
+        }
+        String authToken = userNetworkDAO.authenticateOwnerUser(user.getIdToken());
+        user.setAuthToken(authToken);
+        userSQLiteDAO.updateOwnerUser(user);
+        if (authToken == null || authToken.length() < 5) {
+            return false;
+        } else {
+            return true;
+        }
+    }
 
     @Override
     public List<User> getAllUsers() {
@@ -43,33 +65,33 @@ public class UserManagerImpl implements UserManager {
     @Override
     public boolean syncUsers() {
         //upload dirty users from device and change dirty = false;
-        List<User> dirtyUsers = userSQLiteDAO.getDirtyUsers();
-        for (User user : dirtyUsers) {
-            boolean uploaded = userNetworkDAO.addUser(user);
-            if (uploaded) {
-                user.setDirty(false);
-                userSQLiteDAO.updateUser(user);
-            }
-        }
-
+//        List<User> dirtyUsers = userSQLiteDAO.getDirtyUsers();
+//        for (User user : dirtyUsers) {
+//            boolean uploaded = userNetworkDAO.addUser(user);
+//            if (uploaded) {
+//                user.setDirty(false);
+//                userSQLiteDAO.updateOwnerUser(user);
+//            }
+//        }
+//
         boolean renderAgain = false;
-        //upload all users from server
-        User owner = userSQLiteDAO.getOwner();
-        if (owner != null) {
-            List<User> updatedUsers = userNetworkDAO.getAllTrustedUsers(owner.getId());
-            if (updatedUsers != null) {
-                for (User user : updatedUsers) {
-                    User deviceUser = userSQLiteDAO.getUser(user.getId());
-                    user.setDirty(false);
-                    if (deviceUser == null) {
-                        userSQLiteDAO.addUser(user);
-                    } else {
-                        userSQLiteDAO.updateUser(user);
-                    }
-                    renderAgain = true;
-                }
-            }
-        }
+//        //upload all users from server
+//        User owner = userSQLiteDAO.getOwner();
+//        if (owner != null) {
+//            List<User> updatedUsers = userNetworkDAO.getAllTrustedUsers(owner.getId());
+//            if (updatedUsers != null) {
+//                for (User user : updatedUsers) {
+//                    User deviceUser = userSQLiteDAO.getUser(user.getId());
+//                    user.setDirty(false);
+//                    if (deviceUser == null) {
+//                        userSQLiteDAO.addUser(user);
+//                    } else {
+//                        userSQLiteDAO.updateOwnerUser(user);
+//                    }
+//                    renderAgain = true;
+//                }
+//            }
+//        }
         return renderAgain;
     }
 
@@ -77,5 +99,6 @@ public class UserManagerImpl implements UserManager {
     public boolean sendUserIdToken(String idToken) {
         return userNetworkDAO.sendIdToken(idToken);
     }
+
 
 }

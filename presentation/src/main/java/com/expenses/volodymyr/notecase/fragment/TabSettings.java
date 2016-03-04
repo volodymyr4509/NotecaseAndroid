@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.data.volodymyr.notecase.entity.User;
 import com.domain.volodymyr.notecase.manager.UserManager;
 import com.domain.volodymyr.notecase.manager.UserManagerImpl;
 import com.expenses.volodymyr.notecase.R;
@@ -21,8 +22,10 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.Scopes;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.Scope;
 
 /**
  * Created by vkret on 04.12.15.
@@ -127,14 +130,22 @@ public class TabSettings extends Fragment implements View.OnClickListener {
         if (result != null && result.isSuccess()) {
             Log.d(TAG, "handleSignInResult:" + result.isSuccess());
             // Signed in successfully, show authenticated UI.
-            GoogleSignInAccount acct = result.getSignInAccount();
+            final GoogleSignInAccount acct = result.getSignInAccount();
 
             resultText.setText(acct.getDisplayName());
 
-            new AsyncTask<String, Void, Boolean>(){
+            new AsyncTask<String, Void, Void>(){
                 @Override
-                protected Boolean doInBackground(String... params) {
-                    return userManager.sendUserIdToken(params[0]);
+                protected Void doInBackground(String... params) {
+                    User user = new User();
+                    user.setName(acct.getDisplayName());
+                    user.setEmail(acct.getEmail());
+                    user.setIdToken(acct.getIdToken());
+                    user.setOwner(true);
+                    user.setDirty(true);
+
+                    userManager.authenticateUser(user);
+                    return null;
                 }
             }.execute(acct.getIdToken());
         }

@@ -10,6 +10,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -57,15 +58,17 @@ public class CategoryNetworkDAOImpl implements CategoryNetworkDAO {
 
     @Override
     public boolean addCategory(Category category) {
-        boolean success;
+        boolean success = false;
         String url = AppProperties.HOST + AppProperties.PORT + "/rest/category/add";
         String categoryString = gson.toJson(category);
         try {
             String response = requestLoader.makePost(url, categoryString.getBytes());
             success = Boolean.valueOf(response);
             Log.i(TAG, "Category added with url: " + url + ", Category: " + category);
-        }catch (Exception e){
-            success = false;
+        }catch (IOException e){
+            Log.e(TAG, "IOException when adding category", e);
+        }
+        catch (Exception e){
             Log.e(TAG, "Cannot add Category: " + category, e);
         }
         return success;

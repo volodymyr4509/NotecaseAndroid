@@ -42,6 +42,7 @@ public class DBHandler extends SQLiteOpenHelper {
     //User table
     public static final String TABLE_USER = "user";
     public static final String USER_NAME = "Name";
+    public static final String USER_AUTH_TOKEN = "AuthToken";
     public static final String USER_EMAIL = "Email";
     public static final String USER_OWNER = "Owner";
 
@@ -67,6 +68,7 @@ public class DBHandler extends SQLiteOpenHelper {
             COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             USER_NAME + " TEXT, " +
             USER_EMAIL + " TEXT, " +
+            USER_AUTH_TOKEN + " TEXT, " +
             USER_OWNER + " INTEGER, " +
             DIRTY + " INTEGER);";
 
