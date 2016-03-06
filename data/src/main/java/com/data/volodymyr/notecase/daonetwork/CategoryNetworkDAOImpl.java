@@ -1,5 +1,6 @@
 package com.data.volodymyr.notecase.daonetwork;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.data.volodymyr.notecase.entity.Category;
@@ -22,7 +23,11 @@ public class CategoryNetworkDAOImpl implements CategoryNetworkDAO {
     private static final String TIMESTAMP_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
 
     private Gson gson = new GsonBuilder().setDateFormat(TIMESTAMP_PATTERN).create();
-    private RequestLoader requestLoader = new RequestLoaderImpl();
+    private RequestLoader requestLoader;
+
+    public CategoryNetworkDAOImpl(Context context) {
+        requestLoader = new RequestLoaderImpl(context);
+    }
 
     @Override
     public Category getCategory(int id) {

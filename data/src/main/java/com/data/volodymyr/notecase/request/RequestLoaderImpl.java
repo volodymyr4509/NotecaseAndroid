@@ -1,7 +1,11 @@
 package com.data.volodymyr.notecase.request;
 
+import android.content.Context;
 import android.util.Log;
 
+import com.data.volodymyr.notecase.daosqlite.UserSQLiteDAO;
+import com.data.volodymyr.notecase.daosqlite.UserSQLiteDAOImpl;
+import com.data.volodymyr.notecase.entity.User;
 import com.data.volodymyr.notecase.util.RequestMethod;
 
 import java.io.BufferedReader;
@@ -20,7 +24,14 @@ public class RequestLoaderImpl implements RequestLoader {
     private static final String TAG = "RequestLoaderImpl";
     private static final String CONTENT_TYPE = "Content-Type";
     private static final String APPLICATION_JSON = "application/json";
+    private static final String AUTHENTICATION_TOKEN = "AuthToken";
     private static final int REQUEST_TIMEOUT = 5000;
+
+    private Context context;
+
+    public RequestLoaderImpl(Context context) {
+        this.context = context;
+    }
 
     public String makeGet(String myurl) throws IOException {
         return makeRequestWithoutBody(myurl, RequestMethod.GET);
@@ -49,6 +60,7 @@ public class RequestLoaderImpl implements RequestLoader {
             conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod(method.toString());
             conn.setReadTimeout(REQUEST_TIMEOUT);
+            conn.setRequestProperty(AUTHENTICATION_TOKEN, getAuthToken());
             conn.connect();
             int response = conn.getResponseCode();
 
@@ -80,6 +92,7 @@ public class RequestLoaderImpl implements RequestLoader {
             conn.setRequestMethod(method.toString());
             conn.setDoOutput(true);
             conn.setRequestProperty(CONTENT_TYPE, APPLICATION_JSON);
+            conn.setRequestProperty(AUTHENTICATION_TOKEN, getAuthToken());
             conn.setReadTimeout(REQUEST_TIMEOUT);
             conn.setConnectTimeout(REQUEST_TIMEOUT);
             dos = new DataOutputStream(conn.getOutputStream());
@@ -132,4 +145,15 @@ public class RequestLoaderImpl implements RequestLoader {
         }
         return result;
     }
+
+    private String getAuthToken(){
+        UserSQLiteDAO userSQLiteDAO = new UserSQLiteDAOImpl(context);
+        User owner = userSQLiteDAO.getOwner();
+        if (owner != null){
+            return owner.getAuthToken();
+        }else {
+            return null;
+        }
+    }
+
 }

@@ -20,11 +20,12 @@ import java.util.Map;
 public class ProductManagerImpl implements ProductManager {
 
     //TODO dissable products/categories/users not delete them
-    private ProductNetworkDAO productNetworkDAO = new ProductNetworkDAOImpl();
+    private ProductNetworkDAO productNetworkDAO;
     private ProductSQLiteDAO productSQLiteDAO;
 
     public ProductManagerImpl(Context context) {
         this.productSQLiteDAO = new ProductSQLiteDAOImpl(context);
+        this.productNetworkDAO = new ProductNetworkDAOImpl(context);
     }
 
     @Override

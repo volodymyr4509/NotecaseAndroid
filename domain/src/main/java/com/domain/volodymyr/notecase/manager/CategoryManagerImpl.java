@@ -6,6 +6,8 @@ import com.data.volodymyr.notecase.daosqlite.CategorySQLiteDAO;
 import com.data.volodymyr.notecase.daosqlite.CategorySQLiteDAOImpl;
 import com.data.volodymyr.notecase.daonetwork.CategoryNetworkDAO;
 import com.data.volodymyr.notecase.daonetwork.CategoryNetworkDAOImpl;
+import com.data.volodymyr.notecase.daosqlite.UserSQLiteDAO;
+import com.data.volodymyr.notecase.daosqlite.UserSQLiteDAOImpl;
 import com.data.volodymyr.notecase.entity.Category;
 
 import java.sql.Timestamp;
@@ -16,11 +18,12 @@ import java.util.List;
  */
 public class CategoryManagerImpl implements CategoryManager {
 
-    private CategoryNetworkDAO categoryNetworkDAO = new CategoryNetworkDAOImpl();
+    private CategoryNetworkDAO categoryNetworkDAO;
     private CategorySQLiteDAO categorySQLiteDAO;
 
     public CategoryManagerImpl(Context context) {
         this.categorySQLiteDAO = new CategorySQLiteDAOImpl(context);
+        this.categoryNetworkDAO = new CategoryNetworkDAOImpl(context);
     }
 
     @Override

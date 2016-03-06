@@ -150,8 +150,9 @@ public class UserSQLiteDAOImpl implements UserSQLiteDAO {
             user.setId(cursor.getInt(0));
             user.setName(cursor.getString(1));
             user.setEmail(cursor.getString(2));
-            user.setOwner(cursor.getInt(3) == 1);
-            user.setDirty(cursor.getInt(4) == 1);
+            user.setAuthToken(cursor.getString(3));
+            user.setOwner(cursor.getInt(4) == 1);
+            user.setDirty(cursor.getInt(5) == 1);
         }
         Log.w(TAG, "Retrieved device owner, User: " + user);
         return user;

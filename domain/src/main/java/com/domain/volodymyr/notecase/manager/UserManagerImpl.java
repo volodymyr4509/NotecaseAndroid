@@ -14,21 +14,24 @@ import java.util.List;
  * Created by volodymyr on 12.02.16.
  */
 public class UserManagerImpl implements UserManager {
-    private UserNetworkDAO userNetworkDAO = new UserNetworkDAOImpl();
+    private UserNetworkDAO userNetworkDAO ;
     private UserSQLiteDAO userSQLiteDAO;
 
     public UserManagerImpl(Context context) {
-        userSQLiteDAO = new UserSQLiteDAOImpl(context);
+        this.userSQLiteDAO = new UserSQLiteDAOImpl(context);
+        this.userNetworkDAO = new UserNetworkDAOImpl(context);
     }
 
+    /**
+     * For owner's friends only
+     */
     @Override
     public boolean addUser(User user) {
+        user.setDirty(true);
         int id = userSQLiteDAO.addUser(user);
         user.setId(id);
 
-        User securedUser = new User();
-        securedUser.setIdToken(user.getIdToken());
-        String authToken = userNetworkDAO.addUser(securedUser);
+        String authToken = userNetworkDAO.addUser(user);
         if (authToken != null) {
             user.setDirty(false);
             user.setAuthToken(authToken);
@@ -38,6 +41,9 @@ public class UserManagerImpl implements UserManager {
         return false;
     }
 
+    /**
+     * Add/update device's owner
+     */
     @Override
     public boolean authenticateUser(User user) {
         User existingUser = userSQLiteDAO.getUserByEmail(user.getEmail());

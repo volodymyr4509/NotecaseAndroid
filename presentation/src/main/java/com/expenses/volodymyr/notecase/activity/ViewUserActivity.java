@@ -76,6 +76,7 @@ public class ViewUserActivity extends Activity implements View.OnClickListener, 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            //add user:
             case R.id.action_item_right:
                 LayoutInflater layoutInflater = (LayoutInflater) getBaseContext().getSystemService(LAYOUT_INFLATER_SERVICE);
                 View popupView = layoutInflater.inflate(R.layout.popup_window, null);
@@ -129,7 +130,6 @@ public class ViewUserActivity extends Activity implements View.OnClickListener, 
     @Override
     public void onRefresh() {
         Log.i(TAG, "OnRefresh SwipeRefreshLayout");
-        System.out.println("here");
         new AsyncTask<Void, Void, Boolean>(){
             @Override
             protected Boolean doInBackground(Void... params) {

@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -54,7 +55,7 @@ public class AddEditCategoryActivity extends Activity implements SeekBar.OnSeekB
         resultImage = (ImageView) findViewById(R.id.result_image);
         saveButton = (ImageView) findViewById(R.id.action_item_right);
         navigationArrow = (ImageView) findViewById(R.id.navigation_arrow);
-        logo = (ImageView)findViewById(R.id.logo);
+        logo = (ImageView) findViewById(R.id.logo);
         gridView = (GridView) findViewById(R.id.select_image_grid);
         delete = (ImageView) findViewById(R.id.action_item_left);
 
@@ -73,7 +74,7 @@ public class AddEditCategoryActivity extends Activity implements SeekBar.OnSeekB
         if (categoryId != -1) {
             updateCategory(categoryId);
             delete.setOnClickListener(this);
-        }else {
+        } else {
             //adding new category - no need in delete button
             delete.setVisibility(View.GONE);
         }
@@ -150,12 +151,23 @@ public class AddEditCategoryActivity extends Activity implements SeekBar.OnSeekB
                 int newCategoryColor = colorDrawable.getColor();
 
                 if (newCategoryName != null) {
-                    Category newCategory = new Category(newCategoryName, newCategoryColor, selectedImageId);
+                    final Category newCategory = new Category(newCategoryName, newCategoryColor, selectedImageId);
                     if (categoryId < 0) {
-                        categoryManager.addCategory(newCategory);
+                        new AsyncTask<Category, Void, Boolean>() {
+                            @Override
+                            protected Boolean doInBackground(Category... params) {
+                                return categoryManager.addCategory(newCategory);
+
+                            }
+                        }.execute();
                     } else {
                         newCategory.setId(categoryId);
-                        categoryManager.updateCategory(category);
+                        new AsyncTask<Category, Void, Boolean>() {
+                            @Override
+                            protected Boolean doInBackground(Category... params) {
+                                return categoryManager.updateCategory(category);
+                            }
+                        }.execute();
                     }
                     Toast.makeText(getApplicationContext(), "CategorySQLiteDAO saved", Toast.LENGTH_LONG).show();
                     finish();
@@ -167,7 +179,7 @@ public class AddEditCategoryActivity extends Activity implements SeekBar.OnSeekB
                 //delete not used category
 
                 List<Product> products = productManager.getProductsByCategoryId(categoryId);
-                if (products.size()>0){
+                if (products.size() > 0) {
                     new AlertDialog.Builder(AddEditCategoryActivity.this)
                             .setTitle("Delete category")
                             .setMessage("You have " + products.size() + " product(s) with category " + category.getName() + ". You need to remove all category references.")
@@ -179,7 +191,7 @@ public class AddEditCategoryActivity extends Activity implements SeekBar.OnSeekB
                             })
                             .setIcon(R.drawable.alert)
                             .show();
-                }else {
+                } else {
                     new AlertDialog.Builder(AddEditCategoryActivity.this)
                             .setTitle("Delete category")
                             .setMessage("Are you sure you want to delete this category?")

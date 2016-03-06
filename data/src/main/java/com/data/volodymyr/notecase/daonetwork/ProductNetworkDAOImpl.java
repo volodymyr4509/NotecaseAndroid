@@ -1,5 +1,6 @@
 package com.data.volodymyr.notecase.daonetwork;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.data.volodymyr.notecase.entity.Product;
@@ -21,7 +22,11 @@ public class ProductNetworkDAOImpl implements ProductNetworkDAO {
     private static final String TIMESTAMP_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
 
     private Gson gson = new GsonBuilder().setDateFormat(TIMESTAMP_PATTERN).create();
-    private RequestLoader requestLoader = new RequestLoaderImpl();
+    private RequestLoader requestLoader;
+
+    public ProductNetworkDAOImpl(Context context) {
+        this.requestLoader = new RequestLoaderImpl(context);
+    }
 
     @Override
     public Product getProduct(int id) {
@@ -60,7 +65,7 @@ public class ProductNetworkDAOImpl implements ProductNetworkDAO {
         try {
             String response = requestLoader.makePost(url, productString.getBytes());
             success = Boolean.valueOf(response);
-            Log.e(TAG, "Producct uploaded with url: " + url + ", Product: " + product);
+            Log.e(TAG, "Product uploaded with url: " + url + ", Product: " + product);
         } catch (Exception e) {
             success = false;
             Log.e(TAG, "Cannot add Product with url: " + url, e);
