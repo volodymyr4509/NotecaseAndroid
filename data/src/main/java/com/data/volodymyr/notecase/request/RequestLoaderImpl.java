@@ -6,6 +6,7 @@ import android.util.Log;
 import com.data.volodymyr.notecase.daosqlite.UserSQLiteDAO;
 import com.data.volodymyr.notecase.daosqlite.UserSQLiteDAOImpl;
 import com.data.volodymyr.notecase.entity.User;
+import com.data.volodymyr.notecase.util.AuthenticationException;
 import com.data.volodymyr.notecase.util.RequestMethod;
 
 import java.io.BufferedReader;
@@ -51,20 +52,23 @@ public class RequestLoaderImpl implements RequestLoader {
         return makeRequestWithoutBody(url, RequestMethod.DELETE);
     }
 
-    private String makeRequestWithoutBody(String myurl, RequestMethod method) throws IOException {
+    private String makeRequestWithoutBody(String requestUrl, RequestMethod method) throws IOException {
         InputStream is = null;
         String content = null;
         HttpURLConnection conn = null;
         try {
-            URL url = new URL(myurl);
+            URL url = new URL(requestUrl);
             conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod(method.toString());
             conn.setReadTimeout(REQUEST_TIMEOUT);
             conn.setRequestProperty(AUTHENTICATION_TOKEN, getAuthToken());
             conn.connect();
             int response = conn.getResponseCode();
+            if (response == 401){
+                throw new AuthenticationException("Wrong AuthToken.");
+            }
 
-            Log.i(TAG, "Request: " + method + ", url: " + myurl + ", response code: " + response);
+            Log.i(TAG, "Request: " + method + ", url: " + requestUrl + ", response code: " + response);
             is = conn.getInputStream();
 
             content = readIS(is);
@@ -81,13 +85,13 @@ public class RequestLoaderImpl implements RequestLoader {
         return content;
     }
 
-    private String makeRequestWithBody(String myurl, byte[] data, RequestMethod method) throws IOException {
+    private String makeRequestWithBody(String requestUrl, byte[] data, RequestMethod method) throws IOException {
         InputStream is = null;
         String content = null;
         DataOutputStream dos = null;
         HttpURLConnection conn = null;
         try {
-            URL url = new URL(myurl);
+            URL url = new URL(requestUrl);
             conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod(method.toString());
             conn.setDoOutput(true);
@@ -99,8 +103,11 @@ public class RequestLoaderImpl implements RequestLoader {
             dos.write(data);
             conn.connect();
             int response = conn.getResponseCode();
+            if (response == 401){
+                throw new AuthenticationException("Wrong AuthToken.");
+            }
 
-            Log.i(TAG, "Request: " + method + ", url: " + myurl + ", response code: " + response);
+            Log.i(TAG, "Request: " + method + ", url: " + requestUrl + ", response code: " + response);
 
             is = conn.getInputStream();
 

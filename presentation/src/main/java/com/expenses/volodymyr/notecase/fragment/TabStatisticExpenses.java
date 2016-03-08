@@ -1,7 +1,6 @@
 package com.expenses.volodymyr.notecase.fragment;
 
 import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -11,10 +10,11 @@ import android.view.ViewGroup;
 import android.widget.RadioButton;
 
 import com.data.volodymyr.notecase.entity.Category;
+import com.data.volodymyr.notecase.util.AuthenticationException;
 import com.domain.volodymyr.notecase.manager.ProductManager;
 import com.domain.volodymyr.notecase.manager.ProductManagerImpl;
 import com.expenses.volodymyr.notecase.R;
-import com.data.volodymyr.notecase.util.DBHandler;
+import com.expenses.volodymyr.notecase.util.SafeAsyncTask;
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
@@ -92,14 +92,12 @@ public class TabStatisticExpenses extends Fragment implements OnChartValueSelect
                 break;
         }
 
-        Timestamp till = new Timestamp(tillTimeMillis);
-        Timestamp since = new Timestamp(sinceTimeMillis);
+        final Timestamp till = new Timestamp(tillTimeMillis);
+        final Timestamp since = new Timestamp(sinceTimeMillis);
 
-        new AsyncTask<Timestamp, Void, Map<Category, Double>>(){
+        new SafeAsyncTask<Timestamp, Void, Map<Category, Double>>(getContext()) {
             @Override
-            protected Map<Category, Double> doInBackground(Timestamp... params) {
-                Timestamp since = params[0];
-                Timestamp till = params[1];
+            public Map<Category, Double> doInBackgroundSafe() throws AuthenticationException {
                 return productManager.getExpensesGroupedByCategories(since, till);
             }
 
@@ -144,7 +142,7 @@ public class TabStatisticExpenses extends Fragment implements OnChartValueSelect
 
                 mChart.invalidate();
             }
-        }.execute(since, till);
+        }.execute();
 
     }
 

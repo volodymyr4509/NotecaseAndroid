@@ -11,6 +11,7 @@ public interface UserManager {
 
     boolean addUser(User user);
 
+    User getUserOwner();
     /**
      * Get notecase AUthToken from client's idToken
      */
@@ -20,6 +21,5 @@ public interface UserManager {
 
     boolean syncUsers();
 
-    boolean sendUserIdToken(String idToken);
 
 }

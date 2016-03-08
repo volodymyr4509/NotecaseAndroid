@@ -15,11 +15,13 @@ import android.widget.ListView;
 import android.widget.RadioButton;
 
 import com.data.volodymyr.notecase.entity.Product;
+import com.data.volodymyr.notecase.util.AuthenticationException;
 import com.domain.volodymyr.notecase.manager.ProductManager;
 import com.domain.volodymyr.notecase.manager.ProductManagerImpl;
 import com.expenses.volodymyr.notecase.R;
 import com.expenses.volodymyr.notecase.activity.ViewExpenseActivity;
 import com.expenses.volodymyr.notecase.adapter.ProductAdapter;
+import com.expenses.volodymyr.notecase.util.SafeAsyncTask;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -100,24 +102,23 @@ public class TabViewExpenses extends Fragment implements AdapterView.OnItemClick
                 break;
         }
 
-        Timestamp till = new Timestamp(tillTimeMillis);
-        Timestamp since = new Timestamp(sinceTimeMillis);
+        final Timestamp till = new Timestamp(tillTimeMillis);
+        final Timestamp since = new Timestamp(sinceTimeMillis);
 
-        new AsyncTask<Timestamp, Void, List<Product>>() {
+        new SafeAsyncTask<Timestamp, Void, List<Product>>(getContext()) {
             @Override
-            protected List<Product> doInBackground(Timestamp... params) {
-                Timestamp begin = params[0];
-                Timestamp end = params[1];
-                return productManager.getAllProducts(begin, end);
+            public List<Product> doInBackgroundSafe() throws AuthenticationException {
+                return productManager.getAllProducts(since, till);
             }
 
             @Override
             protected void onPostExecute(List<Product> products) {
+                Log.d(TAG, "Retrieved product list since: " + since + " till: " + till.toString() + ", size: " +products.size());
                 adapter = new ProductAdapter(getContext(), products);
+                listView.setAdapter(adapter);
             }
-        }.execute(since, till);
+        }.execute();
 
-        listView.setAdapter(adapter);
     }
 
     @Override
@@ -129,12 +130,11 @@ public class TabViewExpenses extends Fragment implements AdapterView.OnItemClick
     @Override
     public void onRefresh() {
         Log.i(TAG, "Sync Product list");
-        new AsyncTask<Void, Void, Boolean>() {
+        new SafeAsyncTask<Void, Void, Boolean>(getContext()) {
             @Override
-            protected Boolean doInBackground(Void... params) {
+            public Boolean doInBackgroundSafe() throws AuthenticationException {
                 return productManager.syncProducts();
             }
-
             @Override
             protected void onPostExecute(Boolean renderAgain) {
                 swipeRefreshLayout.setRefreshing(false);

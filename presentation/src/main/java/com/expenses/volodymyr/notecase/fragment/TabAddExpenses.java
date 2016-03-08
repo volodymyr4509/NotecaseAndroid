@@ -165,7 +165,7 @@ public class TabAddExpenses extends Fragment {
         final String[] from = new String[]{DBHandler.PRODUCT_NAME};
         Cursor cursor = productManager.getProductNameCursor();
         SimpleCursorAdapter productNameAdapter = new SimpleCursorAdapter(getActivity(), android.R.layout.simple_dropdown_item_1line, cursor, from, to, 0);
-        productNameAdapter.setStringConversionColumn(cursor.getColumnIndexOrThrow(DBHandler.PRODUCT_NAME));
+        productNameAdapter.setStringConversionColumn(cursor.getColumnIndex(DBHandler.PRODUCT_NAME));
         productNameAdapter.setFilterQueryProvider(new FilterQueryProvider() {
             @Override
             public Cursor runQuery(CharSequence constraint) {

@@ -1,14 +1,13 @@
 package com.expenses.volodymyr.notecase.util;
 
 import android.content.Context;
-import android.os.AsyncTask;
-import android.util.Log;
 import android.view.DragEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.data.volodymyr.notecase.entity.Product;
+import com.data.volodymyr.notecase.util.AuthenticationException;
 import com.domain.volodymyr.notecase.manager.ProductManager;
 import com.domain.volodymyr.notecase.manager.ProductManagerImpl;
 
@@ -23,16 +22,16 @@ public class OnDragDropListener implements View.OnDragListener {
     private EditText name;
     private EditText price;
     private int categoryId;
-    private Context applicationContext;
+    private Context context;
 
     private ProductManager productManager;
 
-    public OnDragDropListener(EditText name, EditText price, int category, Context applicationContext) {
+    public OnDragDropListener(EditText name, EditText price, int category, Context context) {
         this.name = name;
         this.price = price;
         this.categoryId = category;
-        this.applicationContext = applicationContext;
-        productManager = new ProductManagerImpl(applicationContext);
+        this.context = context;
+        productManager = new ProductManagerImpl(context);
     }
 
     @Override
@@ -54,26 +53,17 @@ public class OnDragDropListener implements View.OnDragListener {
                     productName = name.getText().toString().trim();
                 }
                 if (productName == null || productPrice <= 0) {
-                    Toast.makeText(applicationContext, "Error: wrong input", Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, "Error: wrong input", Toast.LENGTH_LONG).show();
                     return false;
                 }
 
+                //user owner always 1 user
                 final Product product = new Product(categoryId, 1, productName, productPrice);
 
-                new AsyncTask<Product, Void, Boolean>() {
+                new SafeAsyncTask<Product, Void, Boolean>(context){
                     @Override
-                    protected Boolean doInBackground(Product... params) {
+                    public Boolean doInBackgroundSafe() throws AuthenticationException {
                         return productManager.addProduct(product);
-                    }
-
-                    @Override
-                    protected void onPostExecute(Boolean success) {
-                        if (!success) {
-                            Toast.makeText(applicationContext, "Add product: failed.", Toast.LENGTH_LONG).show();
-                            Log.w(TAG, "Product upload failed.");
-                        } else {
-                            Log.i(TAG, "Product saved into sqlite and network storage");
-                        }
                     }
                 }.execute(product);
                 //clean input fields after save
@@ -99,7 +89,7 @@ public class OnDragDropListener implements View.OnDragListener {
                 "name=" + name +
                 ", price=" + price +
                 ", categoryId=" + categoryId +
-                ", applicationContext=" + applicationContext +
+                ", context=" + context +
                 '}';
     }
 }

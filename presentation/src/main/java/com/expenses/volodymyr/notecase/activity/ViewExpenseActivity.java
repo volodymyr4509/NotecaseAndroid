@@ -15,12 +15,14 @@ import android.widget.Toolbar;
 
 import com.data.volodymyr.notecase.entity.Category;
 import com.data.volodymyr.notecase.entity.Product;
+import com.data.volodymyr.notecase.util.AuthenticationException;
 import com.domain.volodymyr.notecase.manager.CategoryManager;
 import com.domain.volodymyr.notecase.manager.CategoryManagerImpl;
 import com.domain.volodymyr.notecase.manager.ProductManager;
 import com.domain.volodymyr.notecase.manager.ProductManagerImpl;
 import com.expenses.volodymyr.notecase.R;
 import com.expenses.volodymyr.notecase.fragment.TabViewExpenses;
+import com.expenses.volodymyr.notecase.util.SafeAsyncTask;
 
 /**
  * Created by volodymyr on 01.01.16.
@@ -98,10 +100,9 @@ public class ViewExpenseActivity extends Activity implements View.OnClickListene
                         .setMessage("Are you sure you want to delete this product?")
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-                                new AsyncTask<Product, Void, Boolean>() {
+                                new SafeAsyncTask<Product, Void, Boolean>(getApplicationContext()) {
                                     @Override
-                                    protected Boolean doInBackground(Product... params) {
-                                        Product product = params[0];
+                                    public Boolean doInBackgroundSafe() throws AuthenticationException {
                                         return productManager.deleteProductById(product.getId());
                                     }
 
@@ -109,14 +110,14 @@ public class ViewExpenseActivity extends Activity implements View.OnClickListene
                                     protected void onPostExecute(Boolean success) {
                                         if (success) {
                                             Log.i(TAG, "Product with Id = " + product.getId() + ", Name = " + product.getName() + " deleted.");
+                                            finish();
                                         } else {
                                             Toast.makeText(getApplicationContext(), "Product with id = " + product.getId() + " deleted", Toast.LENGTH_LONG);
                                             Log.e(TAG, "Product delete failed. Id = " + product.getId());
                                         }
                                     }
-                                }.execute(product);
+                                }.execute();
 
-                                finish();
                             }
                         })
                         .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {

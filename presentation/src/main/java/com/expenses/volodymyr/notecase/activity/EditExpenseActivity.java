@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.data.volodymyr.notecase.entity.Category;
 import com.data.volodymyr.notecase.entity.Product;
+import com.data.volodymyr.notecase.util.AuthenticationException;
 import com.domain.volodymyr.notecase.manager.CategoryManager;
 import com.domain.volodymyr.notecase.manager.CategoryManagerImpl;
 import com.domain.volodymyr.notecase.manager.ProductManager;
@@ -20,6 +21,7 @@ import com.domain.volodymyr.notecase.manager.ProductManagerImpl;
 import com.expenses.volodymyr.notecase.R;
 import com.expenses.volodymyr.notecase.adapter.CategoryAdapter;
 import com.expenses.volodymyr.notecase.fragment.TabViewExpenses;
+import com.expenses.volodymyr.notecase.util.SafeAsyncTask;
 
 import java.util.List;
 
@@ -96,11 +98,9 @@ public class EditExpenseActivity extends Activity implements View.OnClickListene
                     e.printStackTrace();
                     Toast.makeText(getApplicationContext(), "Incorrect input", Toast.LENGTH_LONG).show();
                 }
-                new AsyncTask<Product, Void, Boolean>(){
-
+                new SafeAsyncTask<Product, Void, Boolean>(this){
                     @Override
-                    protected Boolean doInBackground(Product... params) {
-                        Product product = params[0];
+                    public Boolean doInBackgroundSafe() throws AuthenticationException {
                         return productManager.updateProduct(product);
                     }
 
@@ -112,7 +112,7 @@ public class EditExpenseActivity extends Activity implements View.OnClickListene
                             Toast.makeText(getApplicationContext(), "Product update failed", Toast.LENGTH_LONG);
                         }
                     }
-                }.execute(product);
+                }.execute();
 
                 break;
             case R.id.navigation_arrow:

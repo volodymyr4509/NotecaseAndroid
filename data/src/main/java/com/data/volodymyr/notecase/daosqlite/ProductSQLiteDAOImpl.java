@@ -38,6 +38,7 @@ public class ProductSQLiteDAOImpl implements ProductSQLiteDAO {
         Log.i(TAG, "Add new Product: " + product);
         ContentValues values = new ContentValues();
         values.put(DBHandler.PRODUCT_NAME, product.getName());
+        values.put(DBHandler.PRODUCT_USER, product.getUserId());
         values.put(DBHandler.PRODUCT_PRICE, product.getPrice());
         values.put(DBHandler.PRODUCT_TIMESTAMP, product.getCreated().toString());
         values.put(DBHandler.PRODUCT_CATEGORY, product.getCategoryId());
@@ -92,6 +93,7 @@ public class ProductSQLiteDAOImpl implements ProductSQLiteDAO {
         SQLiteDatabase db = dbHandler.getReadableDatabase();
         String query = "SELECT * FROM " + DBHandler.TABLE_PRODUCT +
                 " WHERE " + DBHandler.PRODUCT_TIMESTAMP + " BETWEEN '" + since + "' AND '" + till + "' ORDER BY " + DBHandler.COLUMN_ID + " DESC LIMIT 500;";
+        Log.d(TAG, "SQLite Query: " + query);
         Cursor cursor = db.rawQuery(query, null);
         List<Product> products = new ArrayList();
         while (cursor.moveToNext()) {
@@ -220,7 +222,8 @@ public class ProductSQLiteDAOImpl implements ProductSQLiteDAO {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor prefEditor = preferences.edit();
         prefEditor.putLong(LAST_PRODUCT_SYNC_TIMESTAMP, timestamp.getTime());
-        Log.i(TAG, "Last Product update timestamp updated(SharedPreferences): " + timestamp);
+        boolean saved = prefEditor.commit();
+        Log.i(TAG, "Last Product update timestamp updated(SharedPreferences): " + timestamp + " with success: " + saved);
     }
 
 }

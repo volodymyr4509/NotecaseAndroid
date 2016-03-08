@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -19,12 +18,14 @@ import android.widget.Toast;
 
 import com.data.volodymyr.notecase.entity.Category;
 import com.data.volodymyr.notecase.entity.Product;
+import com.data.volodymyr.notecase.util.AuthenticationException;
 import com.domain.volodymyr.notecase.manager.CategoryManager;
 import com.domain.volodymyr.notecase.manager.CategoryManagerImpl;
 import com.domain.volodymyr.notecase.manager.ProductManager;
 import com.domain.volodymyr.notecase.manager.ProductManagerImpl;
 import com.expenses.volodymyr.notecase.R;
 import com.expenses.volodymyr.notecase.adapter.ImageGridAdapter;
+import com.expenses.volodymyr.notecase.util.SafeAsyncTask;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -153,18 +154,17 @@ public class AddEditCategoryActivity extends Activity implements SeekBar.OnSeekB
                 if (newCategoryName != null) {
                     final Category newCategory = new Category(newCategoryName, newCategoryColor, selectedImageId);
                     if (categoryId < 0) {
-                        new AsyncTask<Category, Void, Boolean>() {
+                        new SafeAsyncTask<Void, Void, Boolean>(this) {
                             @Override
-                            protected Boolean doInBackground(Category... params) {
+                            public Boolean doInBackgroundSafe() throws AuthenticationException {
                                 return categoryManager.addCategory(newCategory);
-
                             }
                         }.execute();
                     } else {
                         newCategory.setId(categoryId);
-                        new AsyncTask<Category, Void, Boolean>() {
+                        new SafeAsyncTask<Void, Void, Boolean>(this) {
                             @Override
-                            protected Boolean doInBackground(Category... params) {
+                            public Boolean doInBackgroundSafe() throws AuthenticationException {
                                 return categoryManager.updateCategory(category);
                             }
                         }.execute();

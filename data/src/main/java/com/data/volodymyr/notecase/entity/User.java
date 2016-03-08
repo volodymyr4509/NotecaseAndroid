@@ -10,7 +10,7 @@ public class User {
     private String idToken;
     private String authToken;
     private boolean owner;
-    private boolean dirty;
+    private boolean dirty = true;
 
     public User() {
     }

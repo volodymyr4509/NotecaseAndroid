@@ -9,9 +9,11 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.data.volodymyr.notecase.entity.User;
+import com.data.volodymyr.notecase.util.AuthenticationException;
 import com.domain.volodymyr.notecase.manager.UserManager;
 import com.domain.volodymyr.notecase.manager.UserManagerImpl;
 import com.expenses.volodymyr.notecase.R;
+import com.expenses.volodymyr.notecase.util.SafeAsyncTask;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -44,6 +46,11 @@ public class LoginActivity extends FragmentActivity implements View.OnClickListe
 
         signInButton = (SignInButton) findViewById(R.id.sign_in_button);
         resultText = (TextView) findViewById(R.id.result_client_id);
+
+        User owner = userManager.getUserOwner();
+        if (owner != null) {
+            resultText.setText(owner.getName());
+        }
 
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
@@ -93,9 +100,9 @@ public class LoginActivity extends FragmentActivity implements View.OnClickListe
 
                 resultText.setText(acct.getDisplayName());
 
-                new AsyncTask<String, Void, Void>() {
+                new SafeAsyncTask<Void, Void, Boolean>(this){
                     @Override
-                    protected Void doInBackground(String... params) {
+                    public Boolean doInBackgroundSafe() throws AuthenticationException {
                         User user = new User();
                         user.setName(acct.getDisplayName());
                         user.setEmail(acct.getEmail());
@@ -103,10 +110,9 @@ public class LoginActivity extends FragmentActivity implements View.OnClickListe
                         user.setOwner(true);
                         user.setDirty(true);
 
-                        userManager.authenticateUser(user);
-                        return null;
+                        return userManager.authenticateUser(user);
                     }
-                }.execute(acct.getIdToken());
+                }.execute();
             }
         }
     }

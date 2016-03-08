@@ -1,7 +1,6 @@
 package com.expenses.volodymyr.notecase.activity;
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -12,10 +11,12 @@ import android.widget.GridView;
 import android.widget.ImageView;
 
 import com.data.volodymyr.notecase.entity.Category;
+import com.data.volodymyr.notecase.util.AuthenticationException;
 import com.domain.volodymyr.notecase.manager.CategoryManager;
 import com.domain.volodymyr.notecase.manager.CategoryManagerImpl;
 import com.expenses.volodymyr.notecase.R;
 import com.expenses.volodymyr.notecase.adapter.CategoryAdapter;
+import com.expenses.volodymyr.notecase.util.SafeAsyncTask;
 
 import java.util.List;
 
@@ -79,14 +80,15 @@ public class ViewCategoryActivity extends AppCompatActivity implements View.OnCl
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.action_item_left:
-                new AsyncTask<Void, Void,Boolean>(){
+                new SafeAsyncTask<Void, Void, Boolean>(this) {
                     @Override
-                    protected Boolean doInBackground(Void... params) {
+                    public Boolean doInBackgroundSafe() throws AuthenticationException {
                         return categoryManager.syncCategories();
                     }
+
                     @Override
                     protected void onPostExecute(Boolean success) {
-                        if (success){
+                        if (success) {
                             initCategories();
                             Log.i(TAG, "Categories were successfully updated");
                         }
@@ -105,9 +107,9 @@ public class ViewCategoryActivity extends AppCompatActivity implements View.OnCl
     }
 
     public void initCategories() {
-        new AsyncTask<Void, Void, List<Category>>() {
+        new SafeAsyncTask<Void, Void, List<Category>>(this) {
             @Override
-            protected List<Category> doInBackground(Void... params) {
+            public List<Category> doInBackgroundSafe() throws AuthenticationException {
                 return categoryManager.getAllCategories();
             }
 

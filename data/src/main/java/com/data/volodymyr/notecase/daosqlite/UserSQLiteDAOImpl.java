@@ -62,6 +62,19 @@ public class UserSQLiteDAOImpl implements UserSQLiteDAO {
     }
 
     @Override
+    public void updateUser(User user) {
+        ContentValues values = new ContentValues();
+        values.put(DBHandler.USER_NAME, user.getName());
+        values.put(DBHandler.USER_AUTH_TOKEN, user.getAuthToken());
+        values.put(DBHandler.DIRTY, user.isDirty());
+
+        SQLiteDatabase db = dbHandler.getWritableDatabase();
+        String whereClause = DBHandler.USER_EMAIL + " = " + user.getEmail() +";";
+        db.update(DBHandler.TABLE_USER, values, whereClause, null);
+        Log.i(TAG, "Updated User: " + user);
+    }
+
+    @Override
     public User getUser(int id) {
         Log.i(TAG, "Retrieving User by id = " + id + " from sqlite");
         SQLiteDatabase db = dbHandler.getReadableDatabase();
@@ -143,7 +156,9 @@ public class UserSQLiteDAOImpl implements UserSQLiteDAO {
     public User getOwner() {
         Log.i(TAG, "Retrieving device owner from sqlite");
         SQLiteDatabase db = dbHandler.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM " + DBHandler.TABLE_USER + " WHERE " + DBHandler.USER_OWNER + " = " + 1 + ";", null);
+        String query = "SELECT * FROM " + DBHandler.TABLE_USER + " WHERE " + DBHandler.USER_OWNER + " = " + 1 + ";";
+        Log.d(TAG, "SQLite query: " + query);
+        Cursor cursor = db.rawQuery(query, null);
         User user = null;
         if (cursor.moveToNext()) {
             user = new User();

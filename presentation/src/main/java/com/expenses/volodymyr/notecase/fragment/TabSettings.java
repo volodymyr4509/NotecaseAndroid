@@ -11,21 +11,21 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.data.volodymyr.notecase.entity.User;
+import com.data.volodymyr.notecase.util.AuthenticationException;
 import com.domain.volodymyr.notecase.manager.UserManager;
 import com.domain.volodymyr.notecase.manager.UserManagerImpl;
 import com.expenses.volodymyr.notecase.R;
 import com.expenses.volodymyr.notecase.activity.ConnectionProblemActivity;
 import com.expenses.volodymyr.notecase.activity.ViewCategoryActivity;
 import com.expenses.volodymyr.notecase.activity.ViewUserActivity;
+import com.expenses.volodymyr.notecase.util.SafeAsyncTask;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.Scopes;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.Scope;
 
 /**
  * Created by vkret on 04.12.15.
@@ -60,6 +60,10 @@ public class TabSettings extends Fragment implements View.OnClickListener {
         signInButton = (SignInButton) view.findViewById(R.id.sign_in_button);
         resultText = (TextView) view.findViewById(R.id.result_client_id);
 
+        User user = userManager.getUserOwner();
+        if (user != null) {
+            resultText.setText(user.getName());
+        }
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -134,9 +138,10 @@ public class TabSettings extends Fragment implements View.OnClickListener {
 
             resultText.setText(acct.getDisplayName());
 
-            new AsyncTask<String, Void, Void>(){
+
+            new SafeAsyncTask<Void, Void, Boolean>(getContext()){
                 @Override
-                protected Void doInBackground(String... params) {
+                public Boolean doInBackgroundSafe() throws AuthenticationException {
                     User user = new User();
                     user.setName(acct.getDisplayName());
                     user.setEmail(acct.getEmail());
@@ -144,10 +149,9 @@ public class TabSettings extends Fragment implements View.OnClickListener {
                     user.setOwner(true);
                     user.setDirty(true);
 
-                    userManager.authenticateUser(user);
-                    return null;
+                    return userManager.authenticateUser(user);
                 }
-            }.execute(acct.getIdToken());
+            }.execute();
         }
     }
 

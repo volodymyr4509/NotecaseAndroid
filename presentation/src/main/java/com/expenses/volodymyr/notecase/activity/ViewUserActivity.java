@@ -1,7 +1,6 @@
 package com.expenses.volodymyr.notecase.activity;
 
 import android.app.Activity;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
@@ -18,10 +17,12 @@ import android.widget.PopupWindow;
 import android.widget.Toast;
 
 import com.data.volodymyr.notecase.entity.User;
+import com.data.volodymyr.notecase.util.AuthenticationException;
 import com.domain.volodymyr.notecase.manager.UserManager;
 import com.domain.volodymyr.notecase.manager.UserManagerImpl;
 import com.expenses.volodymyr.notecase.R;
 import com.expenses.volodymyr.notecase.adapter.UserAdapter;
+import com.expenses.volodymyr.notecase.util.SafeAsyncTask;
 
 import java.util.List;
 
@@ -96,26 +97,30 @@ public class ViewUserActivity extends Activity implements View.OnClickListener, 
                 submit.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        User user = new User();
+                        final User user = new User();
                         user.setEmail(userEmail.getText().toString());
                         user.setName(userName.getText().toString());
+
                         if (android.util.Patterns.EMAIL_ADDRESS.matcher(user.getEmail()).matches()) {
-                            new AsyncTask<User, Void, Boolean>() {
+                            new SafeAsyncTask<User, Void, Boolean>(getApplicationContext()) {
                                 @Override
-                                protected Boolean doInBackground(User... users) {
-                                    return userManager.addUser(users[0]);
+                                public Boolean doInBackgroundSafe() throws AuthenticationException {
+                                    return userManager.addUser(user);
                                 }
+
                                 @Override
-                                protected void onPostExecute(Boolean aBoolean) {
-                                    renderUserList();
-                                    popupWindow.dismiss();
+                                protected void onPostExecute(Boolean success) {
+                                    if (success) {
+                                        renderUserList();
+                                        popupWindow.dismiss();
+                                    } else {
+                                        Toast.makeText(getApplicationContext(), "Cannot add user with email " + userEmail.getText().toString(), Toast.LENGTH_LONG).show();
+                                    }
                                 }
-                            }.execute(user);
-                            popupWindow.dismiss();
+                            }.execute();
                         } else {
                             Toast.makeText(getApplicationContext(), "Please provide valid email", Toast.LENGTH_LONG).show();
                         }
-
                     }
                 });
                 popupWindow.showAtLocation(popupView, Gravity.TOP, 0, 300);
@@ -130,15 +135,16 @@ public class ViewUserActivity extends Activity implements View.OnClickListener, 
     @Override
     public void onRefresh() {
         Log.i(TAG, "OnRefresh SwipeRefreshLayout");
-        new AsyncTask<Void, Void, Boolean>(){
+        new SafeAsyncTask<Void, Void, Boolean>(this) {
             @Override
-            protected Boolean doInBackground(Void... params) {
+            public Boolean doInBackgroundSafe() throws AuthenticationException {
                 return userManager.syncUsers();
             }
+
             @Override
             protected void onPostExecute(Boolean success) {
                 swipeRefresh.setRefreshing(false);
-                if (success){
+                if (success) {
                     Log.i(TAG, "Users synchronized successfully");
                     renderUserList();
                 }
@@ -148,11 +154,12 @@ public class ViewUserActivity extends Activity implements View.OnClickListener, 
 
     public void renderUserList() {
         Log.i(TAG, "Rendering user list");
-        new AsyncTask<Void, Void, List<User>>() {
+        new SafeAsyncTask<Void, Void, List<User>>(this) {
             @Override
-            protected List<User> doInBackground(Void... params) {
+            public List<User> doInBackgroundSafe() throws AuthenticationException {
                 return userManager.getAllUsers();
             }
+
             @Override
             protected void onPostExecute(List<User> userList) {
                 userAdapter = new UserAdapter(getApplicationContext(), userList);

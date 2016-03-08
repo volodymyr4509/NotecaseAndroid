@@ -46,8 +46,7 @@ public class ProductManagerImpl implements ProductManager {
 
     @Override
     public List<Product> getAllProducts(Timestamp since, Timestamp till) {
-        List<Product> productList = productSQLiteDAO.getAllProducts(since, till);
-        return productList;
+        return productSQLiteDAO.getAllProducts(since, till);
     }
 
     @Override

@@ -11,7 +11,7 @@ public interface UserNetworkDAO {
 
     boolean updateUser(User user);
 
-    String addUser(User user);
+    boolean addUser(User user);
 
     /**
      * Returns notecase authToken from android idToken
@@ -20,7 +20,6 @@ public interface UserNetworkDAO {
 
     boolean deleteUser(int id);
 
-    List<User> getAllTrustedUsers(int userId);
+    List<User> getAllTrustedUsers();
 
-    boolean sendIdToken(String idToken);
 }
