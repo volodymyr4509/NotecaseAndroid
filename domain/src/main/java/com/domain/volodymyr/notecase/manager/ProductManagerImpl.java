@@ -3,10 +3,10 @@ package com.domain.volodymyr.notecase.manager;
 import android.content.Context;
 import android.database.Cursor;
 
-import com.data.volodymyr.notecase.daosqlite.ProductSQLiteDAO;
-import com.data.volodymyr.notecase.daosqlite.ProductSQLiteDAOImpl;
 import com.data.volodymyr.notecase.daonetwork.ProductNetworkDAO;
 import com.data.volodymyr.notecase.daonetwork.ProductNetworkDAOImpl;
+import com.data.volodymyr.notecase.daosqlite.ProductSQLiteDAO;
+import com.data.volodymyr.notecase.daosqlite.ProductSQLiteDAOImpl;
 import com.data.volodymyr.notecase.entity.Category;
 import com.data.volodymyr.notecase.entity.Product;
 
@@ -31,9 +31,8 @@ public class ProductManagerImpl implements ProductManager {
     @Override
     public boolean updateProduct(Product product) {
         boolean success = productNetworkDAO.updateProduct(product);
-        if (!success) {
-            product.setDirty(true);
-        }
+        product.setDirty(!success);
+
         productSQLiteDAO.updateProduct(product);
 
         return success;
@@ -64,10 +63,17 @@ public class ProductManagerImpl implements ProductManager {
 
     @Override
     public boolean deleteProductById(int id) {
-        boolean deleted = productNetworkDAO.deleteProduct(id);
-        if (deleted) {
-            productSQLiteDAO.deleteProductById(id);
+
+        Product product = productSQLiteDAO.getProductById(id);
+        if (product == null){
+            return true;
         }
+        boolean deleted = productNetworkDAO.deleteProduct(id);
+
+        product.setDirty(!deleted);
+        product.setEnabled(false);
+        productSQLiteDAO.updateProduct(product);
+
         return deleted;
     }
 

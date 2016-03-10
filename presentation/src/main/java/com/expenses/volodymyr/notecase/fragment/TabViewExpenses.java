@@ -1,7 +1,6 @@
 package com.expenses.volodymyr.notecase.fragment;
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -59,7 +58,6 @@ public class TabViewExpenses extends Fragment implements AdapterView.OnItemClick
         lastWeek.setOnClickListener(this);
         lastMonth.setOnClickListener(this);
         checkedId = last24.getId();
-        updateListView();
 
         listView.setOnItemClickListener(this);
         return view;
@@ -68,6 +66,7 @@ public class TabViewExpenses extends Fragment implements AdapterView.OnItemClick
     @Override
     public void onResume() {
         Log.d(TAG, "Resuming View fragment");
+        updateListView();
         super.onResume();
     }
 
@@ -113,7 +112,7 @@ public class TabViewExpenses extends Fragment implements AdapterView.OnItemClick
 
             @Override
             protected void onPostExecute(List<Product> products) {
-                Log.d(TAG, "Retrieved product list since: " + since + " till: " + till.toString() + ", size: " +products.size());
+                Log.d(TAG, "Retrieved product list since: " + since + " till: " + till.toString() + ", size: " + products.size());
                 adapter = new ProductAdapter(getContext(), products);
                 listView.setAdapter(adapter);
             }
@@ -135,10 +134,11 @@ public class TabViewExpenses extends Fragment implements AdapterView.OnItemClick
             public Boolean doInBackgroundSafe() throws AuthenticationException {
                 return productManager.syncProducts();
             }
+
             @Override
             protected void onPostExecute(Boolean renderAgain) {
                 swipeRefreshLayout.setRefreshing(false);
-                if (renderAgain) {
+                if (renderAgain != null && renderAgain) {
                     updateListView();
                 }
             }

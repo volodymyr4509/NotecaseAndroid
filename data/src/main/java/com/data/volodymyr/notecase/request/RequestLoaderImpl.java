@@ -62,6 +62,7 @@ public class RequestLoaderImpl implements RequestLoader {
             conn.setRequestMethod(method.toString());
             conn.setReadTimeout(REQUEST_TIMEOUT);
             conn.setRequestProperty(AUTHENTICATION_TOKEN, getAuthToken());
+            conn.setConnectTimeout(REQUEST_TIMEOUT);
             conn.connect();
             int response = conn.getResponseCode();
             if (response == 401){

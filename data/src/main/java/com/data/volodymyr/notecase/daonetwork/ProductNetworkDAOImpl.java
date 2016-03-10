@@ -12,6 +12,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -39,6 +40,8 @@ public class ProductNetworkDAOImpl implements ProductNetworkDAO {
             Log.i(TAG, "Product uploaded: " + product);
         } catch (AuthenticationException e) {
             throw new AuthenticationException(e.getMessage());
+        } catch (IOException e) {
+            Log.w(TAG, "SocketTimeoutException. No response from the server. Power off?:)");
         } catch (Exception e) {
             Log.e(TAG, "Cannot upload Product from url: " + url, e);
         }
@@ -46,7 +49,7 @@ public class ProductNetworkDAOImpl implements ProductNetworkDAO {
     }
 
     @Override
-    public boolean updateProduct(Product product)  {
+    public boolean updateProduct(Product product) {
         boolean success;
         String url = AppProperties.HOST + AppProperties.PORT + "/rest/product/update";
         String productString = gson.toJson(product);
@@ -56,6 +59,9 @@ public class ProductNetworkDAOImpl implements ProductNetworkDAO {
             Log.i(TAG, "Product updated, url: " + url);
         } catch (AuthenticationException e) {
             throw new AuthenticationException(e.getMessage());
+        } catch (IOException e) {
+            success = false;
+            Log.w(TAG, "IOException. Power off?:)");
         } catch (Exception e) {
             success = false;
             Log.e(TAG, "Cannot update Product from url: " + url + ", Product: " + product, e);
@@ -63,7 +69,7 @@ public class ProductNetworkDAOImpl implements ProductNetworkDAO {
         return success;
     }
 
-    public boolean addProduct(Product product)  {
+    public boolean addProduct(Product product) {
         boolean success;
         String url = AppProperties.HOST + AppProperties.PORT + "/rest/product/add";
         String productString = gson.toJson(product);
@@ -73,6 +79,9 @@ public class ProductNetworkDAOImpl implements ProductNetworkDAO {
             Log.e(TAG, "Product uploaded with url: " + url + ", Product: " + product);
         } catch (AuthenticationException e) {
             throw new AuthenticationException(e.getMessage());
+        } catch (IOException e) {
+            Log.w(TAG, "IOException. Power off?:)");
+            return false;
         } catch (Exception e) {
             success = false;
             Log.e(TAG, "Cannot add Product with url: " + url, e);
@@ -81,15 +90,17 @@ public class ProductNetworkDAOImpl implements ProductNetworkDAO {
     }
 
     @Override
-    public boolean deleteProduct(int id)  {
+    public boolean deleteProduct(int id) {
         boolean success;
         String url = AppProperties.HOST + AppProperties.PORT + "/rest/product/delete/" + id;
         try {
             String response = requestLoader.makeDelete(url);
             success = Boolean.valueOf(response);
-            Log.i(TAG, "Cannot delete Product with url: " + url);
         } catch (AuthenticationException e) {
             throw new AuthenticationException(e.getMessage());
+        } catch (IOException e) {
+            Log.w(TAG, "IOException. Power off?:)");
+            return false;
         } catch (Exception e) {
             success = false;
             Log.e(TAG, "Cannot delete Product with url: " + url, e);
@@ -97,7 +108,7 @@ public class ProductNetworkDAOImpl implements ProductNetworkDAO {
         return success;
     }
 
-    public List<Product> getProductsSinceUpdateTimestamp(Timestamp lastUpdateTimestamp)  {
+    public List<Product> getProductsSinceUpdateTimestamp(Timestamp lastUpdateTimestamp) {
         List<Product> productList = null;
         String url = AppProperties.HOST + AppProperties.PORT + "/rest/product/getupdated/" + lastUpdateTimestamp.getTime();
         try {
@@ -107,6 +118,8 @@ public class ProductNetworkDAOImpl implements ProductNetworkDAO {
             Log.i(TAG, "Product list uploaded from url: " + url);
         } catch (AuthenticationException e) {
             throw new AuthenticationException(e.getMessage());
+        } catch (IOException e) {
+            Log.w(TAG, "IOException. Power off?:)");
         } catch (Exception e) {
             Log.e(TAG, "Cannot upload Product list from url: " + url, e);
         }

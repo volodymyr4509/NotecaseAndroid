@@ -1,6 +1,7 @@
 package com.expenses.volodymyr.notecase.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +35,11 @@ public class ProductAdapter extends ArrayAdapter<Product> {
         TextView productPrice = (TextView) convertView.findViewById(R.id.product_price);
         TextView productCreated = (TextView) convertView.findViewById(R.id.product_created);
 
+        if (product.getUserId() == 1){
+            productName.setTextColor(Color.BLACK);
+            productPrice.setTextColor(Color.BLACK);
+            productCreated.setTextColor(Color.BLACK);
+        }
         productName.setText(product.getName());
 
         //format double

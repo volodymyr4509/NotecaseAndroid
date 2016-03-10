@@ -24,6 +24,7 @@ public class DBHandler extends SQLiteOpenHelper {
 
     public static final String COLUMN_ID = "_id";
     public static final String DIRTY = "dirty";
+    public static final String ENABLED = "enabled";
 
     //Product table
     public static final String TABLE_PRODUCT = "product";
@@ -55,6 +56,7 @@ public class DBHandler extends SQLiteOpenHelper {
             PRODUCT_NAME + " TEXT, " +
             PRODUCT_PRICE + " REAL, " +
             PRODUCT_TIMESTAMP + " DATETIME, " +
+            ENABLED + " INTEGER, " +
             DIRTY + " INTEGER);";
 
     private static final String CREATE_CATEGORY = "CREATE TABLE " + TABLE_CATEGORY + " (" +

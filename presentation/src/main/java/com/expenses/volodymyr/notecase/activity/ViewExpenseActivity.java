@@ -4,13 +4,10 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.data.volodymyr.notecase.entity.Category;
@@ -32,7 +29,6 @@ public class ViewExpenseActivity extends Activity implements View.OnClickListene
     private TextView name, price, dateTime, categoryName;
     private ImageView categoryImage, navigationArrow, logo, editButton, delete;
     private Product product;
-    private Toolbar toolbar;
 
     private ProductManager productManager;
     private CategoryManager categoryManager;
@@ -55,7 +51,6 @@ public class ViewExpenseActivity extends Activity implements View.OnClickListene
 
         productManager = new ProductManagerImpl(getApplicationContext());
         categoryManager = new CategoryManagerImpl(getApplicationContext());
-        initFields();
 
         editButton.setOnClickListener(this);
         delete.setOnClickListener(this);
@@ -66,6 +61,7 @@ public class ViewExpenseActivity extends Activity implements View.OnClickListene
 
     @Override
     protected void onResume() {
+        System.out.println("onResume view Expense");
         initFields();
         super.onResume();
     }
@@ -105,16 +101,9 @@ public class ViewExpenseActivity extends Activity implements View.OnClickListene
                                     public Boolean doInBackgroundSafe() throws AuthenticationException {
                                         return productManager.deleteProductById(product.getId());
                                     }
-
                                     @Override
                                     protected void onPostExecute(Boolean success) {
-                                        if (success) {
-                                            Log.i(TAG, "Product with Id = " + product.getId() + ", Name = " + product.getName() + " deleted.");
-                                            finish();
-                                        } else {
-                                            Toast.makeText(getApplicationContext(), "Product with id = " + product.getId() + " deleted", Toast.LENGTH_LONG);
-                                            Log.e(TAG, "Product delete failed. Id = " + product.getId());
-                                        }
+                                        finish();
                                     }
                                 }.execute();
 

@@ -42,6 +42,7 @@ public class ProductSQLiteDAOImpl implements ProductSQLiteDAO {
         values.put(DBHandler.PRODUCT_PRICE, product.getPrice());
         values.put(DBHandler.PRODUCT_TIMESTAMP, product.getCreated().toString());
         values.put(DBHandler.PRODUCT_CATEGORY, product.getCategoryId());
+        values.put(DBHandler.ENABLED, product.isEnabled());
         values.put(DBHandler.DIRTY, product.isDirty());
 
         SQLiteDatabase db = dbHandler.getWritableDatabase();
@@ -56,6 +57,7 @@ public class ProductSQLiteDAOImpl implements ProductSQLiteDAO {
         values.put(DBHandler.PRODUCT_PRICE, product.getPrice());
         values.put(DBHandler.PRODUCT_TIMESTAMP, product.getCreated().toString());
         values.put(DBHandler.PRODUCT_CATEGORY, product.getCategoryId());
+        values.put(DBHandler.ENABLED, product.isEnabled());
         values.put(DBHandler.DIRTY, product.isDirty());
 
         SQLiteDatabase db = dbHandler.getWritableDatabase();
@@ -67,7 +69,7 @@ public class ProductSQLiteDAOImpl implements ProductSQLiteDAO {
         Log.i(TAG, "Retrieving product by id = " + productId + " from sqlite");
         long before = System.currentTimeMillis();
         SQLiteDatabase db = dbHandler.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM " + DBHandler.TABLE_PRODUCT + " WHERE " + DBHandler.COLUMN_ID + " = " + productId + ";", null);
+        Cursor cursor = db.rawQuery("SELECT * FROM " + DBHandler.TABLE_PRODUCT + " WHERE " + DBHandler.COLUMN_ID + " = " + productId + " AND " + DBHandler.ENABLED + " = 1;", null);
         Product product = null;
         if (cursor.moveToNext()) {
             product = new Product();
@@ -76,7 +78,8 @@ public class ProductSQLiteDAOImpl implements ProductSQLiteDAO {
             product.setCategoryId(cursor.getInt(2));
             product.setName(cursor.getString(3));
             product.setPrice(cursor.getDouble(4));
-            product.setDirty(cursor.getInt(6) == 1);
+            product.setEnabled(cursor.getInt(6) == 1);
+            product.setDirty(cursor.getInt(7) == 1);
             Timestamp timestamp = null;
             if (cursor.getString(5) != null) {
                 timestamp = Timestamp.valueOf(cursor.getString(5));
@@ -92,7 +95,7 @@ public class ProductSQLiteDAOImpl implements ProductSQLiteDAO {
         long before = System.currentTimeMillis();
         SQLiteDatabase db = dbHandler.getReadableDatabase();
         String query = "SELECT * FROM " + DBHandler.TABLE_PRODUCT +
-                " WHERE " + DBHandler.PRODUCT_TIMESTAMP + " BETWEEN '" + since + "' AND '" + till + "' ORDER BY " + DBHandler.COLUMN_ID + " DESC LIMIT 500;";
+                " WHERE " + DBHandler.ENABLED + " = 1 AND " + DBHandler.PRODUCT_TIMESTAMP + " BETWEEN '" + since + "' AND '" + till + "' ORDER BY " + DBHandler.COLUMN_ID + " DESC LIMIT 500;";
         Log.d(TAG, "SQLite Query: " + query);
         Cursor cursor = db.rawQuery(query, null);
         List<Product> products = new ArrayList();
@@ -103,7 +106,8 @@ public class ProductSQLiteDAOImpl implements ProductSQLiteDAO {
             product.setCategoryId(cursor.getInt(2));
             product.setName(cursor.getString(3));
             product.setPrice(cursor.getDouble(4));
-            product.setDirty(cursor.getInt(6) == 1);
+            product.setEnabled(cursor.getInt(6) == 1);
+            product.setDirty(cursor.getInt(7) == 1);
             Timestamp timestamp = null;
             if (cursor.getString(5) != null) {
                 timestamp = Timestamp.valueOf(cursor.getString(5));
@@ -129,7 +133,8 @@ public class ProductSQLiteDAOImpl implements ProductSQLiteDAO {
             product.setCategoryId(cursor.getInt(2));
             product.setName(cursor.getString(3));
             product.setPrice(cursor.getDouble(4));
-            product.setDirty(cursor.getInt(6) == 1);
+            product.setEnabled(cursor.getInt(6) == 1);
+            product.setDirty(cursor.getInt(7) == 1);
             Timestamp timestamp = null;
             if (cursor.getString(5) != null) {
                 timestamp = Timestamp.valueOf(cursor.getString(5));
@@ -142,16 +147,9 @@ public class ProductSQLiteDAOImpl implements ProductSQLiteDAO {
     }
 
     @Override
-    public void deleteProductById(int productId) {
-        Log.i(TAG, "Deleting product by productId = " + productId);
-        SQLiteDatabase db = dbHandler.getWritableDatabase();
-        db.delete(DBHandler.TABLE_PRODUCT, DBHandler.COLUMN_ID + "=?", new String[]{String.valueOf(productId)});
-    }
-
-    @Override
     public List<Product> getProductsByCategoryId(int categoryId) {
         SQLiteDatabase db = dbHandler.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM " + DBHandler.TABLE_PRODUCT + " WHERE " + DBHandler.PRODUCT_CATEGORY + " = " + categoryId + ";", null);
+        Cursor cursor = db.rawQuery("SELECT * FROM " + DBHandler.TABLE_PRODUCT + " WHERE " + DBHandler.PRODUCT_CATEGORY + " = " + categoryId + " AND " + DBHandler.ENABLED +" = 1;", null);
         List<Product> products = new ArrayList<>();
         while (cursor.moveToNext()) {
             Product product = new Product();
@@ -160,7 +158,8 @@ public class ProductSQLiteDAOImpl implements ProductSQLiteDAO {
             product.setCategoryId(cursor.getInt(2));
             product.setName(cursor.getString(3));
             product.setPrice(cursor.getDouble(4));
-            product.setDirty(cursor.getInt(6) == 1);
+            product.setEnabled(cursor.getInt(6) == 1);
+            product.setDirty(cursor.getInt(7) == 1);
             Timestamp timestamp = null;
             if (cursor.getString(5) != null) {
                 timestamp = Timestamp.valueOf(cursor.getString(5));
@@ -179,8 +178,8 @@ public class ProductSQLiteDAOImpl implements ProductSQLiteDAO {
         Map<Category, Double> result = new HashMap<>();
         String query = "SELECT SUM(p." + DBHandler.PRODUCT_PRICE + ") AS Sum, c.* FROM " + DBHandler.TABLE_PRODUCT + " p JOIN " +
                 DBHandler.TABLE_CATEGORY + " c ON p." + DBHandler.PRODUCT_CATEGORY + "=" + "c." + DBHandler.COLUMN_ID +
-                " WHERE p." + DBHandler.PRODUCT_TIMESTAMP + " BETWEEN '" + since + "' AND '" + till + "' GROUP BY p." + DBHandler.PRODUCT_CATEGORY + ";";
-        Log.i(TAG, "Loading grouped expenses by categories: \n" + query);
+                " WHERE p." + DBHandler.PRODUCT_TIMESTAMP + " BETWEEN '" + since + "' AND '" + till + "' AND p." + DBHandler.ENABLED + " = 1 GROUP BY p." + DBHandler.PRODUCT_CATEGORY + ";";
+        Log.i(TAG, "SQLite query: " + query);
         Cursor cursor = db.rawQuery(query, null);
         while (cursor.moveToNext()) {
             Category category = new Category();
@@ -196,7 +195,7 @@ public class ProductSQLiteDAOImpl implements ProductSQLiteDAO {
 
     public Cursor getProductNameCursor() {
         SQLiteDatabase db = dbHandler.getReadableDatabase();
-        String query = "SELECT * FROM " + DBHandler.TABLE_PRODUCT + ";";
+        String query = "SELECT * FROM " + DBHandler.TABLE_PRODUCT + " WHERE " + DBHandler.ENABLED + " = 1;";
         Log.i(TAG, "Loading product name cursor: \n" + query);
         Cursor cursor = db.rawQuery(query, null);
         return cursor;
@@ -204,7 +203,7 @@ public class ProductSQLiteDAOImpl implements ProductSQLiteDAO {
 
     public Cursor suggestProductName(String partialProductName) {
         SQLiteDatabase db = dbHandler.getReadableDatabase();
-        String query = "SELECT * FROM " + DBHandler.TABLE_PRODUCT + " WHERE Name like '" + partialProductName + "%' GROUP BY " + DBHandler.PRODUCT_NAME + ";";
+        String query = "SELECT * FROM " + DBHandler.TABLE_PRODUCT + " WHERE Name like '" + partialProductName + "%' AND " + DBHandler.ENABLED + " = 1 GROUP BY " + DBHandler.PRODUCT_NAME + ";";
         Log.i(TAG, "Loading suggested prod name: \n" + query);
         Cursor cursor = db.rawQuery(query, null);
         return cursor;

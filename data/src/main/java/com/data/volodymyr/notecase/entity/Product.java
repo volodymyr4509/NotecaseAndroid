@@ -14,6 +14,7 @@ public class Product implements Serializable{
     private String name;
     private double price;
     private Timestamp created;
+    private boolean enabled = true;
     private boolean dirty = true;
 
     public Product(){}
@@ -74,6 +75,14 @@ public class Product implements Serializable{
         this.created = created;
     }
 
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
     public boolean isDirty() {
         return dirty;
     }
@@ -92,6 +101,7 @@ public class Product implements Serializable{
                 ", name='" + name + '\'' +
                 ", price=" + price +
                 ", created=" + created +
+                ", enabled=" + enabled +
                 ", dirty=" + dirty +
                 '}';
     }

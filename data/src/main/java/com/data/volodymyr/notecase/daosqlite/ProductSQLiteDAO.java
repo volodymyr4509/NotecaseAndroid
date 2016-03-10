@@ -29,8 +29,6 @@ public interface ProductSQLiteDAO {
 
     List<Product> getDirtyProducts();
 
-    void deleteProductById(int productId);
-
     List<Product> getProductsByCategoryId(int categoryId);
 
     Map<Category, Double> getExpensesGroupedByCategories(Timestamp since, Timestamp till);

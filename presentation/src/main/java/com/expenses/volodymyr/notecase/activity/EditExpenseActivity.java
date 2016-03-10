@@ -93,24 +93,17 @@ public class EditExpenseActivity extends Activity implements View.OnClickListene
                     product.setName(newName);
                     product.setPrice(newPrice);
                     product.setCategoryId(category.getId());
-
                 } catch (RuntimeException e) {
                     e.printStackTrace();
                     Toast.makeText(getApplicationContext(), "Incorrect input", Toast.LENGTH_LONG).show();
                 }
-                new SafeAsyncTask<Product, Void, Boolean>(this){
-                    @Override
-                    public Boolean doInBackgroundSafe() throws AuthenticationException {
-                        return productManager.updateProduct(product);
-                    }
+                new SafeAsyncTask<Void, Void, Void>(this){
 
                     @Override
-                    protected void onPostExecute(Boolean success) {
-                        if (success){
-                            Toast.makeText(getApplicationContext(), "Product updated successfully", Toast.LENGTH_LONG);
-                        }else {
-                            Toast.makeText(getApplicationContext(), "Product update failed", Toast.LENGTH_LONG);
-                        }
+                    public Void doInBackgroundSafe() throws AuthenticationException {
+                        productManager.updateProduct(product);
+                        finish();
+                        return null;
                     }
                 }.execute();
 
@@ -120,7 +113,6 @@ public class EditExpenseActivity extends Activity implements View.OnClickListene
                 break;
 
         }
-        finish();
     }
 
     @Override

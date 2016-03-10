@@ -53,6 +53,7 @@ public class CategorySQLiteDAOImpl implements CategorySQLiteDAO {
         values.put(DBHandler.CATEGORY_NAME, category.getName());
         values.put(DBHandler.CATEGORY_COLOR, category.getColor());
         values.put(DBHandler.CATEGORY_IMAGE, category.getImage());
+        values.put(DBHandler.DIRTY, category.isDirty());
         db.update(DBHandler.TABLE_CATEGORY, values, DBHandler.COLUMN_ID + " = " + category.getId(), null);
     }
 
@@ -127,6 +128,7 @@ public class CategorySQLiteDAOImpl implements CategorySQLiteDAO {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor prefEditor = preferences.edit();
         prefEditor.putLong(LAST_CATEGORY_SYNC_TIMESTAMP, timestamp.getTime());
+        prefEditor.commit();
         Log.i(TAG, "Last Category update timestamp updated(SharedPreferences): " + timestamp);
     }
 

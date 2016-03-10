@@ -87,9 +87,9 @@ public class CategoryManagerImpl implements CategoryManager {
         List<Category> updatedCategories = categoryNetworkDAO.getCategoriesSinceUpdateTimestamp(categorySQLiteDAO.getLastSyncTimestamp());
         if (updatedCategories != null) {
             for (Category category : updatedCategories) {
-                Category deviceCategory = categorySQLiteDAO.getCategoryById(category.getId());
+                Category existingCategory = categorySQLiteDAO.getCategoryById(category.getId());
                 category.setDirty(false);
-                if (deviceCategory == null) {
+                if (existingCategory == null) {
                     categorySQLiteDAO.addCategory(category);
                 } else {
                     categorySQLiteDAO.updateCategory(category);
