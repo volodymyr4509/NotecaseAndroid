@@ -112,6 +112,13 @@ public class LoginActivity extends FragmentActivity implements View.OnClickListe
 
                         return userManager.authenticateUser(user);
                     }
+
+                    @Override
+                    protected void onPostExecute(Boolean success) {
+                        if (success!=null && success){
+                            finish();
+                        }
+                    }
                 }.execute();
             }
         }
