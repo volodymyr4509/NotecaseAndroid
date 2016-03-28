@@ -49,10 +49,10 @@ public class UserSQLiteDAOImpl implements UserSQLiteDAO {
     @Override
     public void updateOwnerUser(User user) {
         ContentValues values = new ContentValues();
+        values.put(DBHandler.COLUMN_ID, user.getId());
         values.put(DBHandler.USER_NAME, user.getName());
         values.put(DBHandler.USER_AUTH_TOKEN, user.getAuthToken());
         values.put(DBHandler.USER_EMAIL, user.getEmail());
-//        values.put(DBHandler.USER_OWNER, user.isOwner());
         values.put(DBHandler.DIRTY, user.isDirty());
 
         SQLiteDatabase db = dbHandler.getWritableDatabase();
@@ -169,7 +169,7 @@ public class UserSQLiteDAOImpl implements UserSQLiteDAO {
             user.setOwner(cursor.getInt(4) == 1);
             user.setDirty(cursor.getInt(5) == 1);
         }
-        Log.w(TAG, "Retrieved device owner, User: " + user);
+        Log.i(TAG, "Retrieved device owner, User: " + user);
         return user;
     }
 }

@@ -9,6 +9,8 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.data.volodymyr.notecase.entity.Product;
+import com.data.volodymyr.notecase.entity.User;
+import com.domain.volodymyr.notecase.manager.UserManagerImpl;
 import com.expenses.volodymyr.notecase.R;
 
 import java.sql.Timestamp;
@@ -19,8 +21,11 @@ import java.util.List;
  * Created by vkret on 03.12.15.
  */
 public class ProductAdapter extends ArrayAdapter<Product> {
+    private User owner;
+
     public ProductAdapter(Context context, List<Product> productList) {
         super(context, 0, productList);
+        owner = new UserManagerImpl(context).getUserOwner();
     }
 
     @Override
@@ -35,7 +40,7 @@ public class ProductAdapter extends ArrayAdapter<Product> {
         TextView productPrice = (TextView) convertView.findViewById(R.id.product_price);
         TextView productCreated = (TextView) convertView.findViewById(R.id.product_created);
 
-        if (product.getUserId() == 1){
+        if (owner != null && product.getUserId() == owner.getId()) {
             productName.setTextColor(Color.BLACK);
             productPrice.setTextColor(Color.BLACK);
             productCreated.setTextColor(Color.BLACK);

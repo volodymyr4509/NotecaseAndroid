@@ -7,9 +7,12 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.data.volodymyr.notecase.entity.Product;
+import com.data.volodymyr.notecase.entity.User;
 import com.data.volodymyr.notecase.util.AuthenticationException;
 import com.domain.volodymyr.notecase.manager.ProductManager;
 import com.domain.volodymyr.notecase.manager.ProductManagerImpl;
+import com.domain.volodymyr.notecase.manager.UserManager;
+import com.domain.volodymyr.notecase.manager.UserManagerImpl;
 
 
 /**
@@ -25,13 +28,15 @@ public class OnDragDropListener implements View.OnDragListener {
     private Context context;
 
     private ProductManager productManager;
+    private UserManager userManager;
 
     public OnDragDropListener(EditText name, EditText price, int category, Context context) {
         this.name = name;
         this.price = price;
         this.categoryId = category;
         this.context = context;
-        productManager = new ProductManagerImpl(context);
+        this.productManager = new ProductManagerImpl(context);
+        this.userManager = new UserManagerImpl(context);
     }
 
     @Override
@@ -57,15 +62,19 @@ public class OnDragDropListener implements View.OnDragListener {
                     return false;
                 }
 
-                //user owner always 1 user
-                final Product product = new Product(categoryId, 1, productName, productPrice);
+                User owner = userManager.getUserOwner();
+                int userId = 0;
+                if (owner != null) {
+                    userId = owner.getId();
+                }
+                final Product product = new Product(categoryId, userId, productName, productPrice);
 
-                new SafeAsyncTask<Product, Void, Boolean>(context){
+                new SafeAsyncTask<Product, Void, Boolean>(context) {
                     @Override
                     public Boolean doInBackgroundSafe() throws AuthenticationException {
                         return productManager.addProduct(product);
                     }
-                }.execute(product);
+                }.execute();
                 //clean input fields after save
                 name.setText(EMPTY_STRING);
                 price.setText(EMPTY_STRING);

@@ -96,7 +96,8 @@ public class ProductSQLiteDAOImpl implements ProductSQLiteDAO {
         long before = System.currentTimeMillis();
         SQLiteDatabase db = dbHandler.getReadableDatabase();
         String query = "SELECT * FROM " + DBHandler.TABLE_PRODUCT +
-                " WHERE " + DBHandler.ENABLED + " = 1 AND " + DBHandler.PRODUCT_TIMESTAMP + " BETWEEN '" + since + "' AND '" + till + "' ORDER BY " + DBHandler.UUID + " DESC LIMIT 500;";
+                " WHERE " + DBHandler.ENABLED + " = 1 AND " + DBHandler.PRODUCT_TIMESTAMP +
+                " BETWEEN '" + since + "' AND '" + till + "' ORDER BY " + DBHandler.PRODUCT_TIMESTAMP + " DESC LIMIT 500;";
         Log.d(TAG, "SQLite Query: " + query);
         Cursor cursor = db.rawQuery(query, null);
         List<Product> products = new ArrayList();

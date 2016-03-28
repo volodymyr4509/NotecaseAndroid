@@ -14,12 +14,10 @@ import java.util.List;
  * Created by volodymyr on 12.02.16.
  */
 public class UserManagerImpl implements UserManager {
-    private Context context;
     private UserNetworkDAO userNetworkDAO;
     private UserSQLiteDAO userSQLiteDAO;
 
     public UserManagerImpl(Context context) {
-        this.context = context;
         this.userSQLiteDAO = new UserSQLiteDAOImpl(context);
         this.userNetworkDAO = new UserNetworkDAOImpl(context);
     }
@@ -56,7 +54,6 @@ public class UserManagerImpl implements UserManager {
         if (authenticatedUser == null || authenticatedUser.getAuthToken() == null || authenticatedUser.getAuthToken().length() < 5) {
             return false;
         } else {
-//            user.setAuthToken(authToken);
             authenticatedUser.setDirty(false);
             authenticatedUser.setOwner(true);
             userSQLiteDAO.updateOwnerUser(authenticatedUser);

@@ -11,10 +11,8 @@ public class User {
     private String authToken;
     private boolean owner;
     private boolean dirty = true;
-//    private Timestamp lastUpdateTimestamp;
-//    private boolean enabled = true;
-    public User() {
-    }
+
+    public User() {}
 
     public User(int id, String name, String email, boolean owner) {
         this.id = id;
