@@ -14,7 +14,7 @@ import java.util.Map;
  */
 public interface ProductManager {
 
-    Product getProductById(int id);
+    Product getProductByUuid(String id);
 
     List<Product> getAllProducts(Timestamp since, Timestamp till);
 
@@ -22,7 +22,7 @@ public interface ProductManager {
 
     boolean addProduct(Product product);
 
-    boolean deleteProductById(int id);
+    boolean deleteProductByUuid(String uuid);
 
     List<Product> getProductsByCategoryId(int categoryId);
 

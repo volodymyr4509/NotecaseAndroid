@@ -14,16 +14,16 @@ import java.util.Map;
  */
 public interface ProductSQLiteDAO {
 
-    int addProduct(Product product);
+    void addProduct(Product product);
 
     void updateProduct(Product product);
 
     /**
      *
-     * @param productId
+     * @param uuid
      * @return product by id or null if product doesnt exist
      */
-    Product getProductById(int productId);
+    Product getProductByUuid(String uuid);
 
     List<Product> getAllProducts(Timestamp since, Timestamp till);
 
@@ -31,7 +31,7 @@ public interface ProductSQLiteDAO {
 
     List<Product> getProductsByCategoryId(int categoryId);
 
-    Map<Category, Double> getExpensesGroupedByCategories(Timestamp since, Timestamp till);
+    Map<Category, Double> getProductsGroupedByCategories(Timestamp since, Timestamp till);
 
     Cursor getProductNameCursor();
 

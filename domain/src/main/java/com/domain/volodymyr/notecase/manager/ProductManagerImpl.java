@@ -39,8 +39,8 @@ public class ProductManagerImpl implements ProductManager {
     }
 
     @Override
-    public Product getProductById(int id) {
-        return productSQLiteDAO.getProductById(id);
+    public Product getProductByUuid(String uuid) {
+        return productSQLiteDAO.getProductByUuid(uuid);
     }
 
     @Override
@@ -50,8 +50,7 @@ public class ProductManagerImpl implements ProductManager {
 
     @Override
     public boolean addProduct(Product product) {
-        int id = productSQLiteDAO.addProduct(product);
-        product.setId(id);
+        productSQLiteDAO.addProduct(product);
 
         boolean uploaded = productNetworkDAO.addProduct(product);
         if (uploaded) {
@@ -62,13 +61,13 @@ public class ProductManagerImpl implements ProductManager {
     }
 
     @Override
-    public boolean deleteProductById(int id) {
+    public boolean deleteProductByUuid(String uuid) {
 
-        Product product = productSQLiteDAO.getProductById(id);
+        Product product = productSQLiteDAO.getProductByUuid(uuid);
         if (product == null){
             return true;
         }
-        boolean deleted = productNetworkDAO.deleteProduct(id);
+        boolean deleted = productNetworkDAO.deleteProductByUuid(uuid);
 
         product.setDirty(!deleted);
         product.setEnabled(false);
@@ -96,7 +95,7 @@ public class ProductManagerImpl implements ProductManager {
         List<Product> updatedProducts = productNetworkDAO.getProductsSinceUpdateTimestamp(productSQLiteDAO.getLastSyncTimestamp());
         if (updatedProducts!=null){
             for (Product product : updatedProducts) {
-                Product deviceProd = productSQLiteDAO.getProductById(product.getId());
+                Product deviceProd = productSQLiteDAO.getProductByUuid(product.getUuid());
                 if (deviceProd == null) {
                     product.setDirty(false);
                     productSQLiteDAO.addProduct(product);
@@ -127,7 +126,7 @@ public class ProductManagerImpl implements ProductManager {
 
     @Override
     public Map<Category, Double> getExpensesGroupedByCategories(Timestamp since, Timestamp till) {
-        return productSQLiteDAO.getExpensesGroupedByCategories(since, till);
+        return productSQLiteDAO.getProductsGroupedByCategories(since, till);
     }
 
 }

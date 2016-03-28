@@ -108,6 +108,9 @@ public class TabStatisticExpenses extends Fragment implements OnChartValueSelect
                 ArrayList<Integer> colors = new ArrayList<>();
 
                 double sum = 0;
+                if (categoryDoubleMap == null || categoryDoubleMap.values() == null){
+                    return;
+                }
                 Iterator<Double> it = categoryDoubleMap.values().iterator();
                 while (it.hasNext()) {
                     sum += it.next();

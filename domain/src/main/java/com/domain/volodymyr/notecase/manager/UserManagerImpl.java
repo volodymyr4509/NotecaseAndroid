@@ -1,15 +1,12 @@
 package com.domain.volodymyr.notecase.manager;
 
 import android.content.Context;
-import android.content.Intent;
-import android.util.Log;
 
 import com.data.volodymyr.notecase.daonetwork.UserNetworkDAO;
 import com.data.volodymyr.notecase.daonetwork.UserNetworkDAOImpl;
 import com.data.volodymyr.notecase.daosqlite.UserSQLiteDAO;
 import com.data.volodymyr.notecase.daosqlite.UserSQLiteDAOImpl;
 import com.data.volodymyr.notecase.entity.User;
-import com.data.volodymyr.notecase.util.AuthenticationException;
 
 import java.util.List;
 
@@ -18,7 +15,7 @@ import java.util.List;
  */
 public class UserManagerImpl implements UserManager {
     private Context context;
-    private UserNetworkDAO userNetworkDAO ;
+    private UserNetworkDAO userNetworkDAO;
     private UserSQLiteDAO userSQLiteDAO;
 
     public UserManagerImpl(Context context) {
@@ -55,14 +52,14 @@ public class UserManagerImpl implements UserManager {
         if (existingUser == null) {
             userSQLiteDAO.addUser(user);
         }
-        String authToken = userNetworkDAO.authenticateOwnerUser(user.getIdToken());
-        user.setAuthToken(authToken);
-        if (authToken == null || authToken.length() < 5) {
+        User authenticatedUser = userNetworkDAO.authenticateOwnerUser(user.getIdToken());
+        if (authenticatedUser == null || authenticatedUser.getAuthToken() == null || authenticatedUser.getAuthToken().length() < 5) {
             return false;
         } else {
-            user.setAuthToken(authToken);
-            user.setDirty(false);
-            userSQLiteDAO.updateOwnerUser(user);
+//            user.setAuthToken(authToken);
+            authenticatedUser.setDirty(false);
+            authenticatedUser.setOwner(true);
+            userSQLiteDAO.updateOwnerUser(authenticatedUser);
             return true;
         }
     }
@@ -86,24 +83,22 @@ public class UserManagerImpl implements UserManager {
 
         boolean renderAgain = false;
         //upload all users from server
-            List<User> updatedUsers = userNetworkDAO.getAllTrustedUsers();
-            if (updatedUsers != null) {
-                for (User user : updatedUsers) {
-                    User deviceUser = userSQLiteDAO.getUserByEmail(user.getEmail());
-                    user.setDirty(false);
-                    if (deviceUser == null) {
-                        userSQLiteDAO.addUser(user);
-                    } else {
-                        userSQLiteDAO.updateUser(user);
-                    }
-                    renderAgain = true;
+        List<User> updatedUsers = userNetworkDAO.getAllTrustedUsers();
+        if (updatedUsers != null) {
+            for (User user : updatedUsers) {
+                User deviceUser = userSQLiteDAO.getUserByEmail(user.getEmail());
+                user.setDirty(false);
+                if (deviceUser == null) {
+                    userSQLiteDAO.addUser(user);
+                } else {
+                    userSQLiteDAO.updateUser(user);
                 }
+                renderAgain = true;
             }
+        }
 
         return renderAgain;
     }
-
-
 
 
 }

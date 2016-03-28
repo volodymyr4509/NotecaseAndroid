@@ -63,19 +63,19 @@ public class UserNetworkDAOImpl implements UserNetworkDAO {
     }
 
     @Override
-    public String authenticateOwnerUser(String idToken) {
-        String authToken = null;
+    public User authenticateOwnerUser(String idToken) {
+        User user = null;
         String url = AppProperties.HOST + AppProperties.PORT + "/rest/user/authenticate";
         try {
-            authToken = requestLoader.makePost(url, idToken.getBytes());
-            Log.i(TAG, "User authentication: " + url + ", retrieved authToken: " + authToken);
+            String response = requestLoader.makePost(url, idToken.getBytes());
+            user = gson.fromJson(response, User.class);
+            Log.i(TAG, "User authentication: " + url + ", retrieved authToken: " + response);
         } catch (AuthenticationException e) {
             throw new AuthenticationException(e.getMessage());
         } catch (Exception e) {
             Log.e(TAG, "Cannot authenticate user", e);
         }
-
-        return authToken;
+        return user;
     }
 
     @Override

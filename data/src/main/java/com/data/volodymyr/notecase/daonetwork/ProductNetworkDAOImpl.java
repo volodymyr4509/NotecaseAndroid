@@ -31,9 +31,9 @@ public class ProductNetworkDAOImpl implements ProductNetworkDAO {
     }
 
     @Override
-    public Product getProduct(int id) {
+    public Product getProduct(String uuid) {
         Product product = null;
-        String url = AppProperties.HOST + AppProperties.PORT + "/rest/product/get/" + id;
+        String url = AppProperties.HOST + AppProperties.PORT + "/rest/product/get/" + uuid;
         try {
             String response = requestLoader.makeGet(url);
             product = gson.fromJson(response, Product.class);
@@ -90,9 +90,9 @@ public class ProductNetworkDAOImpl implements ProductNetworkDAO {
     }
 
     @Override
-    public boolean deleteProduct(int id) {
+    public boolean deleteProductByUuid(String uuid) {
         boolean success;
-        String url = AppProperties.HOST + AppProperties.PORT + "/rest/product/delete/" + id;
+        String url = AppProperties.HOST + AppProperties.PORT + "/rest/product/delete/" + uuid;
         try {
             String response = requestLoader.makeDelete(url);
             success = Boolean.valueOf(response);

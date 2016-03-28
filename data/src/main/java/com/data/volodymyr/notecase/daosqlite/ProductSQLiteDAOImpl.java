@@ -34,9 +34,10 @@ public class ProductSQLiteDAOImpl implements ProductSQLiteDAO {
     }
 
     @Override
-    public int addProduct(Product product) {
+    public void addProduct(Product product) {
         Log.i(TAG, "Add new Product: " + product);
         ContentValues values = new ContentValues();
+        values.put(DBHandler.UUID, product.getUuid());
         values.put(DBHandler.PRODUCT_NAME, product.getName());
         values.put(DBHandler.PRODUCT_USER, product.getUserId());
         values.put(DBHandler.PRODUCT_PRICE, product.getPrice());
@@ -46,7 +47,7 @@ public class ProductSQLiteDAOImpl implements ProductSQLiteDAO {
         values.put(DBHandler.DIRTY, product.isDirty());
 
         SQLiteDatabase db = dbHandler.getWritableDatabase();
-        return (int) db.insert(DBHandler.TABLE_PRODUCT, null, values);
+        db.insert(DBHandler.TABLE_PRODUCT, null, values);
     }
 
     @Override
@@ -61,19 +62,19 @@ public class ProductSQLiteDAOImpl implements ProductSQLiteDAO {
         values.put(DBHandler.DIRTY, product.isDirty());
 
         SQLiteDatabase db = dbHandler.getWritableDatabase();
-        db.update(DBHandler.TABLE_PRODUCT, values, DBHandler.COLUMN_ID + " = " + product.getId(), null);
+        db.update(DBHandler.TABLE_PRODUCT, values, DBHandler.UUID + " = '" + product.getUuid() + "'", null);
     }
 
     @Override
-    public Product getProductById(int productId) {
-        Log.i(TAG, "Retrieving product by id = " + productId + " from sqlite");
+    public Product getProductByUuid(String uuid) {
+        Log.i(TAG, "Retrieving product by id = " + uuid + " from sqlite");
         long before = System.currentTimeMillis();
         SQLiteDatabase db = dbHandler.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM " + DBHandler.TABLE_PRODUCT + " WHERE " + DBHandler.COLUMN_ID + " = " + productId + " AND " + DBHandler.ENABLED + " = 1;", null);
+        Cursor cursor = db.rawQuery("SELECT * FROM " + DBHandler.TABLE_PRODUCT + " WHERE " + DBHandler.UUID + " = '" + uuid + "' AND " + DBHandler.ENABLED + " = 1;", null);
         Product product = null;
         if (cursor.moveToNext()) {
             product = new Product();
-            product.setId(cursor.getInt(0));
+            product.setUuid(cursor.getString(0));
             product.setUserId(cursor.getInt(1));
             product.setCategoryId(cursor.getInt(2));
             product.setName(cursor.getString(3));
@@ -95,13 +96,13 @@ public class ProductSQLiteDAOImpl implements ProductSQLiteDAO {
         long before = System.currentTimeMillis();
         SQLiteDatabase db = dbHandler.getReadableDatabase();
         String query = "SELECT * FROM " + DBHandler.TABLE_PRODUCT +
-                " WHERE " + DBHandler.ENABLED + " = 1 AND " + DBHandler.PRODUCT_TIMESTAMP + " BETWEEN '" + since + "' AND '" + till + "' ORDER BY " + DBHandler.COLUMN_ID + " DESC LIMIT 500;";
+                " WHERE " + DBHandler.ENABLED + " = 1 AND " + DBHandler.PRODUCT_TIMESTAMP + " BETWEEN '" + since + "' AND '" + till + "' ORDER BY " + DBHandler.UUID + " DESC LIMIT 500;";
         Log.d(TAG, "SQLite Query: " + query);
         Cursor cursor = db.rawQuery(query, null);
         List<Product> products = new ArrayList();
         while (cursor.moveToNext()) {
             Product product = new Product();
-            product.setId(cursor.getInt(0));
+            product.setUuid(cursor.getString(0));
             product.setUserId(cursor.getInt(1));
             product.setCategoryId(cursor.getInt(2));
             product.setName(cursor.getString(3));
@@ -128,7 +129,7 @@ public class ProductSQLiteDAOImpl implements ProductSQLiteDAO {
         List<Product> productList = new ArrayList<>();
         while (cursor.moveToNext()){
             Product product = new Product();
-            product.setId(cursor.getInt(0));
+            product.setUuid(cursor.getString(0));
             product.setUserId(cursor.getInt(1));
             product.setCategoryId(cursor.getInt(2));
             product.setName(cursor.getString(3));
@@ -153,7 +154,7 @@ public class ProductSQLiteDAOImpl implements ProductSQLiteDAO {
         List<Product> products = new ArrayList<>();
         while (cursor.moveToNext()) {
             Product product = new Product();
-            product.setId(cursor.getInt(0));
+            product.setUuid(cursor.getString(0));
             product.setUserId(cursor.getInt(1));
             product.setCategoryId(cursor.getInt(2));
             product.setName(cursor.getString(3));
@@ -172,7 +173,7 @@ public class ProductSQLiteDAOImpl implements ProductSQLiteDAO {
     }
 
     @Override
-    public Map<Category, Double> getExpensesGroupedByCategories(Timestamp since, Timestamp till) {
+    public Map<Category, Double> getProductsGroupedByCategories(Timestamp since, Timestamp till) {
         long before = System.currentTimeMillis();
         SQLiteDatabase db = dbHandler.getReadableDatabase();
         Map<Category, Double> result = new HashMap<>();
@@ -193,18 +194,22 @@ public class ProductSQLiteDAOImpl implements ProductSQLiteDAO {
         return result;
     }
 
+    /**
+     * rowid AS _id  --- workaround for retrieving unique integer with name _id for CursorAdapter.
+     * We need to use UUID as PK because of synchronization between different users/devices.
+     */
     public Cursor getProductNameCursor() {
         SQLiteDatabase db = dbHandler.getReadableDatabase();
-        String query = "SELECT * FROM " + DBHandler.TABLE_PRODUCT + " WHERE " + DBHandler.ENABLED + " = 1;";
-        Log.i(TAG, "Loading product name cursor: \n" + query);
+        String query = "SELECT *, rowid AS _id FROM " + DBHandler.TABLE_PRODUCT + " WHERE " + DBHandler.ENABLED + " = 1;";
+        Log.i(TAG, "Loading product name cursor: " + query);
         Cursor cursor = db.rawQuery(query, null);
         return cursor;
     }
 
     public Cursor suggestProductName(String partialProductName) {
         SQLiteDatabase db = dbHandler.getReadableDatabase();
-        String query = "SELECT * FROM " + DBHandler.TABLE_PRODUCT + " WHERE Name like '" + partialProductName + "%' AND " + DBHandler.ENABLED + " = 1 GROUP BY " + DBHandler.PRODUCT_NAME + ";";
-        Log.i(TAG, "Loading suggested prod name: \n" + query);
+        String query = "SELECT *, rowid AS _id FROM " + DBHandler.TABLE_PRODUCT + " WHERE Name like '" + partialProductName + "%' AND " + DBHandler.ENABLED + " = 1 GROUP BY " + DBHandler.PRODUCT_NAME + ";";
+        Log.i(TAG, "Loading suggested prod name: " + query);
         Cursor cursor = db.rawQuery(query, null);
         return cursor;
     }

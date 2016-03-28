@@ -81,8 +81,8 @@ public class TabViewExpenses extends Fragment implements AdapterView.OnItemClick
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Intent intent = new Intent(getActivity(), ViewExpenseActivity.class);
         Product product = (Product) parent.getAdapter().getItem(position);
-        intent.putExtra(PRODUCT_ID_KEY, product.getId());
-        Log.i(TAG, "Put ProductId = " + product.getId() + " to ViewExpenseActivity");
+        intent.putExtra(PRODUCT_ID_KEY, product.getUuid());
+        Log.i(TAG, "Put ProductId = " + product.getUuid() + " to ViewExpenseActivity");
         startActivity(intent);
     }
 
@@ -134,7 +134,6 @@ public class TabViewExpenses extends Fragment implements AdapterView.OnItemClick
             public Boolean doInBackgroundSafe() throws AuthenticationException {
                 return productManager.syncProducts();
             }
-
             @Override
             protected void onPostExecute(Boolean renderAgain) {
                 swipeRefreshLayout.setRefreshing(false);

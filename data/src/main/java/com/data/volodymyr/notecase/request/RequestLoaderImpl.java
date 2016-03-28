@@ -96,6 +96,7 @@ public class RequestLoaderImpl implements RequestLoader {
             conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod(method.toString());
             conn.setDoOutput(true);
+            conn.setDoInput(true);
             conn.setRequestProperty(CONTENT_TYPE, APPLICATION_JSON);
             conn.setRequestProperty(AUTHENTICATION_TOKEN, getAuthToken());
             conn.setReadTimeout(REQUEST_TIMEOUT);
@@ -134,24 +135,23 @@ public class RequestLoaderImpl implements RequestLoader {
     }
 
     private String readIS(InputStream stream) throws IOException {
-        Reader reader = new InputStreamReader(stream, "UTF-8");
-        BufferedReader bufferedReader = null;
-        String result = "";
+        BufferedReader reader = null;
+        StringBuilder builder = new StringBuilder();
         try {
+            reader = new BufferedReader(new InputStreamReader(stream, "UTF-8"));
             String line;
-            bufferedReader = new BufferedReader(reader);
-            while ((line = bufferedReader.readLine()) != null) {
-                result += line;
+            while ((line = reader.readLine()) != null) {
+                builder.append(line);
             }
         } finally {
-            if (bufferedReader != null) {
-                bufferedReader.close();
+            if (reader != null) {
+                reader.close();
             }
             if (reader != null) {
                 reader.close();
             }
         }
-        return result;
+        return builder.toString();
     }
 
     private String getAuthToken(){

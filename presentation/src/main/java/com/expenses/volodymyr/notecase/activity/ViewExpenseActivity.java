@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toolbar;
 
 import com.data.volodymyr.notecase.entity.Category;
 import com.data.volodymyr.notecase.entity.Product;
@@ -67,8 +66,8 @@ public class ViewExpenseActivity extends Activity implements View.OnClickListene
     }
 
     public void initFields() {
-        int productId = getIntent().getIntExtra(TabViewExpenses.PRODUCT_ID_KEY, -1);
-        product = productManager.getProductById(productId);
+        String productId = getIntent().getStringExtra(TabViewExpenses.PRODUCT_ID_KEY);
+        product = productManager.getProductByUuid(productId);
         Category category = categoryManager.getCategoryById(product.getCategoryId());
         if (category == null) {
             return;
@@ -87,7 +86,7 @@ public class ViewExpenseActivity extends Activity implements View.OnClickListene
         switch (v.getId()) {
             case R.id.action_item_right:
                 Intent editExpense = new Intent(this, EditExpenseActivity.class);
-                editExpense.putExtra(TabViewExpenses.PRODUCT_ID_KEY, product.getId());
+                editExpense.putExtra(TabViewExpenses.PRODUCT_ID_KEY, product.getUserId());
                 startActivity(editExpense);
                 break;
             case R.id.action_item_left:
@@ -99,7 +98,7 @@ public class ViewExpenseActivity extends Activity implements View.OnClickListene
                                 new SafeAsyncTask<Product, Void, Boolean>(getApplicationContext()) {
                                     @Override
                                     public Boolean doInBackgroundSafe() throws AuthenticationException {
-                                        return productManager.deleteProductById(product.getId());
+                                        return productManager.deleteProductByUuid(product.getUuid());
                                     }
                                     @Override
                                     protected void onPostExecute(Boolean success) {

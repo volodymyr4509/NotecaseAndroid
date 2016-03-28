@@ -2,13 +2,14 @@ package com.data.volodymyr.notecase.entity;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.UUID;
 
 /**
  * Created by volodymyr on 25.10.15.
  */
 public class Product implements Serializable{
 
-    private int id;
+    private String uuid;
     private int categoryId;
     private int userId;
     private String name;
@@ -17,7 +18,10 @@ public class Product implements Serializable{
     private boolean enabled = true;
     private boolean dirty = true;
 
-    public Product(){}
+    public Product(){
+        this.created = new Timestamp(System.currentTimeMillis());
+        this.uuid = UUID.randomUUID().toString();
+    }
 
     public Product(int categoryId, int userId, String name, double price) {
         this.categoryId = categoryId;
@@ -25,14 +29,15 @@ public class Product implements Serializable{
         this.name = name;
         this.price = price;
         this.created = new Timestamp(System.currentTimeMillis());
+        this.uuid = UUID.randomUUID().toString();
     }
 
-    public int getId() {
-        return id;
+    public String getUuid() {
+        return uuid;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 
     public String getName() {
@@ -95,7 +100,7 @@ public class Product implements Serializable{
     @Override
     public String toString() {
         return "Product{" +
-                "id=" + id +
+                "uuid=" + uuid +
                 ", categoryId=" + categoryId +
                 ", userId=" + userId +
                 ", name='" + name + '\'' +

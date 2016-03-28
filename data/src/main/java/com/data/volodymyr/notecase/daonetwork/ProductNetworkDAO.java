@@ -10,13 +10,13 @@ import java.util.List;
  */
 public interface ProductNetworkDAO {
 
-    Product getProduct(int id);
+    Product getProduct(String uuid);
 
     boolean updateProduct(Product product);
 
     boolean addProduct(Product product);
 
-    boolean deleteProduct(int id);
+    boolean deleteProductByUuid(String uuid);
 
     List<Product> getProductsSinceUpdateTimestamp(Timestamp lastUpdateTimestamp);
 

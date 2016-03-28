@@ -39,6 +39,10 @@ public class ProductAdapter extends ArrayAdapter<Product> {
             productName.setTextColor(Color.BLACK);
             productPrice.setTextColor(Color.BLACK);
             productCreated.setTextColor(Color.BLACK);
+        } else {
+            productName.setTextColor(Color.GRAY);
+            productPrice.setTextColor(Color.GRAY);
+            productCreated.setTextColor(Color.GRAY);
         }
         productName.setText(product.getName());
 

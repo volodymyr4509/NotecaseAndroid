@@ -19,9 +19,10 @@ public class DBHandler extends SQLiteOpenHelper {
     private static String TAG = "DBHandler";
     private static DBHandler dbHandler;
 
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4;
     private static final String DATABASE_NAME = "notecase.db";
 
+    public static final String UUID = "uuid";
     public static final String COLUMN_ID = "_id";
     public static final String DIRTY = "dirty";
     public static final String ENABLED = "enabled";
@@ -47,14 +48,13 @@ public class DBHandler extends SQLiteOpenHelper {
     public static final String USER_EMAIL = "Email";
     public static final String USER_OWNER = "Owner";
 
-
     //Queries
     private static final String CREATE_PRODUCT = "CREATE TABLE " + TABLE_PRODUCT + " (" +
-            COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-            PRODUCT_USER + " INTEGER, " +
-            PRODUCT_CATEGORY + " INTEGER, " +
-            PRODUCT_NAME + " TEXT, " +
-            PRODUCT_PRICE + " REAL, " +
+            UUID + " TEXT PRIMARY KEY NOT NULL, " +
+            PRODUCT_USER + " INTEGER NOT NULL, " +
+            PRODUCT_CATEGORY + " INTEGER NOT NULL, " +
+            PRODUCT_NAME + " TEXT NOT NULL, " +
+            PRODUCT_PRICE + " REAL NOT NULL, " +
             PRODUCT_TIMESTAMP + " DATETIME, " +
             ENABLED + " INTEGER, " +
             DIRTY + " INTEGER);";
@@ -69,7 +69,7 @@ public class DBHandler extends SQLiteOpenHelper {
     private static final String CREATE_USER = "CREATE TABLE " + TABLE_USER + " (" +
             COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             USER_NAME + " TEXT, " +
-            USER_EMAIL + " TEXT, " +
+            USER_EMAIL + " TEXT  NOT NULL, " +
             USER_AUTH_TOKEN + " TEXT, " +
             USER_OWNER + " INTEGER, " +
             DIRTY + " INTEGER);";

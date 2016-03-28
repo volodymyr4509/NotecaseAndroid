@@ -54,14 +54,14 @@ public class CategorySQLiteDAOImpl implements CategorySQLiteDAO {
         values.put(DBHandler.CATEGORY_COLOR, category.getColor());
         values.put(DBHandler.CATEGORY_IMAGE, category.getImage());
         values.put(DBHandler.DIRTY, category.isDirty());
-        db.update(DBHandler.TABLE_CATEGORY, values, DBHandler.COLUMN_ID + " = " + category.getId(), null);
+        db.update(DBHandler.TABLE_CATEGORY, values, DBHandler.UUID + " = " + category.getId(), null);
     }
 
     @Override
     public void deleteCategoryById(int categoryId) {
         Log.i(TAG, "Deleting category by id: " + categoryId);
         SQLiteDatabase db = dbHandler.getWritableDatabase();
-        db.delete(DBHandler.TABLE_CATEGORY, DBHandler.COLUMN_ID + "=?", new String[]{String.valueOf(categoryId)});
+        db.delete(DBHandler.TABLE_CATEGORY, DBHandler.UUID + "=?", new String[]{String.valueOf(categoryId)});
     }
 
     @Override

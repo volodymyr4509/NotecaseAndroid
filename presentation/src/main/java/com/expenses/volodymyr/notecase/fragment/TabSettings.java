@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.data.volodymyr.notecase.entity.User;
 import com.data.volodymyr.notecase.util.AuthenticationException;
@@ -55,7 +56,7 @@ public class TabSettings extends Fragment implements View.OnClickListener {
         userManager = new UserManagerImpl(getContext());
 
         View view = inflater.inflate(R.layout.tab_settings, container, false);
-        manageCategory = (TextView) view.findViewById(R.id.category_manager);
+//        manageCategory = (TextView) view.findViewById(R.id.category_manager);
         manageUser = (TextView) view.findViewById(R.id.user_manager);
         signInButton = (SignInButton) view.findViewById(R.id.sign_in_button);
         resultText = (TextView) view.findViewById(R.id.result_client_id);
@@ -81,7 +82,7 @@ public class TabSettings extends Fragment implements View.OnClickListener {
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
 
-        manageCategory.setOnClickListener(this);
+//        manageCategory.setOnClickListener(this);
         manageUser.setOnClickListener(this);
         signInButton.setOnClickListener(this);
         return view;
@@ -111,10 +112,10 @@ public class TabSettings extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.category_manager:
-                Intent categoryIntent = new Intent(getActivity(), ViewCategoryActivity.class);
-                startActivity(categoryIntent);
-                break;
+//            case R.id.category_manager:
+//                Intent categoryIntent = new Intent(getActivity(), ViewCategoryActivity.class);
+//                startActivity(categoryIntent);
+//                break;
             case R.id.user_manager:
                 Intent userIntent = new Intent(getActivity(), ViewUserActivity.class);
                 startActivity(userIntent);
@@ -150,6 +151,13 @@ public class TabSettings extends Fragment implements View.OnClickListener {
                     user.setDirty(true);
 
                     return userManager.authenticateUser(user);
+                }
+
+                @Override
+                protected void onPostExecute(Boolean aBoolean) {
+                    if (!aBoolean) {
+                        Toast.makeText(getContext(), "Cannot authenticate user", Toast.LENGTH_LONG).show();
+                    }
                 }
             }.execute();
         }

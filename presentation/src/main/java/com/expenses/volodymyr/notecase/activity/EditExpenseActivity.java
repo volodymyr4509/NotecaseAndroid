@@ -1,7 +1,6 @@
 package com.expenses.volodymyr.notecase.activity;
 
 import android.app.Activity;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -59,9 +58,9 @@ public class EditExpenseActivity extends Activity implements View.OnClickListene
         productManager = new ProductManagerImpl(getApplicationContext());
         categoryManager = new CategoryManagerImpl(getApplicationContext());
 
-        int productId = getIntent().getIntExtra(TabViewExpenses.PRODUCT_ID_KEY, -1);
-        //In UI thread
-        product = productManager.getProductById(productId);
+        String productUuid = getIntent().getStringExtra(TabViewExpenses.PRODUCT_ID_KEY);
+
+        product = productManager.getProductByUuid(productUuid);
         category = categoryManager.getCategoryById(product.getCategoryId());
         List<Category> categories = categoryManager.getAllCategories();
 

@@ -42,7 +42,7 @@ public class UserSQLiteDAOImpl implements UserSQLiteDAO {
     @Override
     public void deleteUser(int id) {
         SQLiteDatabase db = dbHandler.getWritableDatabase();
-        db.delete(DBHandler.TABLE_USER, DBHandler.COLUMN_ID + "=?", new String[]{String.valueOf(id)});
+        db.delete(DBHandler.TABLE_USER, DBHandler.UUID + "=?", new String[]{String.valueOf(id)});
         Log.i(TAG, "Deleted User by id = " + id);
     }
 
@@ -52,7 +52,7 @@ public class UserSQLiteDAOImpl implements UserSQLiteDAO {
         values.put(DBHandler.USER_NAME, user.getName());
         values.put(DBHandler.USER_AUTH_TOKEN, user.getAuthToken());
         values.put(DBHandler.USER_EMAIL, user.getEmail());
-        values.put(DBHandler.USER_OWNER, user.isOwner());
+//        values.put(DBHandler.USER_OWNER, user.isOwner());
         values.put(DBHandler.DIRTY, user.isDirty());
 
         SQLiteDatabase db = dbHandler.getWritableDatabase();
@@ -78,7 +78,7 @@ public class UserSQLiteDAOImpl implements UserSQLiteDAO {
     public User getUser(int id) {
         Log.i(TAG, "Retrieving User by id = " + id + " from sqlite");
         SQLiteDatabase db = dbHandler.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM " + DBHandler.TABLE_USER + " WHERE " + DBHandler.COLUMN_ID + " = " + id + ";", null);
+        Cursor cursor = db.rawQuery("SELECT * FROM " + DBHandler.TABLE_USER + " WHERE " + DBHandler.UUID + " = " + id + ";", null);
         User user = null;
         if (cursor.moveToNext()) {
             user = new User();
