@@ -1,7 +1,6 @@
 package com.expenses.volodymyr.notecase.fragment;
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -9,31 +8,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.data.volodymyr.notecase.entity.User;
-import com.data.volodymyr.notecase.util.AuthenticationException;
 import com.domain.volodymyr.notecase.manager.UserManager;
 import com.domain.volodymyr.notecase.manager.UserManagerImpl;
 import com.expenses.volodymyr.notecase.R;
-import com.expenses.volodymyr.notecase.activity.ConnectionProblemActivity;
-import com.expenses.volodymyr.notecase.activity.ViewCategoryActivity;
+import com.expenses.volodymyr.notecase.activity.LoginActivity;
 import com.expenses.volodymyr.notecase.activity.ViewUserActivity;
-import com.expenses.volodymyr.notecase.util.SafeAsyncTask;
-import com.google.android.gms.auth.api.Auth;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.auth.api.signin.GoogleSignInResult;
-import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.SignInButton;
-import com.google.android.gms.common.api.GoogleApiClient;
 
 /**
  * Created by vkret on 04.12.15.
  */
 public class TabSettings extends Fragment implements View.OnClickListener {
     private static final String TAG = "TabSettings";
-    private static final int RC_SIGN_IN = 9001;
 
     private UserManager userManager;
 
@@ -43,7 +31,7 @@ public class TabSettings extends Fragment implements View.OnClickListener {
     private TextView resultText;
 
 
-    private GoogleApiClient googleApiClient;
+//    private GoogleApiClient googleApiClient;
 
     public TabSettings() {
         super();
@@ -65,42 +53,25 @@ public class TabSettings extends Fragment implements View.OnClickListener {
         if (user != null) {
             resultText.setText(user.getName());
         }
-        // Configure sign-in to request the user's ID, email address, and basic
-        // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.servlet_client_id))
-                .requestEmail()
-                .build();
-        googleApiClient = new GoogleApiClient.Builder(getContext())
-                .enableAutoManage(getActivity(), new GoogleApiClient.OnConnectionFailedListener() {
-                    @Override
-                    public void onConnectionFailed(ConnectionResult connectionResult) {
-                        Intent intent = new Intent(getContext(), ConnectionProblemActivity.class);
-                        startActivity(intent);
-                    }
-                })
-                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-                .build();
 
-//        manageCategory.setOnClickListener(this);
         manageUser.setOnClickListener(this);
         signInButton.setOnClickListener(this);
         return view;
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
-        if (requestCode == RC_SIGN_IN) {
-            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-            handleSignInResult(result);
-        }
-    }
 
     public void onDestroy() {
         Log.d(TAG, "Destroying Settings fragment");
         super.onDestroy();
+    }
+
+    @Override
+    public void onStart() {
+        User owner = userManager.getUserOwner();
+        if (owner != null) {
+            resultText.setText(owner.getName());
+        }
+        super.onStart();
     }
 
     @Override
@@ -121,46 +92,11 @@ public class TabSettings extends Fragment implements View.OnClickListener {
                 startActivity(userIntent);
                 break;
             case R.id.sign_in_button:
-                signIn();
+                Intent loginIntent = new Intent(getContext(), LoginActivity.class);
+                startActivity(loginIntent);
                 break;
         }
     }
 
-    public void signIn() {
-        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
-        startActivityForResult(signInIntent, RC_SIGN_IN);
-    }
-
-    private void handleSignInResult(GoogleSignInResult result) {
-        if (result != null && result.isSuccess()) {
-            Log.d(TAG, "handleSignInResult:" + result.isSuccess());
-            // Signed in successfully, show authenticated UI.
-            final GoogleSignInAccount acct = result.getSignInAccount();
-
-            resultText.setText(acct.getDisplayName());
-
-
-            new SafeAsyncTask<Void, Void, Boolean>(getContext()){
-                @Override
-                public Boolean doInBackgroundSafe() throws AuthenticationException {
-                    User user = new User();
-                    user.setName(acct.getDisplayName());
-                    user.setEmail(acct.getEmail());
-                    user.setIdToken(acct.getIdToken());
-                    user.setOwner(true);
-                    user.setDirty(true);
-
-                    return userManager.authenticateUser(user);
-                }
-
-                @Override
-                protected void onPostExecute(Boolean aBoolean) {
-                    if (!aBoolean) {
-                        Toast.makeText(getContext(), "Cannot authenticate user", Toast.LENGTH_LONG).show();
-                    }
-                }
-            }.execute();
-        }
-    }
 
 }

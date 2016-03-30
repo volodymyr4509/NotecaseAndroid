@@ -41,6 +41,11 @@ public class UserManagerImpl implements UserManager {
         return userSQLiteDAO.getOwner();
     }
 
+    @Override
+    public User getUserById(int id) {
+        return userSQLiteDAO.getUser(id);
+    }
+
     /**
      * Add/update device's owner
      */

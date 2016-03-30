@@ -76,7 +76,7 @@ public class ProductNetworkDAOImpl implements ProductNetworkDAO {
         try {
             String response = requestLoader.makePost(url, productString.getBytes());
             success = Boolean.valueOf(response);
-            Log.e(TAG, "Product uploaded with url: " + url + ", Product: " + product);
+            Log.i(TAG, "Product uploaded with url: " + url + ", Product: " + product);
         } catch (AuthenticationException e) {
             throw new AuthenticationException(e.getMessage());
         } catch (IOException e) {

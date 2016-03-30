@@ -1,7 +1,6 @@
 package com.expenses.volodymyr.notecase.activity;
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
@@ -13,6 +12,7 @@ import com.data.volodymyr.notecase.util.AuthenticationException;
 import com.domain.volodymyr.notecase.manager.UserManager;
 import com.domain.volodymyr.notecase.manager.UserManagerImpl;
 import com.expenses.volodymyr.notecase.R;
+import com.expenses.volodymyr.notecase.fragment.TabViewExpenses;
 import com.expenses.volodymyr.notecase.util.SafeAsyncTask;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -30,6 +30,7 @@ public class LoginActivity extends FragmentActivity implements View.OnClickListe
 
     private SignInButton signInButton;
     private TextView resultText;
+    private TextView loginMessage;
     private GoogleApiClient googleApiClient;
     private static final int RC_SIGN_IN = 9001;
     private UserManager userManager;
@@ -38,7 +39,7 @@ public class LoginActivity extends FragmentActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        Log.d(TAG, "Creating LoginActivity");
 
         userManager = new UserManagerImpl(this);
 
@@ -46,16 +47,12 @@ public class LoginActivity extends FragmentActivity implements View.OnClickListe
 
         signInButton = (SignInButton) findViewById(R.id.sign_in_button);
         resultText = (TextView) findViewById(R.id.result_client_id);
-
-        User owner = userManager.getUserOwner();
-        if (owner != null) {
-            resultText.setText(owner.getName());
-        }
+        loginMessage = (TextView) findViewById(R.id.login_or_exit);
 
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.servlet_client_id))
+                .requestIdToken(getString(R.string.web_client_id))
                 .requestEmail()
                 .build();
         googleApiClient = new GoogleApiClient.Builder(this)
@@ -71,18 +68,24 @@ public class LoginActivity extends FragmentActivity implements View.OnClickListe
 
 
         signInButton.setOnClickListener(this);
+    }
 
+    @Override
+    protected void onStart() {
+        User owner = userManager.getUserOwner();
+        if (owner != null) {
+            resultText.setText(owner.getName());
+        }else {
+            loginMessage.setVisibility(View.VISIBLE);
+        }
+        super.onStart();
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.sign_in_button:
-                Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
-                startActivityForResult(signInIntent, RC_SIGN_IN);
-                break;
-        }
-
+        Log.d(TAG, "Sign in button clicked");
+        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
+        startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
     @Override
@@ -91,7 +94,6 @@ public class LoginActivity extends FragmentActivity implements View.OnClickListe
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-
 
             if (result != null && result.isSuccess()) {
                 Log.d(TAG, "handleSignInResult:" + result.isSuccess());
@@ -123,4 +125,5 @@ public class LoginActivity extends FragmentActivity implements View.OnClickListe
             }
         }
     }
+
 }

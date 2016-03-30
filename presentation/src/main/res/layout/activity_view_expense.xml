@@ -18,6 +18,7 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:orientation="horizontal">
             <TextView
                 android:id="@+id/view_expense_name"
@@ -37,7 +38,7 @@
                 android:id="@+id/view_expense_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
+                android:layout_gravity="center"
                 android:text="Product Price"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
         </LinearLayout>
@@ -50,12 +51,33 @@
             android:text="Date Time"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="User Name:  "
+                android:id="@+id/product_name_label"
+                android:layout_gravity="center" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="User Name"
+                android:id="@+id/product_user"
+                android:layout_gravity="center" />
+        </LinearLayout>
         <ImageView
             android:id="@+id/view_expense_category_image"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_gravity="center_horizontal" />
-
         <TextView
             android:id="@+id/view_expense_category_name"
             android:layout_width="wrap_content"

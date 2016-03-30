@@ -5,6 +5,15 @@
     android:gravity="center"
     android:orientation="vertical">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="You need to sign in"
+        android:id="@+id/login_or_exit"
+        android:visibility="gone"
+        android:layout_gravity="center_horizontal" />
+
     <com.google.android.gms.common.SignInButton
         android:id="@+id/sign_in_button"
         android:layout_width="match_parent"

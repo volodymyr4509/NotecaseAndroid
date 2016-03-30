@@ -114,7 +114,7 @@ public class ViewUserActivity extends Activity implements View.OnClickListener, 
                                         renderUserList();
                                         popupWindow.dismiss();
                                     } else {
-                                        Toast.makeText(getApplicationContext(), "Cannot add user with email " + userEmail.getText().toString(), Toast.LENGTH_LONG).show();
+                                        Toast.makeText(getApplicationContext(), "User with email " + userEmail.getText().toString() + " doesn't exist", Toast.LENGTH_LONG).show();
                                     }
                                 }
                             }.execute();

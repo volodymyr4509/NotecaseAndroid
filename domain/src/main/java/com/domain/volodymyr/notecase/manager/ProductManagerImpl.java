@@ -1,7 +1,9 @@
 package com.domain.volodymyr.notecase.manager;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.database.Cursor;
+import android.util.Log;
 
 import com.data.volodymyr.notecase.daonetwork.ProductNetworkDAO;
 import com.data.volodymyr.notecase.daonetwork.ProductNetworkDAOImpl;
@@ -104,7 +106,7 @@ public class ProductManagerImpl implements ProductManager {
                 }
                 renderAgain = true;
             }
-            productSQLiteDAO.updateLastSyncTimestamp(new Timestamp(System.currentTimeMillis()));
+            productSQLiteDAO.updateLastSyncTimestamp(new Timestamp(System.currentTimeMillis()-5000));
         }
         return renderAgain;
     }

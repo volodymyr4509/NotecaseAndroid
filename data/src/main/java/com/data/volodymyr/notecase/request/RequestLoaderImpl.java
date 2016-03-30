@@ -14,7 +14,6 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -26,7 +25,7 @@ public class RequestLoaderImpl implements RequestLoader {
     private static final String CONTENT_TYPE = "Content-Type";
     private static final String APPLICATION_JSON = "application/json";
     private static final String AUTHENTICATION_TOKEN = "AuthToken";
-    private static final int REQUEST_TIMEOUT = 5000;
+    private static final int REQUEST_TIMEOUT = 1000;
 
     private Context context;
 

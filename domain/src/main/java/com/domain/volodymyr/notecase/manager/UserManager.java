@@ -12,6 +12,8 @@ public interface UserManager {
     boolean addUser(User user);
 
     User getUserOwner();
+
+    User getUserById(int id);
     /**
      * Get notecase AUthToken from client's idToken
      */

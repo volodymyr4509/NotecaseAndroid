@@ -30,7 +30,7 @@ import java.util.List;
  */
 public class TabViewExpenses extends Fragment implements AdapterView.OnItemClickListener, View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
     private static final String TAG = "TabViewExpenses";
-    public static final String PRODUCT_ID_KEY = "productId";
+    public static final String PRODUCT_UUID_KEY = "productId";
     private ArrayAdapter<Product> adapter;
     private SwipeRefreshLayout swipeRefreshLayout;
     private ListView listView;
@@ -81,8 +81,8 @@ public class TabViewExpenses extends Fragment implements AdapterView.OnItemClick
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Intent intent = new Intent(getActivity(), ViewExpenseActivity.class);
         Product product = (Product) parent.getAdapter().getItem(position);
-        intent.putExtra(PRODUCT_ID_KEY, product.getUuid());
-        Log.i(TAG, "Put ProductId = " + product.getUuid() + " to ViewExpenseActivity");
+        intent.putExtra(PRODUCT_UUID_KEY, product.getUuid());
+        Log.i(TAG, "Starting ViewExpenseActivity. ProductUuid = " + product.getUuid());
         startActivity(intent);
     }
 

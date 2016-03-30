@@ -58,21 +58,7 @@ public class EditExpenseActivity extends Activity implements View.OnClickListene
         productManager = new ProductManagerImpl(getApplicationContext());
         categoryManager = new CategoryManagerImpl(getApplicationContext());
 
-        String productUuid = getIntent().getStringExtra(TabViewExpenses.PRODUCT_ID_KEY);
 
-        product = productManager.getProductByUuid(productUuid);
-        category = categoryManager.getCategoryById(product.getCategoryId());
-        List<Category> categories = categoryManager.getAllCategories();
-
-        categoryAdapter = new CategoryAdapter(this, categories, true);
-        categoryGrid.setAdapter(categoryAdapter);
-        categoryGrid.setOnItemClickListener(this);
-
-        name.setText(product.getName());
-        price.setText(String.format("%.2f", product.getPrice()));
-        dateTime.setText(product.getCreated().toString());
-        categoryArea.setImageResource(category.getImage());
-        categoryArea.setBackgroundColor(category.getColor());
 
 
         save.setOnClickListener(this);
@@ -81,6 +67,29 @@ public class EditExpenseActivity extends Activity implements View.OnClickListene
         logo.setOnClickListener(this);
     }
 
+    @Override
+    protected void onStart() {
+        String productUuid = getIntent().getStringExtra(TabViewExpenses.PRODUCT_UUID_KEY);
+
+        product = productManager.getProductByUuid(productUuid);
+        category = categoryManager.getCategoryById(product.getCategoryId());
+        List<Category> categories = categoryManager.getAllCategories();
+
+        categoryAdapter = new CategoryAdapter(this, categories, true);
+        categoryGrid.setAdapter(categoryAdapter);
+        categoryGrid.setOnItemClickListener(this);
+        super.onStart();
+    }
+
+    @Override
+    protected void onResume() {
+        name.setText(product.getName());
+        price.setText(String.format("%.2f", product.getPrice()));
+        dateTime.setText(product.getCreated().toString());
+        categoryArea.setImageResource(category.getImage());
+        categoryArea.setBackgroundColor(category.getColor());
+        super.onResume();
+    }
 
     @Override
     public void onClick(View v) {

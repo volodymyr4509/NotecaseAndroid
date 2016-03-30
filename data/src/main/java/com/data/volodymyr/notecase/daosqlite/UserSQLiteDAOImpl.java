@@ -78,7 +78,7 @@ public class UserSQLiteDAOImpl implements UserSQLiteDAO {
     public User getUser(int id) {
         Log.i(TAG, "Retrieving User by id = " + id + " from sqlite");
         SQLiteDatabase db = dbHandler.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM " + DBHandler.TABLE_USER + " WHERE " + DBHandler.UUID + " = " + id + ";", null);
+        Cursor cursor = db.rawQuery("SELECT * FROM " + DBHandler.TABLE_USER + " WHERE " + DBHandler.COLUMN_ID + " = " + id + ";", null);
         User user = null;
         if (cursor.moveToNext()) {
             user = new User();

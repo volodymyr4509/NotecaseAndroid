@@ -1,5 +1,6 @@
 package com.expenses.volodymyr.notecase.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -8,6 +9,8 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import com.domain.volodymyr.notecase.manager.UserManager;
+import com.domain.volodymyr.notecase.manager.UserManagerImpl;
 import com.expenses.volodymyr.notecase.R;
 import com.expenses.volodymyr.notecase.fragment.TabAddExpenses;
 import com.expenses.volodymyr.notecase.fragment.TabStatisticExpenses;
@@ -23,7 +26,8 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     private static final String SETTING_TAB = "Settings";
 
     private ViewPager viewPager;
-    MyFragmentPagerAdapter adapter;
+    private MyFragmentPagerAdapter adapter;
+    private UserManager userManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +56,12 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     @Override
     protected void onResume() {
         super.onResume();
+        userManager = new UserManagerImpl(this);
+        if (userManager.getUserOwner()==null){
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+        }
+
     }
 
     @Override
