@@ -13,21 +13,25 @@ import android.view.View;
 public class MyDragShadowBuilder extends View.DragShadowBuilder {
     private static Drawable shadow;
 
-    public MyDragShadowBuilder(View v){
+    public MyDragShadowBuilder(View v) {
         super(v);
         shadow = new ColorDrawable(Color.RED);
     }
 
     @Override
-    public void onProvideShadowMetrics(Point shadowSize, Point shadowTouchPoint) {
-        int width, height;
-        width = getView().getWidth()/2;
-        height = getView().getHeight()/2;
+    public void onProvideShadowMetrics(Point size, Point touch) {
 
-        shadow.setBounds(0,0,width,height);
-        shadowSize.set(width, height);
-        shadowTouchPoint.set(width/2, height/2);
-        super.onProvideShadowMetrics(shadowSize, shadowTouchPoint);
+        // The drag shadow is a ColorDrawable. This sets its dimensions to be the same as the
+        // Canvas that the system will provide. As a result, the drag shadow will fill the
+        // Canvas.
+        shadow.setBounds(0, 0, getView().getWidth(), getView().getHeight());
+
+        // Sets the size parameter's width and height values. These get back to the system
+        // through the size parameter.
+        size.set(getView().getWidth(), getView().getHeight());
+
+        // Sets the touch point's position to be in the middle of the drag shadow
+        touch.set(getView().getWidth()/2, getView().getHeight()-20);
     }
 
     @Override

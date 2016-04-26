@@ -87,7 +87,9 @@ public class ViewExpenseActivity extends Activity implements View.OnClickListene
         price.setText(String.valueOf(product.getPrice()));
         dateTime.setText(product.getCreated().toString());
         categoryName.setText(category.getName());
-        userName.setText(user.getName());
+        if (user != null) {
+            userName.setText(user.getName());
+        }
         categoryImage.setBackgroundColor(category.getColor());
         categoryImage.setImageResource(category.getImage());
         editButton.setImageResource(R.drawable.ic_mode_edit_white_24dp);
@@ -114,6 +116,7 @@ public class ViewExpenseActivity extends Activity implements View.OnClickListene
                                     public Boolean doInBackgroundSafe() throws AuthenticationException {
                                         return productManager.deleteProductByUuid(product.getUuid());
                                     }
+
                                     @Override
                                     protected void onPostExecute(Boolean success) {
                                         finish();

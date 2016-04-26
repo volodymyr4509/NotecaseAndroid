@@ -26,6 +26,7 @@ public class RequestLoaderImpl implements RequestLoader {
     private static final String APPLICATION_JSON = "application/json";
     private static final String AUTHENTICATION_TOKEN = "AuthToken";
     private static final int REQUEST_TIMEOUT = 1000;
+    private static final int AUTHENTICATION_REQUEST_TIMEOUT = 5000;
 
     private Context context;
 
@@ -100,6 +101,10 @@ public class RequestLoaderImpl implements RequestLoader {
             conn.setRequestProperty(AUTHENTICATION_TOKEN, getAuthToken());
             conn.setReadTimeout(REQUEST_TIMEOUT);
             conn.setConnectTimeout(REQUEST_TIMEOUT);
+            if (requestUrl.contains("authenticate")){
+                conn.setReadTimeout(AUTHENTICATION_REQUEST_TIMEOUT);
+                conn.setConnectTimeout(AUTHENTICATION_REQUEST_TIMEOUT);
+            }
             dos = new DataOutputStream(conn.getOutputStream());
             dos.write(data);
             conn.connect();

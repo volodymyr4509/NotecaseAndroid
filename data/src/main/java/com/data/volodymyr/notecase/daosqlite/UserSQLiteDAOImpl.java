@@ -69,7 +69,7 @@ public class UserSQLiteDAOImpl implements UserSQLiteDAO {
         values.put(DBHandler.DIRTY, user.isDirty());
 
         SQLiteDatabase db = dbHandler.getWritableDatabase();
-        String whereClause = DBHandler.USER_EMAIL + " = " + user.getEmail() +";";
+        String whereClause = DBHandler.USER_EMAIL + " = '" + user.getEmail() +"';";
         db.update(DBHandler.TABLE_USER, values, whereClause, null);
         Log.i(TAG, "Updated User: " + user);
     }

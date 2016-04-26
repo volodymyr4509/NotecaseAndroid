@@ -9,6 +9,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import com.data.volodymyr.notecase.util.AuthenticationException;
 import com.domain.volodymyr.notecase.manager.UserManager;
 import com.domain.volodymyr.notecase.manager.UserManagerImpl;
 import com.expenses.volodymyr.notecase.R;
@@ -16,6 +17,7 @@ import com.expenses.volodymyr.notecase.fragment.TabAddExpenses;
 import com.expenses.volodymyr.notecase.fragment.TabStatisticExpenses;
 import com.expenses.volodymyr.notecase.fragment.TabViewExpenses;
 import com.expenses.volodymyr.notecase.util.MyFragmentPagerAdapter;
+import com.expenses.volodymyr.notecase.util.SafeAsyncTask;
 
 public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSelectedListener {
     private static final String TAG = "MainActivity";
@@ -48,15 +50,28 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
 
+        userManager = new UserManagerImpl(this);
+
         //save all pages in memory
         viewPager.setOffscreenPageLimit(4);
         tabLayout.setOnTabSelectedListener(this);
     }
 
     @Override
+    protected void onStart() {
+        Log.i(TAG, "Sync User list");
+        new SafeAsyncTask<Void, Void, Boolean>(this) {
+            @Override
+            public Boolean doInBackgroundSafe() throws AuthenticationException {
+                return userManager.syncUsers();
+            }
+         }.execute();
+        super.onStart();
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
-        userManager = new UserManagerImpl(this);
         if (userManager.getUserOwner()==null){
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);

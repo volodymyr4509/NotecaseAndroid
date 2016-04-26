@@ -1,9 +1,13 @@
 package com.expenses.volodymyr.notecase.util;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.DragEvent;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.data.volodymyr.notecase.entity.Product;
@@ -13,6 +17,7 @@ import com.domain.volodymyr.notecase.manager.ProductManager;
 import com.domain.volodymyr.notecase.manager.ProductManagerImpl;
 import com.domain.volodymyr.notecase.manager.UserManager;
 import com.domain.volodymyr.notecase.manager.UserManagerImpl;
+import com.expenses.volodymyr.notecase.R;
 
 
 /**
@@ -42,6 +47,12 @@ public class OnDragDropListener implements View.OnDragListener {
     @Override
     public boolean onDrag(View v, DragEvent event) {
         final int action = event.getAction();
+        Log.e(TAG, "action : " + action + ", id: " + (v.getAnimation() != null ? v.getAnimation().hasEnded() : null));
+        if (v instanceof ImageView && action == DragEvent.ACTION_DRAG_LOCATION) {
+            if (v.getAnimation()==null || v.getAnimation().hasEnded()) {
+                v.startAnimation(AnimationUtils.loadAnimation(context, R.anim.scale));
+            }
+        }
         switch (action) {
             case DragEvent.ACTION_DROP:
                 String productName = null;

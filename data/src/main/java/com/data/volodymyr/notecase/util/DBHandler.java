@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.graphics.Color;
 import android.util.Log;
 
 import com.data.volodymyr.notecase.R;
@@ -105,12 +106,16 @@ public class DBHandler extends SQLiteOpenHelper {
 
     private void initDefaultCategories(SQLiteDatabase db) {
         List<Category> categoryList = new ArrayList<>();
-        categoryList.add(new Category("Beer", -17595, R.drawable.beer));
-        categoryList.add(new Category("Accommodation", -20151, R.drawable.bighouse));
-        categoryList.add(new Category("bucket", -26151, R.drawable.bucket));
-        categoryList.add(new Category("coffee", -14343, R.drawable.coffee));
-        categoryList.add(new Category("carrot", -18141, R.drawable.ic_business_black_24dp));
-        categoryList.add(new Category("house", -17232, R.drawable.house));
+        categoryList.add(new Category("Beer", 0xFFFF8000, R.drawable.beer));
+        categoryList.add(new Category("Accommodation", 0xFFFF0000, R.drawable.bighouse));
+        categoryList.add(new Category("bucket", 0xFF0000FF, R.drawable.bucket));
+        categoryList.add(new Category("coffee", 0xFF00FF00, R.drawable.coffee));
+        categoryList.add(new Category("carrot", 0xFF009900, R.drawable.ic_business_black_24dp));
+        categoryList.add(new Category("pets", 0xFF800080, R.drawable.ic_pets_black_24dp));
+        categoryList.add(new Category("education", 0xFFFFFF00, R.drawable.ic_build_black_24dp));
+        categoryList.add(new Category("health", 0xFFFF0066, R.drawable.ic_local_car_wash_white_24dp));
+        categoryList.add(new Category("clothes", 0xFF1AB2FF, R.drawable.cherry));
+        categoryList.add(new Category("house", 0xFF800000, R.drawable.ic_wb_sunny_white_24dp));
 
         for (Category category : categoryList) {
             ContentValues values = new ContentValues();

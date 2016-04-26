@@ -23,12 +23,12 @@ import android.widget.LinearLayout;
 import android.widget.SimpleCursorAdapter;
 
 import com.data.volodymyr.notecase.entity.Category;
+import com.data.volodymyr.notecase.util.DBHandler;
 import com.domain.volodymyr.notecase.manager.CategoryManager;
 import com.domain.volodymyr.notecase.manager.CategoryManagerImpl;
 import com.domain.volodymyr.notecase.manager.ProductManager;
 import com.domain.volodymyr.notecase.manager.ProductManagerImpl;
 import com.expenses.volodymyr.notecase.R;
-import com.data.volodymyr.notecase.util.DBHandler;
 import com.expenses.volodymyr.notecase.util.MyDragShadowBuilder;
 import com.expenses.volodymyr.notecase.util.OnDragDropListener;
 
@@ -63,7 +63,7 @@ public class TabAddExpenses extends Fragment {
         productManager = new ProductManagerImpl(getContext());
 
         SimpleCursorAdapter productNameAdapter = getProductNameQueryAdapter();
-        if (productNameAdapter!=null){
+        if (productNameAdapter != null) {
             nameInput.setAdapter(productNameAdapter);
         }
 
@@ -75,11 +75,12 @@ public class TabAddExpenses extends Fragment {
         moveButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+                Log.e(TAG, "X: " + event.getX() + ", Y: " + event.getY());
                 closeKeyboard();
                 ClipData clipData = ClipData.newPlainText("mylabel", "mytext");
                 View.DragShadowBuilder myShadow = new MyDragShadowBuilder(linearLayout);
                 v.startDrag(clipData, myShadow, null, 0);
-                return false;
+                return true;
             }
         });
 
@@ -119,11 +120,11 @@ public class TabAddExpenses extends Fragment {
         right_block.removeAllViews();
 
         LinearLayout.LayoutParams leftParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, 0.15f);
-        leftParams.setMargins(0, 30, 0, 30);
+        leftParams.setMargins(0, 40, 40, 40);
         leftParams.gravity = Gravity.LEFT;
         LinearLayout.LayoutParams rightParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, 0.15f);
         rightParams.gravity = Gravity.RIGHT;
-        rightParams.setMargins(0, 30, 0, 30);
+        rightParams.setMargins(40, 40, 0, 40);
 
         for (int i = 0; i < categoryList.size(); i++) {
             ImageView categoryView = new ImageView(getActivity());
@@ -177,4 +178,5 @@ public class TabAddExpenses extends Fragment {
         });
         return productNameAdapter;
     }
+
 }
