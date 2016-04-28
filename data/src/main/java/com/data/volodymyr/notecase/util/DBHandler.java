@@ -68,7 +68,7 @@ public class DBHandler extends SQLiteOpenHelper {
             DIRTY + " INTEGER);";
 
     private static final String CREATE_USER = "CREATE TABLE " + TABLE_USER + " (" +
-            COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            COLUMN_ID + " INTEGER PRIMARY KEY, " +
             USER_NAME + " TEXT, " +
             USER_EMAIL + " TEXT  NOT NULL, " +
             USER_AUTH_TOKEN + " TEXT, " +

@@ -1,12 +1,14 @@
 package com.expenses.volodymyr.notecase.util;
 
 import android.content.Context;
+import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.DragEvent;
+import android.view.Gravity;
 import android.view.View;
-import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -25,12 +27,13 @@ import com.expenses.volodymyr.notecase.R;
  */
 public class OnDragDropListener implements View.OnDragListener {
     private static final String TAG = "OnDragDropListener";
-    private final String EMPTY_STRING = "";
 
     private EditText name;
     private EditText price;
     private int categoryId;
     private Context context;
+    private static Snackbar snack;
+    private static boolean snackDismissed = true;
 
     private ProductManager productManager;
     private UserManager userManager;
@@ -47,10 +50,32 @@ public class OnDragDropListener implements View.OnDragListener {
     @Override
     public boolean onDrag(View v, DragEvent event) {
         final int action = event.getAction();
-        Log.e(TAG, "action : " + action + ", id: " + (v.getAnimation() != null ? v.getAnimation().hasEnded() : null));
+
         if (v instanceof ImageView && action == DragEvent.ACTION_DRAG_LOCATION) {
-            if (v.getAnimation()==null || v.getAnimation().hasEnded()) {
+            if (v.getAnimation() == null) {
                 v.startAnimation(AnimationUtils.loadAnimation(context, R.anim.scale));
+
+                //TODO refactor
+                if (snack == null){
+                    snack = Snackbar.make(v, v.getTag(R.string.category_name_tag).toString(), Snackbar.LENGTH_SHORT);
+                    snack.setCallback(new Snackbar.Callback() {
+                        @Override
+                        public void onDismissed(Snackbar snackbar, int event) {
+                            snackDismissed = true;
+                            super.onDismissed(snackbar, event);
+                        }
+                    });
+                    FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) snack.getView().getLayoutParams();
+                    params.gravity = Gravity.TOP;
+                    snack.getView().setLayoutParams(params);
+                }
+
+                snack.setText(v.getTag(R.string.category_name_tag).toString());
+
+                if (snackDismissed){
+                    snack.show();
+                    snackDismissed = false;
+                }
             }
         }
         switch (action) {
@@ -69,7 +94,7 @@ public class OnDragDropListener implements View.OnDragListener {
                     productName = name.getText().toString().trim();
                 }
                 if (productName == null || productPrice <= 0) {
-                    Toast.makeText(context, "Error: wrong input", Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, "Wrong input", Toast.LENGTH_LONG).show();
                     return false;
                 }
 
@@ -87,9 +112,8 @@ public class OnDragDropListener implements View.OnDragListener {
                     }
                 }.execute();
                 //clean input fields after save
-                name.setText(EMPTY_STRING);
-                price.setText(EMPTY_STRING);
-
+                name.setText(R.string.empty_string);
+                price.setText(R.string.empty_string);
         }
         return true;
     }

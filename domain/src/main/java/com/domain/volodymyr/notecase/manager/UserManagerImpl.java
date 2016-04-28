@@ -27,9 +27,10 @@ public class UserManagerImpl implements UserManager {
      */
     @Override
     public boolean addUser(User user) {
-        boolean success = userNetworkDAO.addUser(user);
-        if (success) {
+        int id = userNetworkDAO.addUser(user);
+        if (id > 0) {
             user.setDirty(false);
+            user.setId(id);
             userSQLiteDAO.addUser(user);
             return true;
         }
@@ -76,9 +77,10 @@ public class UserManagerImpl implements UserManager {
         //upload dirty users from device and change dirty = false;
         List<User> dirtyUsers = userSQLiteDAO.getDirtyUsers();
         for (User user : dirtyUsers) {
-            boolean uploaded = userNetworkDAO.addUser(user);
-            if (uploaded) {
+            int id = userNetworkDAO.addUser(user);
+            if (id > 0) {
                 user.setDirty(false);
+                user.setId(id);
                 userSQLiteDAO.updateOwnerUser(user);
             }
         }

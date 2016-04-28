@@ -27,6 +27,7 @@ public class UserSQLiteDAOImpl implements UserSQLiteDAO {
     @Override
     public int addUser(User user) {
         ContentValues values = new ContentValues();
+        values.put(DBHandler.COLUMN_ID, user.getId());
         values.put(DBHandler.USER_NAME, user.getName());
         values.put(DBHandler.USER_AUTH_TOKEN, user.getAuthToken());
         values.put(DBHandler.USER_EMAIL, user.getEmail());
@@ -64,6 +65,7 @@ public class UserSQLiteDAOImpl implements UserSQLiteDAO {
     @Override
     public void updateUser(User user) {
         ContentValues values = new ContentValues();
+        values.put(DBHandler.COLUMN_ID, user.getId());
         values.put(DBHandler.USER_NAME, user.getName());
         values.put(DBHandler.USER_AUTH_TOKEN, user.getAuthToken());
         values.put(DBHandler.DIRTY, user.isDirty());

@@ -47,18 +47,18 @@ public class UserNetworkDAOImpl implements UserNetworkDAO {
     }
 
     @Override
-    public boolean addUser(User user) {
+    public int addUser(User user) {
         String url = AppProperties.HOST + AppProperties.PORT + "/rest/user/add";
         String userString = gson.toJson(user);
         try {
-            String success = requestLoader.makePost(url, userString.getBytes());
-            Log.i(TAG, "User added with url: " + url + ", User: " + user);
-            return Boolean.valueOf(success);
+            String id = requestLoader.makePost(url, userString.getBytes());
+            Log.i(TAG, "User added with url: " + url + ", User: " + user + ", id: " + id);
+            return Integer.parseInt(id);
         } catch (AuthenticationException e) {
             throw new AuthenticationException(e.getMessage());
         } catch (Exception e) {
             Log.e(TAG, "Cannot add user: " + user, e);
-            return false;
+            return -1;
         }
     }
 

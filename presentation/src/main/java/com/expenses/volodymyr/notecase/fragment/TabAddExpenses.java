@@ -75,7 +75,6 @@ public class TabAddExpenses extends Fragment {
         moveButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                Log.e(TAG, "X: " + event.getX() + ", Y: " + event.getY());
                 closeKeyboard();
                 ClipData clipData = ClipData.newPlainText("mylabel", "mytext");
                 View.DragShadowBuilder myShadow = new MyDragShadowBuilder(linearLayout);
@@ -129,6 +128,7 @@ public class TabAddExpenses extends Fragment {
         for (int i = 0; i < categoryList.size(); i++) {
             ImageView categoryView = new ImageView(getActivity());
             Category category = categoryList.get(i);
+            categoryView.setTag(R.string.category_name_tag, category.getName());
             categoryView.setBackgroundColor(category.getColor());
             categoryView.setImageResource(category.getImage());
 

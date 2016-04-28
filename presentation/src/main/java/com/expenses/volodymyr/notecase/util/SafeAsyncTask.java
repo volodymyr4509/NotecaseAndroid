@@ -8,6 +8,9 @@ import android.util.Log;
 import com.data.volodymyr.notecase.util.AuthenticationException;
 import com.expenses.volodymyr.notecase.activity.LoginActivity;
 
+import java.net.SocketTimeoutException;
+import java.util.logging.SocketHandler;
+
 
 /**
  * Handle authentication exception
@@ -25,16 +28,18 @@ public abstract class SafeAsyncTask<Params, Progress, Result> extends AsyncTask<
     protected Result doInBackground(Params... params) {
         try {
             return doInBackgroundSafe();
-        }catch (AuthenticationException e){
+        } catch (AuthenticationException e) {
             Log.w(TAG, "AuthenticationException. " + e.getMessage() + " Start LoginActivity");
             Intent intent = new Intent(context, LoginActivity.class);
             context.startActivity(intent);
-        }catch (Exception e){
+        } catch (SocketTimeoutException e){
+            Log.i(TAG, "No connection");
+        } catch (Exception e) {
             Log.wtf(TAG, "Cool exception. Check it", e);
         }
         return null;
     }
 
-    public abstract Result doInBackgroundSafe() throws AuthenticationException;
+    public abstract Result doInBackgroundSafe() throws AuthenticationException, SocketTimeoutException;
 
 }
