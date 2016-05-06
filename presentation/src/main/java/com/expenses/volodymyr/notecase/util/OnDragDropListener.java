@@ -10,6 +10,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.data.volodymyr.notecase.entity.Product;
@@ -51,7 +52,7 @@ public class OnDragDropListener implements View.OnDragListener {
     public boolean onDrag(View v, DragEvent event) {
         final int action = event.getAction();
 
-        if (v instanceof ImageView && action == DragEvent.ACTION_DRAG_LOCATION) {
+        if (v instanceof LinearLayout && action == DragEvent.ACTION_DRAG_LOCATION) {
             if (v.getAnimation() == null) {
                 v.startAnimation(AnimationUtils.loadAnimation(context, R.anim.scale));
 

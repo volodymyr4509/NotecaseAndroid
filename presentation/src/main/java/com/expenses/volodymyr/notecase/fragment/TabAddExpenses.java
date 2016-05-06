@@ -3,12 +3,13 @@ package com.expenses.volodymyr.notecase.fragment;
 import android.content.ClipData;
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.InputFilter;
 import android.text.Spanned;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -18,6 +19,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FilterQueryProvider;
+import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SimpleCursorAdapter;
@@ -41,9 +43,9 @@ public class TabAddExpenses extends Fragment {
     private static final String TAG = "TabAddExpenses";
     private final String DOT = ".";
 
-    LinearLayout left_block, right_block;
-    EditText priceInput;
-    AutoCompleteTextView nameInput;
+    private LinearLayout leftBlock, rightBlock;
+    private EditText priceInput;
+    private AutoCompleteTextView nameInput;
 
     private CategoryManager categoryManager;
     private ProductManager productManager;
@@ -56,8 +58,8 @@ public class TabAddExpenses extends Fragment {
         nameInput = (AutoCompleteTextView) view.findViewById(R.id.commodityName);
         priceInput = (EditText) view.findViewById(R.id.commodityPrice);
 
-        left_block = (LinearLayout) view.findViewById(R.id.left_category_block);
-        right_block = (LinearLayout) view.findViewById(R.id.right_category_block);
+        leftBlock = (LinearLayout) view.findViewById(R.id.left_category_block);
+        rightBlock = (LinearLayout) view.findViewById(R.id.right_category_block);
 
         categoryManager = new CategoryManagerImpl(getContext());
         productManager = new ProductManagerImpl(getContext());
@@ -112,36 +114,31 @@ public class TabAddExpenses extends Fragment {
     public void addCategoriesOnScreen() {
         List<Category> categoryList = categoryManager.getAllCategories();
 
-        if (categoryList.size() == left_block.getChildCount() + right_block.getChildCount()) {
+        if (categoryList.size() == leftBlock.getChildCount() + rightBlock.getChildCount()) {
             return;
         }
-        left_block.removeAllViews();
-        right_block.removeAllViews();
-
-        LinearLayout.LayoutParams leftParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, 0.15f);
-        leftParams.setMargins(0, 40, 40, 40);
-        leftParams.gravity = Gravity.LEFT;
-        LinearLayout.LayoutParams rightParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, 0.15f);
-        rightParams.gravity = Gravity.RIGHT;
-        rightParams.setMargins(40, 40, 0, 40);
+        leftBlock.removeAllViews();
+        rightBlock.removeAllViews();
 
         for (int i = 0; i < categoryList.size(); i++) {
-            ImageView categoryView = new ImageView(getActivity());
-            Category category = categoryList.get(i);
-            categoryView.setTag(R.string.category_name_tag, category.getName());
-            categoryView.setBackgroundColor(category.getColor());
-            categoryView.setImageResource(category.getImage());
+            LinearLayout categoryLayout = (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.item_category_image, null);
+            ImageView categoryView = (ImageView) categoryLayout.findViewById(R.id.category_drawable_image);
 
+            Category category = categoryList.get(i);
+            categoryLayout.setTag(R.string.category_name_tag, category.getName());
+            categoryView.setImageResource(category.getImage());
+            Drawable drawable = getResources().getDrawable(R.drawable.product_shape);
+            drawable.setColorFilter(category.getColor(), PorterDuff.Mode.MULTIPLY);
+            categoryView.setBackground(drawable);
             if (i % 2 == 0) {
-                left_block.addView(categoryView);
-                categoryView.setLayoutParams(leftParams);
+                leftBlock.addView(categoryLayout);
             } else {
-                right_block.addView(categoryView);
-                categoryView.setLayoutParams(rightParams);
+                rightBlock.addView(categoryLayout);
             }
-            Log.i(TAG, "Add category to AddExpense fragment: " + left_block.getChildCount() + ":" + right_block.getChildCount());
-            categoryView.setOnDragListener(new OnDragDropListener(nameInput, priceInput, category.getId(), getActivity()));
+            Log.i(TAG, "Add category to AddExpense fragment: " + leftBlock.getChildCount() + ":" + rightBlock.getChildCount());
+            categoryLayout.setOnDragListener(new OnDragDropListener(nameInput, priceInput, category.getId(), getActivity()));
         }
+
     }
 
 
