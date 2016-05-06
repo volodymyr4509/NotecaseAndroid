@@ -25,7 +25,7 @@ public class ImageGridAdapter extends ArrayAdapter<Integer> {
         Integer drawableId = getItem(position);
 
         if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_category_image, parent, false);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_category_image_right, parent, false);
         }
 
         ImageView categoryImage = (ImageView) convertView.findViewById(R.id.category_drawable_image);

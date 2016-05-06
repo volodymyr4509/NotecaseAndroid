@@ -2,14 +2,12 @@ package com.expenses.volodymyr.notecase.util;
 
 import android.content.Context;
 import android.support.design.widget.Snackbar;
-import android.util.Log;
 import android.view.DragEvent;
 import android.view.Gravity;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -57,7 +55,7 @@ public class OnDragDropListener implements View.OnDragListener {
                 v.startAnimation(AnimationUtils.loadAnimation(context, R.anim.scale));
 
                 //TODO refactor
-                if (snack == null){
+                if (snack == null) {
                     snack = Snackbar.make(v, v.getTag(R.string.category_name_tag).toString(), Snackbar.LENGTH_SHORT);
                     snack.setCallback(new Snackbar.Callback() {
                         @Override
@@ -73,7 +71,7 @@ public class OnDragDropListener implements View.OnDragListener {
 
                 snack.setText(v.getTag(R.string.category_name_tag).toString());
 
-                if (snackDismissed){
+                if (snackDismissed) {
                     snack.show();
                     snackDismissed = false;
                 }

@@ -2,16 +2,18 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="0dp"
+    android:layout_height="wrap_content"
     android:layout_weight="1"
-    android:padding="15dp"
-    android:orientation="horizontal">
+    android:gravity="left"
+    android:orientation="horizontal"
+    android:paddingBottom="15dp"
+    android:paddingTop="15dp">
 
     <ImageView
         android:id="@+id/category_drawable_image"
         android:layout_width="70dp"
         android:layout_height="70dp"
-        android:layout_gravity="left"
-        android:background="@android:color/transparent"/>
+        android:layout_gravity="center_vertical"
+        android:background="@android:color/transparent" />
 
 </LinearLayout>

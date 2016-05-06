@@ -71,7 +71,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:gravity="center"
+        android:gravity="center_vertical|end|right"
         android:orientation="vertical">
 
     </LinearLayout>

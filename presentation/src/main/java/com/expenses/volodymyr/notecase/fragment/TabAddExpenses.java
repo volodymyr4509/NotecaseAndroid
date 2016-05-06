@@ -19,7 +19,6 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FilterQueryProvider;
-import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SimpleCursorAdapter;
@@ -121,7 +120,12 @@ public class TabAddExpenses extends Fragment {
         rightBlock.removeAllViews();
 
         for (int i = 0; i < categoryList.size(); i++) {
-            LinearLayout categoryLayout = (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.item_category_image, null);
+            LinearLayout categoryLayout;
+            if (i%2 ==0){
+                categoryLayout = (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.item_category_image_left, null);
+            }else {
+                categoryLayout = (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.item_category_image_right, null);
+            }
             ImageView categoryView = (ImageView) categoryLayout.findViewById(R.id.category_drawable_image);
 
             Category category = categoryList.get(i);
