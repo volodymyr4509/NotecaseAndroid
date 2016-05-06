@@ -41,7 +41,7 @@ public class ProductNetworkDAOImpl implements ProductNetworkDAO {
         } catch (AuthenticationException e) {
             throw new AuthenticationException(e.getMessage());
         } catch (IOException e) {
-            Log.w(TAG, "SocketTimeoutException. No response from the server. Power off?:)");
+            Log.w(TAG, "SocketTimeoutException. No response from the server. Power off?:)", e);
         } catch (Exception e) {
             Log.e(TAG, "Cannot upload Product from url: " + url, e);
         }
@@ -61,7 +61,7 @@ public class ProductNetworkDAOImpl implements ProductNetworkDAO {
             throw new AuthenticationException(e.getMessage());
         } catch (IOException e) {
             success = false;
-            Log.w(TAG, "IOException. Power off?:)");
+            Log.w(TAG, "IOException. Power off?:)", e);
         } catch (Exception e) {
             success = false;
             Log.e(TAG, "Cannot update Product from url: " + url + ", Product: " + product, e);
@@ -80,7 +80,7 @@ public class ProductNetworkDAOImpl implements ProductNetworkDAO {
         } catch (AuthenticationException e) {
             throw new AuthenticationException(e.getMessage());
         } catch (IOException e) {
-            Log.w(TAG, "IOException. Power off?:)");
+            Log.w(TAG, "IOException. Power off?:)", e);
             return false;
         } catch (Exception e) {
             success = false;
@@ -99,7 +99,7 @@ public class ProductNetworkDAOImpl implements ProductNetworkDAO {
         } catch (AuthenticationException e) {
             throw new AuthenticationException(e.getMessage());
         } catch (IOException e) {
-            Log.w(TAG, "IOException. Power off?:)");
+            Log.w(TAG, "IOException. Power off?:)", e);
             return false;
         } catch (Exception e) {
             success = false;
@@ -119,7 +119,7 @@ public class ProductNetworkDAOImpl implements ProductNetworkDAO {
         } catch (AuthenticationException e) {
             throw new AuthenticationException(e.getMessage());
         } catch (IOException e) {
-            Log.w(TAG, "IOException. Power off?:)");
+            Log.w(TAG, "IOException. Power off?:)", e);
         } catch (Exception e) {
             Log.e(TAG, "Cannot upload Product list from url: " + url, e);
         }

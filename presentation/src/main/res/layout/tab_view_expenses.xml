@@ -8,51 +8,67 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".activity.MainActivity">
-
-    <RadioGroup
-        android:id="@+id/date_filter_radio_group"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/controls"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentStart="true"
-        android:checkedButton="@+id/last_24_hours"
         android:orientation="horizontal">
-
-        <RadioButton
-            android:id="@+id/last_24_hours"
+        <RadioGroup
+            android:id="@+id/date_filter_radio_group"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/radioGroup"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
             android:layout_alignParentStart="true"
-            android:text="24hours" />
+            android:layout_gravity="center_vertical"
+            android:checkedButton="@+id/last_24_hours"
+            android:orientation="horizontal">
 
-        <RadioButton
-            android:id="@+id/last_week"
+            <RadioButton
+                android:id="@+id/last_24_hours"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/radioGroup"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:text="24hours" />
+
+            <RadioButton
+                android:id="@+id/last_week"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_toEndOf="@+id/radioGroup"
+                android:layout_toRightOf="@+id/radioGroup"
+                android:text="Week" />
+
+            <RadioButton
+                android:id="@+id/last_month"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_toEndOf="@+id/week"
+                android:layout_toRightOf="@+id/week"
+                android:text="Month" />
+        </RadioGroup>
+
+        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_toEndOf="@+id/radioGroup"
-            android:layout_toRightOf="@+id/radioGroup"
-            android:text="Week" />
+            android:id="@+id/data_picker"
+            android:text="Pick dates"
+            android:background="@android:color/transparent"
+            android:layout_weight="1" />
 
-        <RadioButton
-            android:id="@+id/last_month"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_toEndOf="@+id/week"
-            android:layout_toRightOf="@+id/week"
-            android:text="Month" />
-    </RadioGroup>
+    </LinearLayout>
+
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipe_refresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/date_filter_radio_group">
+        android:layout_below="@+id/controls">
 
         <ListView
             android:id="@+id/costs_list"

@@ -106,16 +106,16 @@ public class DBHandler extends SQLiteOpenHelper {
 
     private void initDefaultCategories(SQLiteDatabase db) {
         List<Category> categoryList = new ArrayList<>();
-        categoryList.add(new Category("Beer", 0xFFFFEC00, R.drawable.beer));
-        categoryList.add(new Category("Accommodation", 0xFFFF6600, R.drawable.bighouse));
-        categoryList.add(new Category("bucket", 0xFFFF0000, R.drawable.bucket));
-        categoryList.add(new Category("coffee", 0xFFCC0000, R.drawable.coffee));
-        categoryList.add(new Category("carrot", 0xFFFF00FF, R.drawable.ic_business_black_24dp));
-        categoryList.add(new Category("pets", 0xFF990099, R.drawable.ic_pets_black_24dp));
-        categoryList.add(new Category("education", 0xFF00FF00, R.drawable.ic_build_black_24dp));
-        categoryList.add(new Category("health", 0xFF006600, R.drawable.ic_local_car_wash_white_24dp));
-        categoryList.add(new Category("clothes", 0xFF0000FF, R.drawable.cherry));
-        categoryList.add(new Category("house", 0xFF091882, R.drawable.ic_wb_sunny_white_24dp));
+        categoryList.add(new Category("FOOD", 0xFFFFEC00, R.drawable.beer));
+        categoryList.add(new Category("ACCOMMODATION", 0xFFFF6600, R.drawable.bighouse));
+        categoryList.add(new Category("HEALTH", 0xFFCC0000, R.drawable.coffee));
+        categoryList.add(new Category("CLOTHES", 0xFFFF00FF, R.drawable.ic_business_black_24dp));
+        categoryList.add(new Category("PETS", 0xFF990099, R.drawable.ic_pets_black_24dp));
+        categoryList.add(new Category("EDUCATION", 0xFF00FF00, R.drawable.ic_build_black_24dp));
+        categoryList.add(new Category("TRANSPORT", 0xFF006600, R.drawable.ic_local_car_wash_white_24dp));
+        categoryList.add(new Category("DINNER", 0xFF0000FF, R.drawable.cherry));
+        categoryList.add(new Category("TRAVEL", 0xFF091882, R.drawable.ic_wb_sunny_white_24dp));
+        categoryList.add(new Category("OTHER", 0xFFFF0000, R.drawable.bucket));
 
         for (Category category : categoryList) {
             ContentValues values = new ContentValues();

@@ -1,5 +1,8 @@
 package com.expenses.volodymyr.notecase.fragment;
 
+import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -10,8 +13,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.ListView;
 import android.widget.RadioButton;
+import android.widget.Toast;
 
 import com.data.volodymyr.notecase.entity.Product;
 import com.data.volodymyr.notecase.util.AuthenticationException;
@@ -23,6 +29,7 @@ import com.expenses.volodymyr.notecase.adapter.ProductAdapter;
 import com.expenses.volodymyr.notecase.util.SafeAsyncTask;
 
 import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -36,6 +43,7 @@ public class TabViewExpenses extends Fragment implements AdapterView.OnItemClick
     private ListView listView;
     private View view;
     private int checkedId;
+    private Button dataPicker;
 
     private ProductManager productManager;
 
@@ -47,6 +55,7 @@ public class TabViewExpenses extends Fragment implements AdapterView.OnItemClick
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh);
         swipeRefreshLayout.setOnRefreshListener(this);
         listView = (ListView) view.findViewById(R.id.costs_list);
+        dataPicker = (Button) view.findViewById(R.id.data_picker);
 
         productManager = new ProductManagerImpl(getContext());
 
@@ -58,6 +67,7 @@ public class TabViewExpenses extends Fragment implements AdapterView.OnItemClick
         lastWeek.setOnClickListener(this);
         lastMonth.setOnClickListener(this);
         checkedId = last24.getId();
+        dataPicker.setOnClickListener(this);
 
         listView.setOnItemClickListener(this);
         return view;
@@ -122,6 +132,12 @@ public class TabViewExpenses extends Fragment implements AdapterView.OnItemClick
 
     @Override
     public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.data_picker:
+                DialogFragment newFragment = new DatePickerFragment();
+                newFragment.show(getActivity().getFragmentManager(), "datePicker");
+                break;
+        }
         checkedId = v.getId();
         updateListView();
     }
@@ -134,6 +150,7 @@ public class TabViewExpenses extends Fragment implements AdapterView.OnItemClick
             public Boolean doInBackgroundSafe() throws AuthenticationException {
                 return productManager.syncProducts();
             }
+
             @Override
             protected void onPostExecute(Boolean renderAgain) {
                 swipeRefreshLayout.setRefreshing(false);
@@ -144,4 +161,24 @@ public class TabViewExpenses extends Fragment implements AdapterView.OnItemClick
         }.execute();
     }
 
+
+    public static class DatePickerFragment extends DialogFragment
+            implements DatePickerDialog.OnDateSetListener {
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            // Use the current date as the default date in the picker
+            final Calendar c = Calendar.getInstance();
+            int year = c.get(Calendar.YEAR);
+            int month = c.get(Calendar.MONTH);
+            int day = c.get(Calendar.DAY_OF_MONTH);
+
+            // Create a new instance of DatePickerDialog and return it
+            return new DatePickerDialog(getActivity(), this, year, month, day);
+        }
+
+        public void onDateSet(DatePicker view, int year, int month, int day) {
+            Toast.makeText(getActivity(), "Day: " + day, Toast.LENGTH_LONG).show();
+        }
+    }
 }

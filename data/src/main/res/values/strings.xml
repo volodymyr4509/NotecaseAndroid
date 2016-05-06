@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">Notecase</string>
+
+    <string name="category_food">FOOD</string>
+    <string name="category_transport">TRANSPORT</string>
+    <string name="category_accommodation">ACCOMMODATION</string>
+    <string name="category_travel">TRAVEL</string>
+    <string name="category_dinner">DINNER</string>
+    <string name="category_education">EDUCATION</string>
+    <string name="category_health">HEALTH</string>
+    <string name="category_pets">PETS</string>
+    <string name="category_clothes">CLOTHES</string>
+    <string name="category_other">OTHER</string>
+
 </resources>
