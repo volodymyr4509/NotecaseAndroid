@@ -58,9 +58,6 @@ public class EditExpenseActivity extends Activity implements View.OnClickListene
         productManager = new ProductManagerImpl(getApplicationContext());
         categoryManager = new CategoryManagerImpl(getApplicationContext());
 
-
-
-
         save.setOnClickListener(this);
         delete.setVisibility(View.GONE);
         navigationArrow.setOnClickListener(this);
@@ -106,7 +103,6 @@ public class EditExpenseActivity extends Activity implements View.OnClickListene
                     Toast.makeText(getApplicationContext(), "Incorrect input", Toast.LENGTH_LONG).show();
                 }
                 new SafeAsyncTask<Void, Void, Void>(this){
-
                     @Override
                     public Void doInBackgroundSafe() throws AuthenticationException {
                         productManager.updateProduct(product);
@@ -118,6 +114,7 @@ public class EditExpenseActivity extends Activity implements View.OnClickListene
                 break;
             case R.id.navigation_arrow:
             case R.id.logo:
+                finish();
                 break;
 
         }

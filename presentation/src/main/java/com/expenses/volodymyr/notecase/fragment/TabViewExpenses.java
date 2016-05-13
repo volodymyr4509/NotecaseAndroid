@@ -1,23 +1,21 @@
 package com.expenses.volodymyr.notecase.fragment;
 
-import android.app.DatePickerDialog;
-import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.DatePicker;
+import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.RadioButton;
-import android.widget.Toast;
 
 import com.data.volodymyr.notecase.entity.Product;
 import com.data.volodymyr.notecase.util.AuthenticationException;
@@ -29,7 +27,10 @@ import com.expenses.volodymyr.notecase.adapter.ProductAdapter;
 import com.expenses.volodymyr.notecase.util.SafeAsyncTask;
 
 import java.sql.Timestamp;
+import java.text.DateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 /**
@@ -41,9 +42,12 @@ public class TabViewExpenses extends Fragment implements AdapterView.OnItemClick
     private ArrayAdapter<Product> adapter;
     private SwipeRefreshLayout swipeRefreshLayout;
     private ListView listView;
-    private View view;
+    //    private View view;
     private int checkedId;
-    private Button dataPicker;
+    private ImageButton navigateLeft, navigateRight;
+    private long begin, end;
+    private Calendar calendar = GregorianCalendar.getInstance();
+    private Snackbar snack;
 
     private ProductManager productManager;
 
@@ -51,23 +55,40 @@ public class TabViewExpenses extends Fragment implements AdapterView.OnItemClick
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(TAG, "Creating View fragment");
 
-        view = inflater.inflate(R.layout.tab_view_expenses, container, false);
+        View view = inflater.inflate(R.layout.tab_view_expenses, container, false);
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh);
         swipeRefreshLayout.setOnRefreshListener(this);
         listView = (ListView) view.findViewById(R.id.costs_list);
-        dataPicker = (Button) view.findViewById(R.id.data_picker);
 
         productManager = new ProductManagerImpl(getContext());
 
-        RadioButton last24 = (RadioButton) view.findViewById(R.id.last_24_hours);
-        RadioButton lastWeek = (RadioButton) view.findViewById(R.id.last_week);
-        RadioButton lastMonth = (RadioButton) view.findViewById(R.id.last_month);
+        RadioButton day = (RadioButton) view.findViewById(R.id.last_24_hours);
+        RadioButton week = (RadioButton) view.findViewById(R.id.last_week);
+        RadioButton month = (RadioButton) view.findViewById(R.id.last_month);
+
         //set onClickListener instead of onCheckedChangedListener because the last one calls onCheckedChanged twice
-        last24.setOnClickListener(this);
-        lastWeek.setOnClickListener(this);
-        lastMonth.setOnClickListener(this);
-        checkedId = last24.getId();
-        dataPicker.setOnClickListener(this);
+        day.setOnClickListener(this);
+        week.setOnClickListener(this);
+        month.setOnClickListener(this);
+        checkedId = day.getId();
+
+        navigateLeft = (ImageButton) view.findViewById(R.id.navigate_left);
+        navigateLeft.setOnClickListener(this);
+        navigateRight = (ImageButton) view.findViewById(R.id.navigate_right);
+        navigateRight.setOnClickListener(this);
+
+        calendar.setTime(new Date());
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+
+        begin = calendar.getTimeInMillis();
+
+        calendar.add(Calendar.DAY_OF_YEAR, +1);
+        end = calendar.getTimeInMillis();
+
+
 
         listView.setOnItemClickListener(this);
         return view;
@@ -75,7 +96,10 @@ public class TabViewExpenses extends Fragment implements AdapterView.OnItemClick
 
     @Override
     public void onResume() {
-        Log.d(TAG, "Resuming View fragment");
+        Log.d(TAG, "Resuming View fragment");        snack = Snackbar.make(listView, "[" + new Date(begin) + ":" + new Date(end) + "]", Snackbar.LENGTH_LONG);
+        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) snack.getView().getLayoutParams();
+        params.gravity = Gravity.TOP;
+        snack.getView().setLayoutParams(params);
         updateListView();
         super.onResume();
     }
@@ -98,21 +122,9 @@ public class TabViewExpenses extends Fragment implements AdapterView.OnItemClick
 
     public void updateListView() {
         Log.i(TAG, "Updating ProductList");
-        //last 24 hours by default
-        long tillTimeMillis = System.currentTimeMillis();
-        long sinceTimeMillis = tillTimeMillis - 24 * 60 * 60 * 1000;
 
-        switch (checkedId) {
-            case R.id.last_week:
-                sinceTimeMillis = tillTimeMillis - 7 * 24 * 60 * 60 * 1000;
-                break;
-            case R.id.last_month:
-                sinceTimeMillis = tillTimeMillis - (long) 31 * 24 * 60 * 60 * 1000;
-                break;
-        }
-
-        final Timestamp till = new Timestamp(tillTimeMillis);
-        final Timestamp since = new Timestamp(sinceTimeMillis);
+        final Timestamp till = new Timestamp(end);
+        final Timestamp since = new Timestamp(begin);
 
         new SafeAsyncTask<Timestamp, Void, List<Product>>(getContext()) {
             @Override
@@ -132,14 +144,93 @@ public class TabViewExpenses extends Fragment implements AdapterView.OnItemClick
 
     @Override
     public void onClick(View v) {
+        DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT, getResources().getConfiguration().locale);
+
         switch (v.getId()) {
-            case R.id.data_picker:
-                DialogFragment newFragment = new DatePickerFragment();
-                newFragment.show(getActivity().getFragmentManager(), "datePicker");
+            case R.id.navigate_left:
+                moveLeft();
+                break;
+            case R.id.navigate_right:
+                moveRight();
+                break;
+            case R.id.last_24_hours:
+                begin = calendar.getTimeInMillis();
+                calendar.add(Calendar.DAY_OF_YEAR, +1);
+                end = calendar.getTimeInMillis();
+                calendar.add(Calendar.DAY_OF_YEAR, -1);
+
+                checkedId = v.getId();
+                break;
+            case R.id.last_week:
+                calendar.set(Calendar.DAY_OF_WEEK, calendar.getActualMaximum(Calendar.DAY_OF_WEEK));
+                end = calendar.getTimeInMillis();
+                calendar.set(Calendar.DAY_OF_WEEK, calendar.getActualMinimum(Calendar.DAY_OF_WEEK));
+                begin = calendar.getTimeInMillis();
+
+                checkedId = v.getId();
+                break;
+            case R.id.last_month:
+                calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+                end = calendar.getTimeInMillis();
+                calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMinimum(Calendar.DAY_OF_MONTH));
+                begin = calendar.getTimeInMillis();
+
+                checkedId = v.getId();
                 break;
         }
-        checkedId = v.getId();
+        snack.setText(df.format(begin) + " : " + df.format(end));
+
+        snack.show();
+
+        Log.v(TAG, "Pick time range: " + new Date(begin) + " : " + new Date(end));
+
         updateListView();
+    }
+
+    private void moveLeft() {
+        end = begin;
+
+        switch (checkedId) {
+            case R.id.last_24_hours:
+                calendar.add(Calendar.DAY_OF_YEAR, -1);
+                break;
+            case R.id.last_week:
+                calendar.add(Calendar.WEEK_OF_YEAR, -1);
+                break;
+            case R.id.last_month:
+                calendar.add(Calendar.MONTH, -1);
+                break;
+        }
+
+        //change moving direction left-right
+        if (calendar.getTimeInMillis() == end) {
+            moveLeft();
+        }
+
+        begin = calendar.getTimeInMillis();
+    }
+
+    private void moveRight() {
+        begin = end;
+
+        switch (checkedId) {
+            case R.id.last_24_hours:
+                calendar.add(Calendar.DAY_OF_YEAR, 1);
+                break;
+            case R.id.last_week:
+                calendar.add(Calendar.WEEK_OF_YEAR, 1);
+                break;
+            case R.id.last_month:
+                calendar.add(Calendar.MONTH, 1);
+                break;
+        }
+
+        //change moving direction left-right
+        if (calendar.getTimeInMillis() == begin) {
+            moveRight();
+        }
+
+        end = calendar.getTimeInMillis();
     }
 
     @Override
@@ -161,24 +252,4 @@ public class TabViewExpenses extends Fragment implements AdapterView.OnItemClick
         }.execute();
     }
 
-
-    public static class DatePickerFragment extends DialogFragment
-            implements DatePickerDialog.OnDateSetListener {
-
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            // Use the current date as the default date in the picker
-            final Calendar c = Calendar.getInstance();
-            int year = c.get(Calendar.YEAR);
-            int month = c.get(Calendar.MONTH);
-            int day = c.get(Calendar.DAY_OF_MONTH);
-
-            // Create a new instance of DatePickerDialog and return it
-            return new DatePickerDialog(getActivity(), this, year, month, day);
-        }
-
-        public void onDateSet(DatePicker view, int year, int month, int day) {
-            Toast.makeText(getActivity(), "Day: " + day, Toast.LENGTH_LONG).show();
-        }
-    }
 }

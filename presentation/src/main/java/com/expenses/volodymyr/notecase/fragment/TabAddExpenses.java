@@ -89,7 +89,6 @@ public class TabAddExpenses extends Fragment {
         return view;
     }
 
-
     public void closeKeyboard() {
         View view = getActivity().getCurrentFocus();
         if (view != null) {

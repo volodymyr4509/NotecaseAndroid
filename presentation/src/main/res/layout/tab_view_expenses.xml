@@ -8,22 +8,51 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".activity.MainActivity">
-    <LinearLayout
+
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_above="@+id/controls">
+
+        <ListView
+            android:id="@+id/costs_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+    <RelativeLayout
         android:id="@+id/controls"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_gravity="center"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <ImageButton
+            android:id="@+id/navigate_left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:layout_margin="5dp"
+            android:background="@drawable/navigation_button"
+            android:src="@mipmap/ic_chevron_left_white_36dp"/>
+
         <RadioGroup
             android:id="@+id/date_filter_radio_group"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentStart="true"
-            android:layout_gravity="center_vertical"
+            android:layout_gravity="center"
             android:checkedButton="@+id/last_24_hours"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true">
 
             <RadioButton
                 android:id="@+id/last_24_hours"
@@ -53,28 +82,17 @@
                 android:text="Month" />
         </RadioGroup>
 
-        <Button
+        <ImageButton
+            android:id="@+id/navigate_right"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/data_picker"
-            android:text="Pick dates"
-            android:background="@android:color/transparent"
-            android:layout_weight="1" />
+            android:padding="5dp"
+            android:background="@drawable/navigation_button"
+            android:src="@mipmap/ic_chevron_right_white_36dp"
+            android:layout_alignTop="@+id/navigate_left"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
 
-    </LinearLayout>
-
-
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/swipe_refresh"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/controls">
-
-        <ListView
-            android:id="@+id/costs_list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </android.support.v4.widget.SwipeRefreshLayout>
-
+    </RelativeLayout>
 
 </RelativeLayout>
