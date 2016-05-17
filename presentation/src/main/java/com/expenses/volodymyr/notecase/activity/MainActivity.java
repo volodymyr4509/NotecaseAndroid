@@ -13,13 +13,14 @@ import com.data.volodymyr.notecase.util.AuthenticationException;
 import com.domain.volodymyr.notecase.manager.UserManager;
 import com.domain.volodymyr.notecase.manager.UserManagerImpl;
 import com.expenses.volodymyr.notecase.R;
+import com.expenses.volodymyr.notecase.adapter.MyFragmentPagerAdapter;
+import com.expenses.volodymyr.notecase.fragment.Navigation;
 import com.expenses.volodymyr.notecase.fragment.TabAddExpenses;
 import com.expenses.volodymyr.notecase.fragment.TabStatisticExpenses;
 import com.expenses.volodymyr.notecase.fragment.TabViewExpenses;
-import com.expenses.volodymyr.notecase.util.MyFragmentPagerAdapter;
 import com.expenses.volodymyr.notecase.util.SafeAsyncTask;
 
-public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSelectedListener {
+public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSelectedListener, Navigation.OnControlsClickListener {
     private static final String TAG = "MainActivity";
 
     private static final String ADD_TAB = "Add";
@@ -65,14 +66,14 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
             public Boolean doInBackgroundSafe() throws AuthenticationException {
                 return userManager.syncUsers();
             }
-         }.execute();
+        }.execute();
         super.onStart();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if (userManager.getUserOwner()==null){
+        if (userManager.getUserOwner() == null) {
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
         }
@@ -86,42 +87,54 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     }
 
     @Override
+    public void onControlsClickListener() {
+        Fragment fragment = adapter.getItem(viewPager.getCurrentItem());
+
+        if (fragment instanceof TabViewExpenses) {
+            TabViewExpenses tabViewExpenses = (TabViewExpenses) fragment;
+            tabViewExpenses.updateListView();
+        }
+        if (fragment instanceof TabStatisticExpenses) {
+            TabStatisticExpenses tabStatisticExpenses = (TabStatisticExpenses) fragment;
+            tabStatisticExpenses.updateStatistics();
+        }
+
+    }
+
+    @Override
     public void onTabSelected(TabLayout.Tab tab) {
         //workaround to update tabs. getItemPosition called in adapter
         PagerAdapter adapter = viewPager.getAdapter();
         int position = tab.getPosition();
-        if (adapter instanceof MyFragmentPagerAdapter) {
-            MyFragmentPagerAdapter myAdapter = (MyFragmentPagerAdapter) adapter;
+
+        if (adapter != null && adapter instanceof MyFragmentPagerAdapter) {
+            MyFragmentPagerAdapter fragmentAdapter = (MyFragmentPagerAdapter) adapter;
+            Fragment fragment = fragmentAdapter.getItem(position);
+
             switch (position) {
                 case 0:
-                Fragment tabAdd = myAdapter.getItem(position);
-                if (tabAdd instanceof TabAddExpenses) {
-                    TabAddExpenses fragment = (TabAddExpenses) tabAdd;
-                    if (fragment.isVisible()) {
-                        fragment.addCategoriesOnScreen();
-                    }
-                }
-                break;
+                    TabAddExpenses tabAdd = (TabAddExpenses) fragment;
+                    tabAdd.addCategoriesOnScreen();
+                    break;
                 case 1:
-                    Fragment tabView = myAdapter.getItem(position);
-                    if (tabView instanceof TabViewExpenses) {
-                        TabViewExpenses fragment = (TabViewExpenses) tabView;
-                        if (fragment.isVisible()) {
-                            fragment.updateListView();
-                        }
+                    TabViewExpenses tabView = (TabViewExpenses) fragment;
+                    Navigation navView = (Navigation) fragment.getChildFragmentManager().findFragmentByTag(getString(R.string.view_navigation_key));
+                    if (navView != null) {
+                        navView.updateCheckedRadio();
                     }
+                    tabView.updateListView();
                     break;
                 case 2:
-                    Fragment tabStatistic = myAdapter.getItem(position);
-                    if (tabStatistic instanceof TabStatisticExpenses) {
-                        TabStatisticExpenses fragment = (TabStatisticExpenses) tabStatistic;
-                        if (fragment.isVisible()) {
-                            fragment.setData();
-                        }
+                    TabStatisticExpenses tabStats = (TabStatisticExpenses) fragment;
+                    Navigation navStats = (Navigation) fragment.getChildFragmentManager().findFragmentByTag(getString(R.string.stats_navigation_key));
+                    if (navStats != null) {
+                        navStats.updateCheckedRadio();
                     }
+                    tabStats.updateStatistics();
                     break;
             }
         }
+
         //handling direct onTab click
         viewPager.setCurrentItem(position);
     }

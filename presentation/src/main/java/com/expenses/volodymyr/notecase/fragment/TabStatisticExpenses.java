@@ -7,7 +7,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RadioButton;
 
 import com.data.volodymyr.notecase.entity.Category;
 import com.data.volodymyr.notecase.util.AuthenticationException;
@@ -35,11 +34,10 @@ import java.util.Set;
 /**
  * Created by vkret on 02.12.15.
  */
-public class TabStatisticExpenses extends Fragment implements OnChartValueSelectedListener, View.OnClickListener {
+public class TabStatisticExpenses extends Fragment implements OnChartValueSelectedListener {
     private static String TAG = "TabStatisticExpenses";
     private boolean showCategoryName = false;
     private PieChart mChart;
-    private int checkedId;
 
     private ProductManager productManager;
 
@@ -51,17 +49,9 @@ public class TabStatisticExpenses extends Fragment implements OnChartValueSelect
 
         productManager = new ProductManagerImpl(getContext());
 
+        Navigation navigation = new Navigation();
+        getChildFragmentManager().beginTransaction().add(R.id.navigation_holder_stats, navigation, getString(R.string.stats_navigation_key)).commit();
         setMPChart(view);
-
-        RadioButton last24 = (RadioButton) view.findViewById(R.id.stats_last_24_hours);
-        RadioButton lastWeek = (RadioButton) view.findViewById(R.id.stats_last_week);
-        RadioButton lastMonth = (RadioButton) view.findViewById(R.id.stats_last_month);
-
-        last24.setOnClickListener(this);
-        lastWeek.setOnClickListener(this);
-        lastMonth.setOnClickListener(this);
-        checkedId = last24.getId();
-        setData();
 
         return view;
     }
@@ -75,25 +65,16 @@ public class TabStatisticExpenses extends Fragment implements OnChartValueSelect
     @Override
     public void onResume() {
         Log.d(TAG, "Resuming Statistic tab");
+
+        updateStatistics();
         super.onResume();
     }
 
-    public void setData() {
+    public void updateStatistics() {
         Log.i(TAG, "Set up data for Statistic tab");
-        long tillTimeMillis = System.currentTimeMillis();
-        long sinceTimeMillis = tillTimeMillis - 24 * 60 * 60 * 1000;
 
-        switch (checkedId) {
-            case R.id.stats_last_week:
-                sinceTimeMillis = tillTimeMillis - 7 * 24 * 60 * 60 * 1000;
-                break;
-            case R.id.stats_last_month:
-                sinceTimeMillis = tillTimeMillis - (long) 31 * 24 * 60 * 60 * 1000;
-                break;
-        }
-
-        final Timestamp till = new Timestamp(tillTimeMillis);
-        final Timestamp since = new Timestamp(sinceTimeMillis);
+        final Timestamp till = new Timestamp(Navigation.end);
+        final Timestamp since = new Timestamp(Navigation.begin);
 
         new SafeAsyncTask<Timestamp, Void, Map<Category, Double>>(getContext()) {
             @Override
@@ -108,7 +89,7 @@ public class TabStatisticExpenses extends Fragment implements OnChartValueSelect
                 ArrayList<Integer> colors = new ArrayList<>();
 
                 double sum = 0;
-                if (categoryDoubleMap == null || categoryDoubleMap.values() == null){
+                if (categoryDoubleMap == null || categoryDoubleMap.values() == null) {
                     return;
                 }
                 Iterator<Double> it = categoryDoubleMap.values().iterator();
@@ -152,6 +133,7 @@ public class TabStatisticExpenses extends Fragment implements OnChartValueSelect
     private void setMPChart(View view) {
         mChart = (PieChart) view.findViewById(R.id.chart1);
         mChart.setUsePercentValues(true);
+        mChart.setDescription(getString(R.string.empty_string));
 //        mChart.setDescription("Expense statistic pie chart");
         mChart.setDragDecelerationFrictionCoef(0.95f);
         mChart.setDrawSliceText(showCategoryName);
@@ -183,9 +165,4 @@ public class TabStatisticExpenses extends Fragment implements OnChartValueSelect
 
     }
 
-    @Override
-    public void onClick(View v) {
-        checkedId = v.getId();
-        setData();
-    }
 }
