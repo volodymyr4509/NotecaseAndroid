@@ -130,7 +130,7 @@ public class TabAddExpenses extends Fragment {
             Category category = categoryList.get(i);
             categoryLayout.setTag(R.string.category_name_tag, category.getName());
             categoryView.setImageResource(category.getImage());
-            Drawable drawable = getResources().getDrawable(R.drawable.product_shape);
+            Drawable drawable = getResources().getDrawable(R.drawable.category_shape_small);
             drawable.setColorFilter(category.getColor(), PorterDuff.Mode.MULTIPLY);
             categoryView.setBackground(drawable);
             if (i % 2 == 0) {

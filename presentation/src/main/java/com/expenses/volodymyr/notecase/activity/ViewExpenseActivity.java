@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -90,7 +92,9 @@ public class ViewExpenseActivity extends Activity implements View.OnClickListene
         if (user != null) {
             userName.setText(user.getName());
         }
-        categoryImage.setBackgroundColor(category.getColor());
+        Drawable drawable = getResources().getDrawable(R.drawable.category_shape_medium);
+        drawable.setColorFilter(category.getColor(), PorterDuff.Mode.MULTIPLY);
+        categoryImage.setBackground(drawable);
         categoryImage.setImageResource(category.getImage());
         editButton.setImageResource(R.drawable.ic_mode_edit_white_24dp);
         super.onResume();
