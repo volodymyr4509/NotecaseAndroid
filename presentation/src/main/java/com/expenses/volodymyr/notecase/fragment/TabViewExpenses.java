@@ -93,8 +93,10 @@ public class TabViewExpenses extends Fragment implements AdapterView.OnItemClick
             @Override
             protected void onPostExecute(List<Product> products) {
                 Log.d(TAG, "Retrieved product list since: " + since + " till: " + till.toString());
-                adapter = new ProductAdapter(getContext(), products);
-                listView.setAdapter(adapter);
+                if (getActivity()!=null){
+                    adapter = new ProductAdapter(getActivity(), products);
+                    listView.setAdapter(adapter);
+                }
             }
         }.execute();
     }

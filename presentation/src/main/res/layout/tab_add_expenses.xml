@@ -25,6 +25,7 @@
             android:layout_alignRight="@+id/imageView"
             android:layout_alignStart="@+id/imageView"
             android:hint="@string/CommodityName"
+            android:inputType="textCapSentences"
             android:imeOptions="actionNext"
             android:nextFocusDown="@+id/commodityPrice"
             android:singleLine="true" />

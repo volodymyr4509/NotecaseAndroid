@@ -49,6 +49,9 @@ public class ProductAdapter extends ArrayAdapter<Product> {
             productPrice.setTextColor(Color.GRAY);
             productCreated.setTextColor(Color.GRAY);
         }
+        if (product.isDirty()){
+            convertView.setBackgroundColor(getContext().getResources().getColor(R.color.colorAccent));
+        }
         productName.setText(product.getName());
 
         //format double

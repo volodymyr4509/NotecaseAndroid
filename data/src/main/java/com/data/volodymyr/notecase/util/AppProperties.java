@@ -5,6 +5,8 @@ package com.data.volodymyr.notecase.util;
  */
 public class AppProperties {
     public static final String HOST = "http://188.230.7.133";
+    //    public static final String HOST = "http://192.168.20.107";
+
     public static final String PORT = ":8080";
 
 }

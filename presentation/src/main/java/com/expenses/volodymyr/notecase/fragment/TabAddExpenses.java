@@ -120,9 +120,9 @@ public class TabAddExpenses extends Fragment {
 
         for (int i = 0; i < categoryList.size(); i++) {
             LinearLayout categoryLayout;
-            if (i%2 ==0){
+            if (i % 2 == 0) {
                 categoryLayout = (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.item_category_image_left, null);
-            }else {
+            } else {
                 categoryLayout = (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.item_category_image_right, null);
             }
             ImageView categoryView = (ImageView) categoryLayout.findViewById(R.id.category_drawable_image);

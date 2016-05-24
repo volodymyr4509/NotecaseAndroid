@@ -26,12 +26,14 @@ import com.expenses.volodymyr.notecase.R;
 import com.expenses.volodymyr.notecase.fragment.TabViewExpenses;
 import com.expenses.volodymyr.notecase.util.SafeAsyncTask;
 
+import java.util.Calendar;
+
 /**
  * Created by volodymyr on 01.01.16.
  */
 public class ViewExpenseActivity extends Activity implements View.OnClickListener {
     private static final String TAG = "ViewExpenseActivity";
-    private TextView name, price, dateTime, categoryName, userName;
+    private TextView name, price, date, time, categoryName, userName;
     private ImageView categoryImage, navigationArrow, logo, editButton, deleteButton;
     private Product product;
     private ProductManager productManager;
@@ -48,7 +50,8 @@ public class ViewExpenseActivity extends Activity implements View.OnClickListene
         price = (TextView) findViewById(R.id.view_expense_price);
         navigationArrow = (ImageView) findViewById(R.id.navigation_arrow);
         logo = (ImageView) findViewById(R.id.logo);
-        dateTime = (TextView) findViewById(R.id.view_expense_datetime);
+        date = (TextView) findViewById(R.id.view_expense_date);
+        time = (TextView) findViewById(R.id.view_expense_time);
         categoryImage = (ImageView) findViewById(R.id.view_expense_category_image);
         categoryName = (TextView) findViewById(R.id.view_expense_category_name);
         userName = (TextView) findViewById(R.id.product_user);
@@ -87,7 +90,13 @@ public class ViewExpenseActivity extends Activity implements View.OnClickListene
         }
         name.setText(product.getName());
         price.setText(String.valueOf(product.getPrice()));
-        dateTime.setText(product.getCreated().toString());
+        Calendar calendar = Calendar.getInstance();
+        if (product.getCreated()!=null){
+            calendar.setTimeInMillis(product.getCreated().getTime());
+            date.setText("" + calendar.get(Calendar.DATE) +"/" + calendar.get(Calendar.MONTH) + "/" +calendar.get(Calendar.YEAR));
+            time.setText("" + calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE) + ":" + calendar.get(Calendar.SECOND));
+        }
+
         categoryName.setText(category.getName());
         if (user != null) {
             userName.setText(user.getName());

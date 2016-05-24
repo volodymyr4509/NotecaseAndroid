@@ -98,8 +98,8 @@ public class ProductManagerImpl implements ProductManager {
         if (updatedProducts!=null){
             for (Product product : updatedProducts) {
                 Product deviceProd = productSQLiteDAO.getProductByUuid(product.getUuid());
+                product.setDirty(false);
                 if (deviceProd == null) {
-                    product.setDirty(false);
                     productSQLiteDAO.addProduct(product);
                 } else {
                     productSQLiteDAO.updateProduct(product);

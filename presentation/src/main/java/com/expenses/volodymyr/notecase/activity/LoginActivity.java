@@ -6,13 +6,13 @@ import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.data.volodymyr.notecase.entity.User;
 import com.data.volodymyr.notecase.util.AuthenticationException;
 import com.domain.volodymyr.notecase.manager.UserManager;
 import com.domain.volodymyr.notecase.manager.UserManagerImpl;
 import com.expenses.volodymyr.notecase.R;
-import com.expenses.volodymyr.notecase.fragment.TabViewExpenses;
 import com.expenses.volodymyr.notecase.util.SafeAsyncTask;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -75,7 +75,7 @@ public class LoginActivity extends FragmentActivity implements View.OnClickListe
         User owner = userManager.getUserOwner();
         if (owner != null) {
             resultText.setText(owner.getName());
-        }else {
+        } else {
             loginMessage.setVisibility(View.VISIBLE);
         }
         super.onStart();
@@ -91,6 +91,7 @@ public class LoginActivity extends FragmentActivity implements View.OnClickListe
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        Log.d(TAG, "Authentication: requestCode: " + requestCode);
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
@@ -102,9 +103,10 @@ public class LoginActivity extends FragmentActivity implements View.OnClickListe
 
                 resultText.setText(acct.getDisplayName());
 
-                new SafeAsyncTask<Void, Void, Boolean>(this){
+                new SafeAsyncTask<Void, Void, Boolean>(this) {
                     @Override
                     public Boolean doInBackgroundSafe() throws AuthenticationException {
+                        Log.d(TAG, "Authenticating with backend");
                         User user = new User();
                         user.setName(acct.getDisplayName());
                         user.setEmail(acct.getEmail());
@@ -117,11 +119,12 @@ public class LoginActivity extends FragmentActivity implements View.OnClickListe
 
                     @Override
                     protected void onPostExecute(Boolean success) {
-                        if (success!=null && success){
-                            finish();
-                        }
+                        Log.i(TAG, "Authentication success: " + success);
+                        finish();
                     }
                 }.execute();
+            }else {
+                Toast.makeText(getApplicationContext(), "Cannot authenticate the user", Toast.LENGTH_LONG).show();
             }
         }
     }

@@ -33,7 +33,7 @@
             android:layout_alignBottom="@+id/radioGroup"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:text="24hours" />
+            android:text="Day" />
 
         <RadioButton
             android:id="@+id/last_week"
