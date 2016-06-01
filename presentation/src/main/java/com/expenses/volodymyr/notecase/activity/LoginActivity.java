@@ -59,8 +59,7 @@ public class LoginActivity extends FragmentActivity implements View.OnClickListe
                 .enableAutoManage(this, new GoogleApiClient.OnConnectionFailedListener() {
                     @Override
                     public void onConnectionFailed(ConnectionResult connectionResult) {
-                        Intent intent = new Intent(getApplicationContext(), ConnectionProblemActivity.class);
-                        startActivity(intent);
+                        Toast.makeText(getApplicationContext(), "No connection", Toast.LENGTH_LONG).show();
                     }
                 })
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)

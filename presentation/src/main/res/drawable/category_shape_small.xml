@@ -2,7 +2,6 @@
 
     android:innerRadius="0dp"
     android:thickness="35dp"
-
     android:shape="ring">
 
     <solid

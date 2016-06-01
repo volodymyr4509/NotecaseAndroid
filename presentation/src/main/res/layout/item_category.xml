@@ -8,9 +8,7 @@
     <ImageView
         android:id="@+id/category_image"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:background="@android:color/transparent"
-        android:padding="5dp"
+        android:layout_height="70dp"
         android:layout_margin="5dp"
         android:layout_gravity="center"/>
 
@@ -25,6 +23,5 @@
         android:id="@+id/category_name"
         android:singleLine="true"
         android:ellipsize="end" />
-
 
 </LinearLayout>

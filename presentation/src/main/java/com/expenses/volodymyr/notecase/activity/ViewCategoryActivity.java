@@ -45,11 +45,10 @@ public class ViewCategoryActivity extends AppCompatActivity implements View.OnCl
         syncCategoryButton = (ImageView) findViewById(R.id.action_item_left);
         addCategoryButton = (ImageView) findViewById(R.id.action_item_right);
 
-        gridView = (GridView) findViewById(R.id.categoriesGrid);
+        gridView = (GridView) findViewById(R.id.category_grid);
 
         syncCategoryButton.setImageResource(R.drawable.ic_sync_white_24dp);
         addCategoryButton.setImageResource(R.drawable.ic_control_point_white_24dp);
-
 
         navigationArrow.setOnClickListener(this);
         logo.setOnClickListener(this);

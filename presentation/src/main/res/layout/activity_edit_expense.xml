@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activity.MainActivity">
@@ -12,77 +13,156 @@
         android:layout_height="wrap_content" />
 
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_alignParentBottom="true"
-        android:layout_below="@+id/include2">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="horizontal">
 
-        <AutoCompleteTextView
-            android:id="@+id/edit_expense_name"
-            android:layout_width="150dp"
-            android:singleLine="true"
-            android:imeOptions="actionNext"
-            android:nextFocusDown="@+id/commodityPrice"
+        <TextView
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_alignEnd="@+id/imageView"
-            android:layout_alignRight="@+id/imageView"
-            android:layout_alignStart="@+id/imageView"
-            android:layout_alignLeft="@+id/imageView"
-            android:hint="@string/CommodityName" />
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:text="Product: "
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <EditText
+            android:id="@+id/edit_expense_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:inputType="textCapSentences"
+            android:text="Product Name"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="#ceaeae">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:text="Price: "
+            android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <EditText
             android:id="@+id/edit_expense_price"
-            android:layout_width="150dp"
-            android:singleLine="true"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:hint="@string/CommodityPrice"
+            android:layout_gravity="center"
+            android:layout_weight="1"
             android:inputType="numberDecimal"
-            android:layout_below="@+id/edit_expense_name"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
+            android:text="Price"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+    </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:padding="10dp">
 
         <TextView
-            android:id="@+id/date_time"
-            style="@android:style/TextAppearance.Medium"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/edit_expense_price" />
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:text="Date: "
+            android:textAppearance="?android:attr/textAppearanceMedium" />
 
-        <View
-            android:layout_width="match_parent"
-            android:padding="10dp"
-            android:layout_height="4dp"
-            android:background="@android:color/darker_gray"
-            android:layout_below="@+id/date_time"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true" />
-
-        <include
-            android:id="@+id/include"
-            layout="@layout/category_grid"
-            android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/edit_expense_date"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/date_time"
-            android:layout_alignParentBottom="true" />
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:text="Date"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="#ceaeae"
+        android:padding="10dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:text="Time: "
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <TextView
+            android:id="@+id/edit_expense_time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:text="Time"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:padding="10dp">
+
+        <TextView
+            android:id="@+id/product_name_label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:text="User Name: "
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <TextView
+            android:id="@+id/product_user"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:text="User Name"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#ceaeae"
+        android:padding="10dp"
+        android:orientation="vertical">
 
         <ImageView
+            android:id="@+id/edit_expense_category_image"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            android:padding="10dp"/>
+
+        <TextView
+            android:id="@+id/edit_expense_category_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/edit_expense_category"
-            android:layout_alignBottom="@+id/edit_expense_price"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:layout_toRightOf="@+id/edit_expense_name"
-            android:layout_toEndOf="@+id/edit_expense_name" />
+            android:layout_gravity="center"
+            android:text="Category Name"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+    </LinearLayout>
 
-    </RelativeLayout>
-
-
-</RelativeLayout>
+</LinearLayout>

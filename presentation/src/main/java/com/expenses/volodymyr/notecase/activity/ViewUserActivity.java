@@ -80,7 +80,7 @@ public class ViewUserActivity extends Activity implements View.OnClickListener, 
             //add user:
             case R.id.action_item_right:
                 LayoutInflater layoutInflater = (LayoutInflater) getBaseContext().getSystemService(LAYOUT_INFLATER_SERVICE);
-                View popupView = layoutInflater.inflate(R.layout.popup_window, null);
+                View popupView = layoutInflater.inflate(R.layout.popup_window_user, null);
                 final PopupWindow popupWindow = new PopupWindow(popupView, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, true);
                 final EditText userEmail = (EditText) popupView.findViewById(R.id.user_email);
                 final EditText userName = (EditText) popupView.findViewById(R.id.user_name);

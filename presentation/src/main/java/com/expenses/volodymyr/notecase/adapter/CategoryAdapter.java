@@ -1,6 +1,8 @@
 package com.expenses.volodymyr.notecase.adapter;
 
 import android.content.Context;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,8 +24,8 @@ public class CategoryAdapter extends ArrayAdapter<Category> {
 
     private boolean namesEnabled;
 
-    public CategoryAdapter(Context context, List<Category> productList, boolean namesEnabled) {
-        super(context, 0, productList);
+    public CategoryAdapter(Context context, List<Category> categoryList, boolean namesEnabled) {
+        super(context, 0, categoryList);
         this.namesEnabled = namesEnabled;
     }
 
@@ -35,11 +37,12 @@ public class CategoryAdapter extends ArrayAdapter<Category> {
         }
 
         ImageView categoryImage = (ImageView) convertView.findViewById(R.id.category_image);
-        categoryImage.setBackgroundColor(category.getColor());
         categoryImage.setImageResource(category.getImage());
 
-        ((GridView) parent).getChoiceMode();
-        ((GridView) parent).setSelection(3);
+        Drawable drawable = getContext().getResources().getDrawable(R.drawable.category_shape_small);
+        drawable.setColorFilter(category.getColor(), PorterDuff.Mode.MULTIPLY);
+        categoryImage.setBackground(drawable);
+
         if (namesEnabled) {
             TextView categoryName = (TextView) convertView.findViewById(R.id.category_name);
             categoryName.setText(category.getName());

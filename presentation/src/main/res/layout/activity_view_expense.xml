@@ -46,8 +46,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_weight="1"            android:gravity="right"
-
+            android:layout_weight="1"
+            android:gravity="right"
             android:text="Price: "
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -71,7 +71,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_weight="1"            android:gravity="right"
+            android:layout_weight="1"
+            android:gravity="right"
 
             android:text="Date: "
             android:textAppearance="?android:attr/textAppearanceMedium" />
@@ -123,8 +124,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:gravity="right"
             android:layout_weight="1"
+            android:gravity="right"
             android:text="User Name: "
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -142,13 +143,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#ceaeae"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="10dp">
 
         <ImageView
             android:id="@+id/view_expense_category_image"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:layout_gravity="center" />
+            android:layout_gravity="center"
+            android:padding="10dp" />
 
         <TextView
             android:id="@+id/view_expense_category_name"
@@ -157,7 +160,6 @@
             android:layout_gravity="center"
             android:text="Category Name"
             android:textAppearance="?android:attr/textAppearanceMedium" />
-
     </LinearLayout>
 
 

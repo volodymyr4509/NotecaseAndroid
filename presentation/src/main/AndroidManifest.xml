@@ -38,10 +38,6 @@
             android:label="@string/app_name"
             android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".activity.ConnectionProblemActivity"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait">
-        </activity>
         <activity android:name=".activity.ViewUserActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait">
